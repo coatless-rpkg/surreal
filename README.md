@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# surreal
+# surreal <img src="man/figures/logo-surreal.png" align ="right" alt="A hexagonal logo of the surreal R package that shows a series of points with varying sizes" width ="150"/>
 
 <!-- badges: start -->
 
