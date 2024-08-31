@@ -50,7 +50,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of surreal is to implement the methods inside the paper “Residual Sur(Realism)” by <a href="https://www4.stat.ncsu.edu/~stefansk/" class="external-link">Leonard A. Stefanski</a> (<a href="https://www.tandfonline.com/doi/abs/10.1198/000313007X190079" class="external-link">2007, TAS, Vol. 61, pp 163-177</a>).</p>
+<p>The <code>surreal</code> package seeks to implement the methods inside the paper “Residual Sur(Realism)” by <a href="https://www4.stat.ncsu.edu/~stefansk/" class="external-link">Leonard A. Stefanski</a> (<a href="https://www.tandfonline.com/doi/abs/10.1198/000313007X190079" class="external-link">2007, TAS, Vol. 61, pp 163-177</a>). These methods allow for hiding images inside of residual plots.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -62,10 +62,55 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<p>To begin, first load the package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/coatless-rpkg/surreal" class="external-link">surreal</a></span><span class="op">)</span></span>
-<span><span class="co">## basic example code</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/coatless-rpkg/surreal" class="external-link">surreal</a></span><span class="op">)</span></span></code></pre></div>
+<p>Next, we’ll retrieve R logo image included with the package:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load the R logo data included with the package</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/r_logo_example.html">r_logo_example</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display original data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original data"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-load-logo-1.png" width="100%"></p>
+<p>We can see that the data is in a 2D format.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    2000 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;  $ x: int  54 55 56 57 58 59 34 35 36 49 ...</span></span>
+<span><span class="co">#&gt;  $ y: int  -9 -9 -9 -9 -9 -9 -10 -10 -10 -10 ...</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        x                y         </span></span>
+<span><span class="co">#&gt;  Min.   :  5.00   Min.   :-75.00  </span></span>
+<span><span class="co">#&gt;  1st Qu.: 32.00   1st Qu.:-57.00  </span></span>
+<span><span class="co">#&gt;  Median : 57.00   Median :-39.00  </span></span>
+<span><span class="co">#&gt;  Mean   : 55.29   Mean   :-40.48  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 77.00   3rd Qu.:-24.00  </span></span>
+<span><span class="co">#&gt;  Max.   :100.00   Max.   : -9.00</span></span></code></pre></div>
+<p>We can apply the surreal method to the data:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Apply the surreal method to the data</span></span>
+<span><span class="va">transformed_surreal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
+<p>After applying the surreal method, we get a series of additional predictors that when visualized against <code>y</code> look as if they are no underlying patterns.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># View the expanded data after transformation</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_surreal_data</span>, main <span class="op">=</span> <span class="st">"Data after transformation"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-surreal-method-data-pair-plot-1.png" width="100%"></p>
+<p>Finally, we’ll fit a linear model to the transformed data and plot the residuals:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Fit a linear model to the transformed data</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_surreal_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot the residuals</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, type <span class="op">=</span> <span class="st">"n"</span>, main <span class="op">=</span> <span class="st">"Residual plot from transformed data"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-surreal-method-residual-plot-1.png" width="100%"></p>
+<p>From the residual plot, we get back our original R logo that has a slight border around it to improve the original image recovery.</p>
+</div>
+<div class="section level2">
+<h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
+</h2>
+<p>Prior work was done to bring the algorithms into R by <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer" class="external-link">John Staudenmayer</a>, <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf" class="external-link">Peter Wolf</a>, and <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping" class="external-link">Ulrike Gromping</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
