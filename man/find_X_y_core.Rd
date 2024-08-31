@@ -22,6 +22,8 @@ find_X_y_core(
 
 \item{p}{Integer. Desired number of columns for matrix X. Default is 5.}
 
+\item{max_iter}{Integer. Maximum number of iterations for convergence. Default is 20.}
+
 \item{verbose}{Logical. If TRUE, prints progress information. Default is FALSE.}
 }
 \value{

@@ -16,6 +16,8 @@ surreal(
 )
 }
 \arguments{
+\item{data}{A data frame or matrix with two columns representing the \code{y_hat} and \code{R_0} values.}
+
 \item{R_0}{Numeric vector of desired residuals (only used if y_hat is a vector)}
 
 \item{y_hat}{Numeric vector of desired fitted values, or a matrix/data.frame with two columns}
@@ -25,6 +27,8 @@ surreal(
 \item{p}{Integer. Desired number of columns for matrix X. Default is 5.}
 
 \item{n_add_points}{Integer. Number of points to add in data transformation. Default is 40.}
+
+\item{max_iter}{Integer. Maximum number of iterations for convergence. Default is 20.}
 
 \item{verbose}{Logical. If TRUE, prints progress information. Default is FALSE.}
 }

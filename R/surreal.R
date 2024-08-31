@@ -1,4 +1,4 @@
-#' Transform Data for X and Y Finding Algorithm
+#' Transform Data for X and Y Finding Algorithm by Adding a Border
 #'
 #' This function transforms the input data by adding points around the original data
 #' to create a frame. It uses an optimization process to find the best alpha parameter
@@ -9,15 +9,17 @@
 #' @param n_add_points Integer. Number of points to add on each side of the frame. Default is 40.
 #' @param verbose Logical. If TRUE, prints optimization progress. Default is FALSE.
 #'
-#' @return A matrix with two columns representing the transformed x and y coordinates.
+#' @return
+#' A matrix with two columns representing the transformed x and y coordinates.
 #'
+#' @export
 #' @examples
 #' x <- rnorm(100)
 #' y <- rnorm(100)
-#' transformed_data <- transform_data(x, y)
+#' transformed_data <- border_augmentation(x, y)
 #'
 #' @importFrom stats optimize lm coef
-transform_data <- function(x, y, n_add_points = 40, verbose = FALSE) {
+border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
   frame <- 0.05
   shift <- 1 + 2 * frame
 
@@ -68,17 +70,20 @@ transform_data <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' Leonard A. Stefanski (2007). It finds a matrix X and vector y such that the
 #' fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0.
 #'
+#' @param data A data frame or matrix with two columns representing the `y_hat` and `R_0` values.
 #' @param y_hat Numeric vector of desired fitted values, or a matrix/data.frame with two columns
 #' @param R_0 Numeric vector of desired residuals (only used if y_hat is a vector)
 #' @param R_squared Desired R-squared value. Default is 0.3.
 #' @param p Integer. Desired number of columns for matrix X. Default is 5.
 #' @param n_add_points Integer. Number of points to add in data transformation. Default is 40.
+#' @param max_iter Integer. Maximum number of iterations for convergence. Default is 20.
 #' @param verbose Logical. If TRUE, prints progress information. Default is FALSE.
 #'
 #' @return
 #' A data frame with containing the generated X matrix and y vector.
 #'
 #' @importFrom stats rnorm sd
+#' @importFrom graphics pairs
 #' @export
 #' @examples
 #' # Generate a 2D data set
@@ -122,7 +127,7 @@ surreal <- function(
   }
 
   # Apply bordering to data
-  xy <- transform_data(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
+  xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
 
   y_hat <- xy[, 1]
   R_0 <- xy[, 2] - mean(xy[, 2])
