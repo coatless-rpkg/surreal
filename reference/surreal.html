@@ -60,7 +60,11 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-r-">R_0<a class="anchor" aria-label="anchor" href="#arg-r-"></a></dt>
+<dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
+<dd><p>A data frame or matrix with two columns representing the <code>y_hat</code> and <code>R_0</code> values.</p></dd>
+
+
+<dt id="arg-r-">R_0<a class="anchor" aria-label="anchor" href="#arg-r-"></a></dt>
 <dd><p>Numeric vector of desired residuals (only used if y_hat is a vector)</p></dd>
 
 
@@ -78,6 +82,10 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
 
 <dt id="arg-n-add-points">n_add_points<a class="anchor" aria-label="anchor" href="#arg-n-add-points"></a></dt>
 <dd><p>Integer. Number of points to add in data transformation. Default is 40.</p></dd>
+
+
+<dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
+<dd><p>Integer. Maximum number of iterations for convergence. Default is 20.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
