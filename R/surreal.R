@@ -4,15 +4,15 @@
 #' to create a frame. It uses an optimization process to find the best alpha parameter
 #' for point distribution.
 #'
-#' @param x Numeric vector of x coordinates
-#' @param y Numeric vector of y coordinates
+#' @param x            Numeric vector of x coordinates
+#' @param y            Numeric vector of y coordinates
 #' @param n_add_points Integer. Number of points to add on each side of the frame. Default is 40.
-#' @param verbose Logical. If TRUE, prints optimization progress. Default is FALSE.
+#' @param verbose      Logical. If TRUE, prints optimization progress. Default is FALSE.
 #'
 #' @return
 #' A matrix with two columns representing the transformed x and y coordinates.
 #'
-#' @export
+#' @noRd
 #' @examples
 #' x <- rnorm(100)
 #' y <- rnorm(100)
@@ -70,14 +70,14 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' Leonard A. Stefanski (2007). It finds a matrix X and vector y such that the
 #' fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0.
 #'
-#' @param data A data frame or matrix with two columns representing the `y_hat` and `R_0` values.
-#' @param y_hat Numeric vector of desired fitted values, or a matrix/data.frame with two columns
-#' @param R_0 Numeric vector of desired residuals (only used if y_hat is a vector)
-#' @param R_squared Desired R-squared value. Default is 0.3.
-#' @param p Integer. Desired number of columns for matrix X. Default is 5.
+#' @param data         A data frame or matrix with two columns representing the `y_hat` and `R_0` values.
+#' @param y_hat        Numeric vector of desired fitted values, or a matrix/data.frame with two columns
+#' @param R_0          Numeric vector of desired residuals (only used if y_hat is a vector)
+#' @param R_squared    Desired R-squared value. Default is 0.3.
+#' @param p            Integer. Desired number of columns for matrix X. Default is 5.
 #' @param n_add_points Integer. Number of points to add in data transformation. Default is 40.
-#' @param max_iter Integer. Maximum number of iterations for convergence. Default is 20.
-#' @param verbose Logical. If TRUE, prints progress information. Default is FALSE.
+#' @param max_iter     Integer. Maximum number of iterations for convergence. Default is 20.
+#' @param verbose      Logical. If TRUE, prints progress information. Default is FALSE.
 #'
 #' @return
 #' A data frame with containing the generated X matrix and y vector.
@@ -119,13 +119,6 @@ surreal <- function(
     y_hat <- as.vector(data[, 1])
   }
 
-  if (missing(y_hat)) {
-    cat("Usage: find_X_y(y_hat, R_0)\n")
-    cat("Finds matrix X and vector y so that the fitted values and residuals\n")
-    cat("of lm(y ~ X) are similar to the inputs y_hat and R_0.\n")
-    return(invisible(NULL))
-  }
-
   # Apply bordering to data
   xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
 
@@ -148,11 +141,16 @@ surreal <- function(
 #'
 #' @inheritParams surreal
 #'
-#' @return A list with two elements:
+#' @return
+#' A list with two elements:
+#'
+#' \describe{
 #'   \item{X}{The generated X matrix}
 #'   \item{y}{The generated y vector}
+#' }
 #'
 #' @importFrom stats rnorm sd lm
+#' @noRd
 find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 20, verbose = FALSE) {
   n <- length(R_0)
   y_hat <- sd(R_0) / sd(y_hat) * sqrt(R_squared / (1 - R_squared)) * y_hat
