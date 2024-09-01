@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-08-31T18:52Z
+last_built: 2024-09-01T23:03Z
 urls:
   reference: https://r-pkg.thecoatlessprofessor.com/surreal/reference
   article: https://r-pkg.thecoatlessprofessor.com/surreal/articles
