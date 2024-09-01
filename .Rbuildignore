@@ -6,3 +6,5 @@
 ^pkgdown$
 ^\.github$
 ^LICENSE\.md$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
