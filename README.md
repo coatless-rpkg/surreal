@@ -10,10 +10,9 @@
 
 The `surreal` package seeks to implement the methods inside the paper
 “Residual Sur(Realism)” by [Leonard A.
-Stefanski](https://www4.stat.ncsu.edu/~stefansk/) ([2007, TAS, Vol. 61,
-pp
-163-177](https://www.tandfonline.com/doi/abs/10.1198/000313007X190079)).
-These methods allow for hiding images inside of residual plots.
+Stefanski](https://www4.stat.ncsu.edu/~stefansk/)
+(<doi:10.1198/000313007X190079>). These methods allow for hiding images
+inside of residual plots.
 
 ## Installation
 
@@ -100,8 +99,8 @@ slight border around it to improve the original image recovery.
 ## Acknowledgements
 
 Prior work was done to bring the algorithms into R by [John
-Staudenmayer](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer),
+Staudenmayer](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/),
 [Peter
-Wolf](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf),
+Wolf](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/),
 and [Ulrike
-Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping).
+Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/).
