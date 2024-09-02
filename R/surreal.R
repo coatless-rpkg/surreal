@@ -76,7 +76,8 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' @param R_squared    Desired R-squared value. Default is 0.3.
 #' @param p            Integer. Desired number of columns for matrix X. Default is 5.
 #' @param n_add_points Integer. Number of points to add in data transformation. Default is 40.
-#' @param max_iter     Integer. Maximum number of iterations for convergence. Default is 20.
+#' @param max_iter     Integer. Maximum number of iterations for convergence. Default is 100.
+#' @param tolerance    Numeric. Criteria for detecting convergence and stopping optimization early. Default is 0.01.
 #' @param verbose      Logical. If TRUE, prints progress information. Default is FALSE.
 #'
 #' @return
@@ -112,7 +113,8 @@ surreal <- function(
     R_0 = data[, 2],
     y_hat = data[, 1],
     R_squared = 0.3, p = 5,
-    n_add_points = 40, max_iter = 20, verbose = FALSE) {
+    n_add_points = 40,
+    max_iter = 100, tolerance = 0.01, verbose = FALSE) {
 
   if ((is.data.frame(data) | is.matrix(data)) && ncol(data) == 2) {
     R_0 <- as.vector(data[, 2])
@@ -128,7 +130,7 @@ surreal <- function(
   # Find X and y
   data <- find_X_y_core(
     y_hat, R_0, R_squared = R_squared, p = p,
-    max_iter = max_iter, verbose = verbose)
+    max_iter = max_iter, tolerance = tolerance, verbose = verbose)
 
   # Re-do the data frame
   data.frame(y = data$y, X = data$X)
@@ -137,7 +139,8 @@ surreal <- function(
 #' Core Algorithm for Finding X and Y
 #'
 #' This function implements the core algorithm for finding X and y in the
-#' Residual (Sur)Realism method. It's called by find_X_y after data transformation.
+#' Residual (Sur)Realism method. It's called by [`surreal()`] after
+#' performing the border transformation.
 #'
 #' @inheritParams surreal
 #'
@@ -151,12 +154,12 @@ surreal <- function(
 #'
 #' @importFrom stats rnorm sd lm
 #' @noRd
-find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 20, verbose = FALSE) {
+find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, tolerance = 0.01, verbose = FALSE) {
   n <- length(R_0)
   y_hat <- sd(R_0) / sd(y_hat) * sqrt(R_squared / (1 - R_squared)) * y_hat
 
   beta_0 <- 0
-  beta_p <- 1:p
+  beta_p <- seq_len(p)
   j_star <- p
 
   Z <- rnorm(n, sd = sd(R_0))
@@ -165,7 +168,7 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 20, ver
   P_R_0 <- R_0 %*% t(R_0) / (R_0 %*% R_0)[1]
   M_jstar_old <- M[, j_star]
 
-  for (i in 1:max_iter) {
+  for (i in seq_len(max_iter)) {
     W <- cbind(1, (diag(n) - P_R_0) %*% M)
     A_M <- W %*% solve(t(W) %*% W) %*% t(W)
     SUM_beta_M_all <- M %*% beta_p
@@ -176,9 +179,10 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 20, ver
     h_delta_sum <- sum((h - M_jstar_old)^2)
 
     if (verbose) print(h_delta_sum)
-    if (h_delta_sum < 0.01) break
+    if (h_delta_sum < tolerance) break
 
     M_jstar_old <- h
+
   }
 
   eps <- R_0 + A_M %*% Z

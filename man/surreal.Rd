@@ -11,7 +11,8 @@ surreal(
   R_squared = 0.3,
   p = 5,
   n_add_points = 40,
-  max_iter = 20,
+  max_iter = 100,
+  tolerance = 0.01,
   verbose = FALSE
 )
 }
@@ -28,7 +29,9 @@ surreal(
 
 \item{n_add_points}{Integer. Number of points to add in data transformation. Default is 40.}
 
-\item{max_iter}{Integer. Maximum number of iterations for convergence. Default is 20.}
+\item{max_iter}{Integer. Maximum number of iterations for convergence. Default is 100.}
+
+\item{tolerance}{Numeric. Criteria for detecting convergence and stopping optimization early. Default is 0.01.}
 
 \item{verbose}{Logical. If TRUE, prints progress information. Default is FALSE.}
 }
