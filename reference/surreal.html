@@ -51,7 +51,8 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
 <span>  R_squared <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  p <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  n_add_points <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>  max_iter <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  max_iter <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -81,11 +82,15 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
 
 
 <dt id="arg-n-add-points">n_add_points<a class="anchor" aria-label="anchor" href="#arg-n-add-points"></a></dt>
-<dd><p>Integer. Number of points to add in data transformation. Default is 40.</p></dd>
+<dd><p>Integer. Number of points to add in border transformation. Default is 40.</p></dd>
 
 
 <dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
-<dd><p>Integer. Maximum number of iterations for convergence. Default is 20.</p></dd>
+<dd><p>Integer. Maximum number of iterations for convergence. Default is 100.</p></dd>
+
+
+<dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
+<dd><p>Numeric. Criteria for detecting convergence and stopping optimization early. Default is 0.01.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -95,6 +100,10 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with containing the generated X matrix and y vector.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>To disable the border augmentation, please set <code>n_add_points = 0</code>.#'</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
