@@ -12,56 +12,68 @@
 #' @return
 #' A matrix with two columns representing the transformed x and y coordinates.
 #'
-#' @noRd
+#' @export
 #' @examples
 #' x <- rnorm(100)
 #' y <- rnorm(100)
 #' transformed_data <- border_augmentation(x, y)
 #'
+#' par(mfrow = c(1, 2))
+#' plot(x, y, pch = 16, main = "Original data")
+#' plot(transformed_data[, 1], transformed_data[, 2], pch = 16, main = "Transformed data")
+#'
 #' @importFrom stats optimize lm coef
 border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
-  frame <- 0.05
-  shift <- 1 + 2 * frame
+  # Constants
+  FRAME <- 0.05
+  SHIFT <- 1 + 2 * FRAME
 
-  x_range <- range(x)
-  y_range <- range(y)
-  x_delta <- diff(x_range)
-  y_delta <- diff(y_range)
-
-  x_range <- c(x_range[1] - frame * x_delta, x_range[2] + frame * x_delta)
-  y_range <- c(y_range[1] - frame * y_delta, y_range[2] + frame * y_delta)
-
-  optimize_alpha <- function(alpha) {
-    pkt <- if (alpha <= 1) seq(0, 1, length.out = n_add_points)^alpha
-    else 1 - seq(0, 1, length.out = n_add_points)^(2 - alpha)
-
-    xu_pkt <- x_range[1] + shift * x_delta * pkt
-    yu_pkt <- y_range[1] + shift * y_delta * pkt
-    xo_pkt <- x_range[2] - shift * x_delta * pkt
-    yo_pkt <- y_range[2] - shift * y_delta * pkt
-
-    xx <- c(x, xu_pkt, rep(x_range[2], n_add_points), xo_pkt, rep(x_range[1], n_add_points))
-    yy <- c(y, rep(y_range[1], n_add_points), yo_pkt, rep(y_range[2], n_add_points), yu_pkt)
-
-    abs(coef(lm(yy ~ xx))[2])
+  # Calculate ranges and deltas
+  calculate_range <- function(values) {
+    range <- range(values)
+    delta <- diff(range)
+    list(
+      range = c(range[1] - FRAME * delta, range[2] + FRAME * delta),
+      delta = delta
+    )
   }
 
-  optimal_alpha <- optimize(optimize_alpha, lower = 0, upper = 2)$minimum
+  x_data <- calculate_range(x)
+  y_data <- calculate_range(y)
 
+  generate_points <- function(alpha, range, delta) {
+    pkt <- if (alpha <= 1) seq(0, 1, length.out = n_add_points)^alpha
+    else 1 - seq(0, 1, length.out = n_add_points)^(2 - alpha)
+    list(
+      lower = range[1] + SHIFT * delta * pkt,
+      upper = range[2] - SHIFT * delta * pkt
+    )
+  }
+
+  combine_points <- function(alpha) {
+    x_points <- generate_points(alpha, x_data$range, x_data$delta)
+    y_points <- generate_points(alpha, y_data$range, y_data$delta)
+
+    xx <- c(x, x_points$lower, rep(x_data$range[2], n_add_points),
+            x_points$upper, rep(x_data$range[1], n_add_points))
+    yy <- c(y, rep(y_data$range[1], n_add_points), y_points$upper,
+            rep(y_data$range[2], n_add_points), y_points$lower)
+
+    list(xx = xx, yy = yy)
+  }
+
+  optimize_alpha <- function(alpha) {
+    points <- combine_points(alpha)
+    abs(stats::coef(stats::lm(points$yy ~ points$xx))[2])
+  }
+
+  # Find optimal alpha
+  optimal_alpha <- stats::optimize(optimize_alpha, lower = 0, upper = 2)$minimum
   if (verbose) cat("Optimal alpha:", optimal_alpha, "\n")
 
-  pkt <- if (optimal_alpha <= 1) seq(0, 1, length.out = n_add_points)^optimal_alpha
-  else 1 - seq(0, 1, length.out = n_add_points)^(2 - optimal_alpha)
-
-  xu_pkt <- x_range[1] + shift * x_delta * pkt
-  yu_pkt <- y_range[1] + shift * y_delta * pkt
-  xo_pkt <- x_range[2] - shift * x_delta * pkt
-  yo_pkt <- y_range[2] - shift * y_delta * pkt
-
-  xx <- c(x, xu_pkt, rep(x_range[2], n_add_points), xo_pkt, rep(x_range[1], n_add_points))
-  yy <- c(y, rep(y_range[1], n_add_points), yo_pkt, rep(y_range[2], n_add_points), yu_pkt)
-
-  cbind(xx, yy)
+  # Generate final points
+  final_points <- combine_points(optimal_alpha)
+  cbind(final_points$xx, final_points$yy)
 }
 
 #' Find X Matrix and Y Vector for Residual Surrealism
