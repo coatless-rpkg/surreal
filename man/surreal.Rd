@@ -6,8 +6,8 @@
 \usage{
 surreal(
   data,
-  R_0 = data[, 2],
   y_hat = data[, 1],
+  R_0 = data[, 2],
   R_squared = 0.3,
   p = 5,
   n_add_points = 40,
@@ -19,9 +19,9 @@ surreal(
 \arguments{
 \item{data}{A data frame or matrix with two columns representing the \code{y_hat} and \code{R_0} values.}
 
-\item{R_0}{Numeric vector of desired residuals (only used if y_hat is a vector)}
+\item{y_hat}{Numeric vector of desired fitted values (only used if \code{data} is not provided)}
 
-\item{y_hat}{Numeric vector of desired fitted values, or a matrix/data.frame with two columns}
+\item{R_0}{Numeric vector of desired residuals (only used if  \code{data} is not provided)}
 
 \item{R_squared}{Desired R-squared value. Default is 0.3.}
 

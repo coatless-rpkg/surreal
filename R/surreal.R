@@ -83,8 +83,8 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0.
 #'
 #' @param data         A data frame or matrix with two columns representing the `y_hat` and `R_0` values.
-#' @param y_hat        Numeric vector of desired fitted values, or a matrix/data.frame with two columns
-#' @param R_0          Numeric vector of desired residuals (only used if y_hat is a vector)
+#' @param y_hat        Numeric vector of desired fitted values (only used if `data` is not provided)
+#' @param R_0          Numeric vector of desired residuals (only used if  `data` is not provided)
 #' @param R_squared    Desired R-squared value. Default is 0.3.
 #' @param p            Integer. Desired number of columns for matrix X. Default is 5.
 #' @param n_add_points Integer. Number of points to add in border transformation. Default is 40.
@@ -125,15 +125,16 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' Stefanski, L. A. (2007). Residual (Sur)Realism. The American Statistician, 61(2), 163-177.
 surreal <- function(
     data,
-    R_0 = data[, 2],
     y_hat = data[, 1],
+    R_0 = data[, 2],
     R_squared = 0.3, p = 5,
     n_add_points = 40,
     max_iter = 100, tolerance = 0.01, verbose = FALSE) {
 
-  if ((is.data.frame(data) | is.matrix(data)) && ncol(data) == 2) {
-    R_0 <- as.vector(data[, 2])
+  if (!missing(data) && (is.data.frame(data) | is.matrix(data)) && ncol(data) == 2) {
     y_hat <- as.vector(data[, 1])
+    R_0 <- as.vector(data[, 2])
+  }
   }
 
   # Apply bordering to data
