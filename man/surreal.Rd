@@ -27,7 +27,7 @@ surreal(
 
 \item{p}{Integer. Desired number of columns for matrix X. Default is 5.}
 
-\item{n_add_points}{Integer. Number of points to add in data transformation. Default is 40.}
+\item{n_add_points}{Integer. Number of points to add in border transformation. Default is 40.}
 
 \item{max_iter}{Integer. Maximum number of iterations for convergence. Default is 100.}
 
@@ -42,6 +42,9 @@ A data frame with containing the generated X matrix and y vector.
 This function implements the Residual (Sur)Realism algorithm as described by
 Leonard A. Stefanski (2007). It finds a matrix X and vector y such that the
 fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0.
+}
+\details{
+To disable the border augmentation, please set \code{n_add_points = 0}.#'
 }
 \examples{
 # Generate a 2D data set
