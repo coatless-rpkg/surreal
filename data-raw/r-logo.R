@@ -34,6 +34,6 @@ setup_r_logo_dataframe <- function() {
   return(data)
 }
 
-r_logo_data <- setup_r_logo_dataframe()
+r_logo_image_data <- setup_r_logo_dataframe()
 
-usethis::use_data(r_logo_data, overwrite = TRUE)
+usethis::use_data(r_logo_image_data, overwrite = TRUE)

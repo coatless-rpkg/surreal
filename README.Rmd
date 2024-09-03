@@ -45,18 +45,18 @@ Next, we'll retrieve R logo image included with the package:
 ```{r}
 #| label: load-logo
 # Load the R logo data included with the package
-data <- r_logo_example()
+data("r_logo_image_data", package = "surreal")
 
 # Display original data
-plot(data, pch = 16, main = "Original data")
+plot(r_logo_image_data, pch = 16, main = "Original data")
 ```
 
 We can see that the data is in a 2D format. 
 
 ```{r}
 #| label: logo-data-summary
-str(data)
-summary(data)
+str(r_logo_image_data)
+summary(r_logo_image_data)
 ```
 
 We can apply the surreal method to the data:
@@ -64,7 +64,7 @@ We can apply the surreal method to the data:
 ```{r}
 #| label: apply-surreal-method
 # Apply the surreal method to the data
-transformed_surreal_data <- surreal(data)
+transformed_surreal_data <- surreal(r_logo_image_data)
 ```
 
 After applying the surreal method, we get a series of additional predictors

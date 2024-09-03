@@ -36,10 +36,10 @@ Next, we’ll retrieve R logo image included with the package:
 
 ``` r
 # Load the R logo data included with the package
-data <- r_logo_example()
+data("r_logo_image_data", package = "surreal")
 
 # Display original data
-plot(data, pch = 16, main = "Original data")
+plot(r_logo_image_data, pch = 16, main = "Original data")
 ```
 
 <img src="man/figures/README-load-logo-1.png" width="100%" />
@@ -47,11 +47,11 @@ plot(data, pch = 16, main = "Original data")
 We can see that the data is in a 2D format.
 
 ``` r
-str(data)
+str(r_logo_image_data)
 #> 'data.frame':    2000 obs. of  2 variables:
 #>  $ x: int  54 55 56 57 58 59 34 35 36 49 ...
 #>  $ y: int  -9 -9 -9 -9 -9 -9 -10 -10 -10 -10 ...
-summary(data)
+summary(r_logo_image_data)
 #>        x                y         
 #>  Min.   :  5.00   Min.   :-75.00  
 #>  1st Qu.: 32.00   1st Qu.:-57.00  
@@ -65,7 +65,7 @@ We can apply the surreal method to the data:
 
 ``` r
 # Apply the surreal method to the data
-transformed_surreal_data <- surreal(data)
+transformed_surreal_data <- surreal(r_logo_image_data)
 ```
 
 After applying the surreal method, we get a series of additional

@@ -2,7 +2,6 @@
 
 export(border_augmentation)
 export(process_image)
-export(r_logo_example)
 export(surreal)
 export(surreal_text)
 export(temporary_text_plot)
