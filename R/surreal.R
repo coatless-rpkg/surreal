@@ -135,6 +135,9 @@ surreal <- function(
     y_hat <- as.vector(data[, 1])
     R_0 <- as.vector(data[, 2])
   }
+
+  if (verbose) {
+    plot(y_hat, R_0, main = "Original data", xlab = '', ylab = '')
   }
 
   # Apply bordering to data
@@ -153,7 +156,15 @@ surreal <- function(
     max_iter = max_iter, tolerance = tolerance, verbose = verbose)
 
   # Re-do the data frame
-  data.frame(y = data$y, X = data$X)
+  result <- data.frame(y = data$y, X = data$X)
+
+  if (verbose) {
+    pairs(~ ., data = result, main = "Data after transformation")
+    res <- lm(y ~ ., data = result)
+    plot(res$fitted, res$residuals, main = "Reconstruction of data", xlab = '', ylab = '')
+  }
+
+  result
 }
 
 #' Core Algorithm for Finding X and Y
@@ -208,12 +219,6 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
   eps <- R_0 + A_M %*% Z
   X <- (diag(n) - P_R_0) %*% M
   Y <- beta_0 + X %*% beta_p + eps
-
-  if (verbose) {
-    pairs(X)
-    res <- lm(Y ~ X)
-    plot(res$fitted, res$residuals, type = "p", main = "Reconstruction of data")
-  }
 
   list(y = Y, X = X)
 }
