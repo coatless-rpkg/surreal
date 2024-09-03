@@ -87,13 +87,16 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' @param R_0          Numeric vector of desired residuals (only used if y_hat is a vector)
 #' @param R_squared    Desired R-squared value. Default is 0.3.
 #' @param p            Integer. Desired number of columns for matrix X. Default is 5.
-#' @param n_add_points Integer. Number of points to add in data transformation. Default is 40.
+#' @param n_add_points Integer. Number of points to add in border transformation. Default is 40.
 #' @param max_iter     Integer. Maximum number of iterations for convergence. Default is 100.
 #' @param tolerance    Numeric. Criteria for detecting convergence and stopping optimization early. Default is 0.01.
 #' @param verbose      Logical. If TRUE, prints progress information. Default is FALSE.
 #'
 #' @return
 #' A data frame with containing the generated X matrix and y vector.
+#'
+#' @details
+#' To disable the border augmentation, please set `n_add_points = 0`.#'
 #'
 #' @importFrom stats rnorm sd
 #' @importFrom graphics pairs
@@ -134,7 +137,11 @@ surreal <- function(
   }
 
   # Apply bordering to data
-  xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
+  if (n_add_points > 0) {
+    xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
+  } else {
+    xy <- cbind(y_hat, R_0)
+  }
 
   y_hat <- xy[, 1]
   R_0 <- xy[, 2] - mean(xy[, 2])
