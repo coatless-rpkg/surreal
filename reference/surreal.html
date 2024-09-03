@@ -46,8 +46,8 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">surreal</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  R_0 <span class="op">=</span> <span class="va">data</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span>
 <span>  y_hat <span class="op">=</span> <span class="va">data</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span>
+<span>  R_0 <span class="op">=</span> <span class="va">data</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span>
 <span>  R_squared <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  p <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  n_add_points <span class="op">=</span> <span class="fl">40</span>,</span>
@@ -65,12 +65,12 @@ fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0
 <dd><p>A data frame or matrix with two columns representing the <code>y_hat</code> and <code>R_0</code> values.</p></dd>
 
 
-<dt id="arg-r-">R_0<a class="anchor" aria-label="anchor" href="#arg-r-"></a></dt>
-<dd><p>Numeric vector of desired residuals (only used if y_hat is a vector)</p></dd>
-
-
 <dt id="arg-y-hat">y_hat<a class="anchor" aria-label="anchor" href="#arg-y-hat"></a></dt>
-<dd><p>Numeric vector of desired fitted values, or a matrix/data.frame with two columns</p></dd>
+<dd><p>Numeric vector of desired fitted values (only used if <code>data</code> is not provided)</p></dd>
+
+
+<dt id="arg-r-">R_0<a class="anchor" aria-label="anchor" href="#arg-r-"></a></dt>
+<dd><p>Numeric vector of desired residuals (only used if  <code>data</code> is not provided)</p></dd>
 
 
 <dt id="arg-r-squared">R_squared<a class="anchor" aria-label="anchor" href="#arg-r-squared"></a></dt>
