@@ -76,6 +76,64 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
   cbind(final_points$xx, final_points$yy)
 }
 
+
+#' Core Algorithm for Finding X and Y
+#'
+#' This function implements the core algorithm for finding X and y in the
+#' Residual (Sur)Realism method. It's called by [`surreal()`] after
+#' performing the border transformation.
+#'
+#' @inheritParams surreal
+#'
+#' @return
+#' A list with two elements:
+#'
+#' \describe{
+#'   \item{X}{The generated X matrix}
+#'   \item{y}{The generated y vector}
+#' }
+#'
+#' @importFrom stats rnorm sd lm
+#' @noRd
+find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, tolerance = 0.01, verbose = FALSE) {
+  n <- length(R_0)
+  y_hat <- sd(R_0) / sd(y_hat) * sqrt(R_squared / (1 - R_squared)) * y_hat
+
+  beta_0 <- 0
+  beta_p <- seq_len(p)
+  j_star <- p
+
+  Z <- rnorm(n, sd = sd(R_0))
+  M <- matrix(rnorm(n * p, sd = sd(y_hat)), n, p)
+
+  P_R_0 <- R_0 %*% t(R_0) / (R_0 %*% R_0)[1]
+  M_jstar_old <- M[, j_star]
+
+  for (i in seq_len(max_iter)) {
+    W <- cbind(1, (diag(n) - P_R_0) %*% M)
+    A_M <- W %*% solve(t(W) %*% W) %*% t(W)
+    SUM_beta_M_all <- M %*% beta_p
+    FIRST <- y_hat - beta_0 - A_M %*% Z + P_R_0 %*% M %*% beta_p - SUM_beta_M_all
+    M[, j_star] <- 1 / beta_p[j_star] * (FIRST + beta_p[j_star] * M[, j_star])
+
+    h <- M[, j_star]
+    h_delta_sum <- sum((h - M_jstar_old)^2)
+
+    if (verbose) print(h_delta_sum)
+    if (h_delta_sum < tolerance) break
+
+    M_jstar_old <- h
+
+  }
+
+  eps <- R_0 + A_M %*% Z
+  X <- (diag(n) - P_R_0) %*% M
+  Y <- beta_0 + X %*% beta_p + eps
+
+  list(y = Y, X = X)
+}
+
+
 #' Find X Matrix and Y Vector for Residual Surrealism
 #'
 #' This function implements the Residual (Sur)Realism algorithm as described by
@@ -165,60 +223,4 @@ surreal <- function(
   }
 
   result
-}
-
-#' Core Algorithm for Finding X and Y
-#'
-#' This function implements the core algorithm for finding X and y in the
-#' Residual (Sur)Realism method. It's called by [`surreal()`] after
-#' performing the border transformation.
-#'
-#' @inheritParams surreal
-#'
-#' @return
-#' A list with two elements:
-#'
-#' \describe{
-#'   \item{X}{The generated X matrix}
-#'   \item{y}{The generated y vector}
-#' }
-#'
-#' @importFrom stats rnorm sd lm
-#' @noRd
-find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, tolerance = 0.01, verbose = FALSE) {
-  n <- length(R_0)
-  y_hat <- sd(R_0) / sd(y_hat) * sqrt(R_squared / (1 - R_squared)) * y_hat
-
-  beta_0 <- 0
-  beta_p <- seq_len(p)
-  j_star <- p
-
-  Z <- rnorm(n, sd = sd(R_0))
-  M <- matrix(rnorm(n * p, sd = sd(y_hat)), n, p)
-
-  P_R_0 <- R_0 %*% t(R_0) / (R_0 %*% R_0)[1]
-  M_jstar_old <- M[, j_star]
-
-  for (i in seq_len(max_iter)) {
-    W <- cbind(1, (diag(n) - P_R_0) %*% M)
-    A_M <- W %*% solve(t(W) %*% W) %*% t(W)
-    SUM_beta_M_all <- M %*% beta_p
-    FIRST <- y_hat - beta_0 - A_M %*% Z + P_R_0 %*% M %*% beta_p - SUM_beta_M_all
-    M[, j_star] <- 1 / beta_p[j_star] * (FIRST + beta_p[j_star] * M[, j_star])
-
-    h <- M[, j_star]
-    h_delta_sum <- sum((h - M_jstar_old)^2)
-
-    if (verbose) print(h_delta_sum)
-    if (h_delta_sum < tolerance) break
-
-    M_jstar_old <- h
-
-  }
-
-  eps <- R_0 + A_M %*% Z
-  X <- (diag(n) - P_R_0) %*% M
-  Y <- beta_0 + X %*% beta_p + eps
-
-  list(y = Y, X = X)
 }

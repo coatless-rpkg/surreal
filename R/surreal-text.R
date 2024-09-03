@@ -123,9 +123,11 @@ surreal_text <- function(text = "hello world",
   image_data <- process_image(temp_file)
 
   # Apply the surreal method to the extracted data
-  result <- surreal(R_0 = image_data$y, y_hat = image_data$x,
-                    R_squared = R_squared, p = p, n_add_points = n_add_points,
-                    max_iter = max_iter, tolerance = tolerance, verbose = verbose)
+  result <- surreal(
+    R_0 = image_data$y, y_hat = image_data$x,
+    R_squared = R_squared, p = p, n_add_points = n_add_points,
+    max_iter = max_iter, tolerance = tolerance, verbose = verbose
+  )
 
   return(result)
 }
