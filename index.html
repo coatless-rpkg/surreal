@@ -68,18 +68,18 @@
 <p>Next, we’ll retrieve R logo image included with the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the R logo data included with the package</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/r_logo_example.html">r_logo_example</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_logo_image_data"</span>, package <span class="op">=</span> <span class="st">"surreal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Display original data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original data"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_logo_image_data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original data"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-load-logo-1.png" width="100%"></p>
 <p>We can see that the data is in a 2D format.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    2000 obs. of  2 variables:</span></span>
 <span><span class="co">#&gt;  $ x: int  54 55 56 57 58 59 34 35 36 49 ...</span></span>
 <span><span class="co">#&gt;  $ y: int  -9 -9 -9 -9 -9 -9 -10 -10 -10 -10 ...</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        x                y         </span></span>
 <span><span class="co">#&gt;  Min.   :  5.00   Min.   :-75.00  </span></span>
 <span><span class="co">#&gt;  1st Qu.: 32.00   1st Qu.:-57.00  </span></span>
@@ -90,7 +90,7 @@
 <p>We can apply the surreal method to the data:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Apply the surreal method to the data</span></span>
-<span><span class="va">transformed_surreal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">transformed_surreal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span></code></pre></div>
 <p>After applying the surreal method, we get a series of additional predictors that when visualized against <code>y</code> look as if they are no underlying patterns.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the expanded data after transformation</span></span>
