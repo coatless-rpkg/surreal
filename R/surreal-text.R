@@ -104,7 +104,12 @@ process_image <- function(file_path) {
 #' A data.frame containing the results of the surreal method application.
 #'
 #' @examples
-#' result <- surreal_text("R is fun")
+#' # Create a surreal plot of the text "R is fun" appearing on one line
+#' r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
+#'
+#' # Create a surreal plot of the text "Statistics Rocks" by using an escape
+#' # character to create a second line between "Statistics" and "Rocks"
+#' stat_rocks_result <- surreal_text("Statistics\nRocks", verbose = TRUE)
 #'
 #' @seealso
 #' [`surreal()`] for details on the surreal method parameters.
