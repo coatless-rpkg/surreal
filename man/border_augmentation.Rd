@@ -2,26 +2,26 @@
 % Please edit documentation in R/surreal.R
 \name{border_augmentation}
 \alias{border_augmentation}
-\title{Transform Data for X and Y Finding Algorithm by Adding a Border}
+\title{Transform Data by Adding a Border}
 \usage{
 border_augmentation(x, y, n_add_points = 40, verbose = FALSE)
 }
 \arguments{
-\item{x}{Numeric vector of x coordinates}
+\item{x}{Numeric vector of x coordinates.}
 
-\item{y}{Numeric vector of y coordinates}
+\item{y}{Numeric vector of y coordinates.}
 
-\item{n_add_points}{Integer. Number of points to add on each side of the frame. Default is 40.}
+\item{n_add_points}{Integer. Number of points to add on each side of the frame. Default is \code{40}.}
 
-\item{verbose}{Logical. If TRUE, prints optimization progress. Default is FALSE.}
+\item{verbose}{Logical. If \code{TRUE}, prints optimization progress. Default is \code{FALSE}.}
 }
 \value{
-A matrix with two columns representing the transformed x and y coordinates.
+A matrix with two columns representing the transformed \code{x} and \code{y} coordinates.
 }
 \description{
 This function transforms the input data by adding points around the original data
 to create a frame. It uses an optimization process to find the best alpha parameter
-for point distribution.
+for point distribution, which helps in making the fitted values and residuals orthogonal.
 }
 \examples{
 x <- rnorm(100)

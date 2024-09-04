@@ -19,9 +19,9 @@ surreal(
 \arguments{
 \item{data}{A data frame or matrix with two columns representing the \code{y_hat} and \code{R_0} values.}
 
-\item{y_hat}{Numeric vector of desired fitted values (only used if \code{data} is not provided)}
+\item{y_hat}{Numeric vector of desired fitted values (only used if \code{data} is not provided).}
 
-\item{R_0}{Numeric vector of desired residuals (only used if  \code{data} is not provided)}
+\item{R_0}{Numeric vector of desired residuals (only used if \code{data} is not provided).}
 
 \item{R_squared}{Desired R-squared value. Default is 0.3.}
 
@@ -36,7 +36,7 @@ surreal(
 \item{verbose}{Logical. If TRUE, prints progress information. Default is FALSE.}
 }
 \value{
-A data frame with containing the generated X matrix and y vector.
+A data frame containing the generated X matrix and y vector.
 }
 \description{
 This function implements the Residual (Sur)Realism algorithm as described by
@@ -44,7 +44,7 @@ Leonard A. Stefanski (2007). It finds a matrix X and vector y such that the
 fitted values and residuals of lm(y ~ X) are similar to the inputs y_hat and R_0.
 }
 \details{
-To disable the border augmentation, please set \code{n_add_points = 0}.#'
+To disable the border augmentation, set \code{n_add_points = 0}.
 }
 \examples{
 # Generate a 2D data set
