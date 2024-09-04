@@ -3,9 +3,9 @@
 \docType{package}
 \name{surreal-package}
 \alias{surreal-package}
-\title{surreal: Generate Data with Hidden Images in Residual Plots}
+\title{surreal: Generate Datasets with Hidden Images in Residual Plots}
 \description{
-Generate data sets so that the plot of residuals versus predicted values from the least squares fit of the correct model reveals a hidden image or message.
+Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) \doi{10.1198/000313007X190079} to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching, exploring model diagnostics, or designing creative data visualizations..
 }
 \seealso{
 Useful links:

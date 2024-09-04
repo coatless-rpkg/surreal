@@ -1,14 +1,18 @@
 Package: surreal
-Title: Generate Data with Hidden Images in Residual Plots
-Version: 0.0.0.9000
+Title: Generate Datasets with Hidden Images in Residual Plots
+Version: 0.0.1
 Authors@R: c(
     person("James Joseph", "Balamuta", email = "james.balamuta@gmail.com", 
            role = c("aut", "cre", "cph"), 
            comment = c(ORCID = "0000-0003-2826-8458"))
     )
-Description: Generate data sets so that the plot of residuals versus predicted
-    values from the least squares fit of the correct model reveals a hidden 
-    image or message.
+Description: Implements the "Residual (Sur)Realism" algorithm described by
+    Stefanski (2007) <doi:10.1198/000313007X190079> to generate datasets 
+    that reveal hidden images or messages in their residual plots. It offers
+    both predefined datasets and tools to embed custom text or images
+    into residual structures. Allowing users to create intriguing visual
+    demonstrations for teaching, exploring model diagnostics, or designing
+    creative data visualizations..
 License: GPL (>= 3)
 Depends: R (>= 4.3.0)
 Encoding: UTF-8
