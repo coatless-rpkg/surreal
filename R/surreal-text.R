@@ -6,7 +6,7 @@
 #' @param cex A numeric value specifying the relative size of the text. Default is 4.
 #'
 #' @return
-#' A character string containing the path to the temporary image file.
+#' A character vector containing the temporary image file.
 #'
 #' @importFrom grDevices bitmap dev.off
 #' @importFrom graphics plot text
@@ -35,8 +35,10 @@ temporary_text_plot <- function(text, cex = 4) {
   # Close the plotting device
   dev.off()
 
-  # Return the path to the temporary file
-  temp_file
+  # Read the image file
+  image <- scan(temp_file, "", sep = "\n", quiet = TRUE)
+
+  image
 }
 
 #' Process Image for Text Embedding
@@ -44,8 +46,7 @@ temporary_text_plot <- function(text, cex = 4) {
 #' This function processes a temporary image file created by `temporary_text_plot()`.
 #' It extracts the pixel data and converts it into x and y coordinates.
 #'
-#' @param file_path A character string specifying the path to the temporary
-#'                  bitmap image plot.
+#' @param image A character vector containing the bitmap image plot.
 #'
 #' @return
 #' A list with two elements:
@@ -60,9 +61,7 @@ temporary_text_plot <- function(text, cex = 4) {
 #' @examples
 #' temp_file <- temporary_text_plot("Hello, World!")
 #' image_data <- process_image(temp_file)
-process_image <- function(file_path) {
-  # Read the image file
-  image <- scan(file_path, "", sep = "\n", quiet = TRUE)
+process_image <- function(image) {
 
   # Extract image size from the third line
   size <- as.numeric(unlist(strsplit(image[3], " ")))
