@@ -106,6 +106,10 @@ process_image <- function(image) {
 #' @return
 #' A data.frame containing the results of the surreal method application.
 #'
+#' @details
+#' This function is not supported on Windows due to the `ppm` image format
+#' not being supported by the version of GhostScript included with R.
+#'
 #' @examples
 #' # Create a surreal plot of the text "R is fun" appearing on one line
 #' r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
@@ -123,6 +127,11 @@ surreal_text <- function(text = "hello world",
                          R_squared = 0.3, p = 5,
                          n_add_points = 40,
                          max_iter = 100, tolerance = 0.01, verbose = FALSE) {
+
+  if (.Platform$OS.type == "windows") {
+    message("This function is not supported on Windows.")
+    return(NULL)
+  }
 
   # Create temporary plot of the text
   temp_file <- temporary_text_plot(text = text, cex = cex)
