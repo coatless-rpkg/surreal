@@ -11,8 +11,7 @@ Description: Implements the "Residual (Sur)Realism" algorithm described by
     that reveal hidden images or messages in their residual plots. It offers
     both predefined datasets and tools to embed custom text or images
     into residual structures. Allowing users to create intriguing visual
-    demonstrations for teaching, exploring model diagnostics, or designing
-    creative data visualizations..
+    demonstrations for teaching model diagnostics.
 License: GPL (>= 3)
 Depends: R (>= 4.3.0)
 Encoding: UTF-8

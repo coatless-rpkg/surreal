@@ -1,18 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# surreal <img src="man/figures/logo-surreal.png" align ="right" alt="A hexagonal logo of the surreal R package that shows a series of points with varying sizes" width ="150"/>
+# surreal <img src="man/figures/logo-surreal.png" align="right" alt="Logo: points of varying sizes forming a hidden pattern" width="150"/>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/coatless-rpkg/surreal/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coatless-rpkg/surreal/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The `surreal` package seeks to implement the methods inside the paper
-“Residual Sur(Realism)” by [Leonard A.
-Stefanski](https://www4.stat.ncsu.edu/~stefansk/)
-(<doi:10.1198/000313007X190079>). These methods allow for hiding images
-inside of residual plots.
+## Overview
+
+`surreal` implements the “Residual (Sur)Realism” algorithm described by
+Leonard A. Stefanski (2007). This package allows you to generate
+datasets that reveal hidden images or messages in their residual plots,
+providing a novel approach to understanding and illustrating statistical
+concepts.
 
 ## Installation
 
@@ -24,27 +26,30 @@ You can install the development version of surreal from
 remotes::install_github("coatless-rpkg/surreal")
 ```
 
-## Example
+## Usage
 
-To begin, first load the package:
+First, load the package:
 
 ``` r
 library(surreal)
 ```
 
-Next, we’ll retrieve R logo image included with the package:
+We can take an image with `x` and `y` coordinate positions for pixels
+and embed it into the residual plot.
+
+### Importing Data
+
+As an example, let’s use the built-in R logo dataset:
 
 ``` r
-# Load the R logo data included with the package
 data("r_logo_image_data", package = "surreal")
 
-# Display original data
-plot(r_logo_image_data, pch = 16, main = "Original data")
+plot(r_logo_image_data, pch = 16, main = "Original R Logo Data")
 ```
 
 <img src="man/figures/README-load-logo-1.png" width="100%" />
 
-We can see that the data is in a 2D format.
+The data is in a 2D format:
 
 ``` r
 str(r_logo_image_data)
@@ -61,46 +66,63 @@ summary(r_logo_image_data)
 #>  Max.   :100.00   Max.   : -9.00
 ```
 
-We can apply the surreal method to the data:
+### Applying the Surreal Method
+
+Now, let’s apply the surreal method:
 
 ``` r
-# Apply the surreal method to the data
-transformed_surreal_data <- surreal(r_logo_image_data)
+set.seed(114)
+transformed_data <- surreal(r_logo_image_data)
 ```
 
-After applying the surreal method, we get a series of additional
-predictors that when visualized against `y` look as if they are no
-underlying patterns.
+The transformation adds predictors that appear to have no underlying
+patterns:
 
 ``` r
-# View the expanded data after transformation
-pairs(y ~ ., data = transformed_surreal_data, main = "Data after transformation")
+pairs(y ~ ., data = transformed_data, main = "Data After Transformation")
 ```
 
 <img src="man/figures/README-surreal-method-data-pair-plot-1.png" width="100%" />
 
-Finally, we’ll fit a linear model to the transformed data and plot the
-residuals:
+### Revealing the Hidden Image
+
+Fit a linear model to the transformed data and plot the residuals:
 
 ``` r
-# Fit a linear model to the transformed data
-model <- lm(y ~ ., data = transformed_surreal_data)
-
-# Plot the residuals
-plot(model$fitted, model$resid, type = "n", main = "Residual plot from transformed data")
-points(model$fitted, model$resid, pch = 16)
+model <- lm(y ~ ., data = transformed_data)
+plot(model$fitted, model$resid, pch = 16, 
+     main = "Residual Plot: Hidden R Logo Revealed")
 ```
 
 <img src="man/figures/README-surreal-method-residual-plot-1.png" width="100%" />
 
-From the residual plot, we get back our original R logo that has a
-slight border around it to improve the original image recovery.
+The residual plot reveals the original R logo with a slight border,
+enhancing the image recovery.
+
+## Creating Custom Hidden Images
+
+You can also create datasets with custom hidden images or text. Here’s a
+quick example using text:
+
+``` r
+text_data <- surreal_text("R\nis\nawesome!")
+model <- lm(y ~ ., data = text_data)
+plot(model$fitted, model$resid, pch = 16, main = "Custom Text in Residuals")
+```
+
+<img src="man/figures/README-custom-text-example-1.png" width="100%" />
+
+## References
+
+Stefanski, L. A. (2007). “Residual (Sur)realism”. *The American
+Statistician*, 61(2), 163-177. <doi:10.1198/000313007X190079>
 
 ## Acknowledgements
 
-Prior work was done to bring the algorithms into R by [John
+This package builds upon the work of [John
 Staudenmayer](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/),
 [Peter
 Wolf](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/),
 and [Ulrike
-Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/).
+Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/),
+who initially brought these algorithms to R.
