@@ -10,8 +10,8 @@
 #'
 #' @importFrom grDevices bitmap dev.off
 #' @importFrom graphics plot text
-#' @keywords internal
-#' @export
+#'
+#' @noRd
 #'
 #' @examples
 #' temp_file <- temporary_text_plot("Hello, World!")
@@ -54,8 +54,8 @@ temporary_text_plot <- function(text, cex = 4) {
 #'   \item{x}{Numeric vector of x coordinates}
 #'   \item{y}{Numeric vector of y coordinates}
 #' }
-#' @keywords internal
-#' @export
+#'
+#' @noRd
 #'
 #' @examples
 #' temp_file <- temporary_text_plot("Hello, World!")

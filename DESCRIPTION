@@ -1,5 +1,5 @@
 Package: surreal
-Title: Generate Datasets with Hidden Images in Residual Plots
+Title: Create Datasets with Hidden Images in Residual Plots
 Version: 0.0.1
 Authors@R: c(
     person("James Joseph", "Balamuta", email = "james.balamuta@gmail.com", 

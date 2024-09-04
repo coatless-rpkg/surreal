@@ -11,10 +11,9 @@
 ## Overview
 
 `surreal` implements the “Residual (Sur)Realism” algorithm described by
-Leonard A. Stefanski (2007). This package allows you to generate
-datasets that reveal hidden images or messages in their residual plots,
-providing a novel approach to understanding and illustrating statistical
-concepts.
+Stefanski (2007). This package allows you to generate datasets that
+reveal hidden images or messages in their residual plots, providing a
+novel approach to understanding and illustrating statistical concepts.
 
 ## Installation
 

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 ## Overview
 
 `surreal` implements the "Residual (Sur)Realism" algorithm described by 
-Leonard A. Stefanski (2007). This package allows you to generate datasets that 
+Stefanski (2007). This package allows you to generate datasets that 
 reveal hidden images or messages in their residual plots, providing a novel 
 approach to understanding and illustrating statistical concepts.
 
