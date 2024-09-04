@@ -20,8 +20,12 @@ temporary_text_plot <- function(text, cex = 4) {
   # Replace empty spaces with double dots for better visibility
   # text <- gsub("", "..", text)
 
-  # Create a temporary file path
-  temp_file <- tempfile()
+  # Create a temporary file path using a known directory
+  temp_dir <- tempdir()
+  temp_file <- tempfile(tmpdir = temp_dir, fileext = ".ppm")
+
+  # Ensure the temporary file is removed when the function exits
+  on.exit(unlink(temp_file))
 
   # Create a bitmap image
   bitmap(temp_file, "ppm", height = 5, width = 5)
