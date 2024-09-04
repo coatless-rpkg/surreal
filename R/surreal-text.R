@@ -128,8 +128,8 @@ surreal_text <- function(text = "hello world",
                          n_add_points = 40,
                          max_iter = 100, tolerance = 0.01, verbose = FALSE) {
 
-  if (.Platform$OS.type == "windows") {
-    message("This function is not supported on Windows.")
+  if (.Platform$OS.type != "unix") {
+    message("This function is only supported on macOS and Linux versions of R due to limitations in GhostScript.")
     return(NULL)
   }
 
