@@ -121,6 +121,10 @@
 <div class="section level2">
 <h2 id="creating-custom-hidden-images">Creating Custom Hidden Images<a class="anchor" aria-label="anchor" href="#creating-custom-hidden-images"></a>
 </h2>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>This function is unable to work on Windows as the version of GhostScript included with R does not support the <code>ppm</code> type.</p>
+</blockquote>
 <p>You can also create datasets with custom hidden images or text. Here’s a quick example using text:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">text_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_text.html">surreal_text</a></span><span class="op">(</span><span class="st">"R\nis\nawesome!"</span><span class="op">)</span></span>
