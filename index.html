@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Generate Datasets with Hidden Images in Residual Plots">
-<meta name="description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching, exploring model diagnostics, or designing creative data visualizations..'>
-<meta property="og:description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching, exploring model diagnostics, or designing creative data visualizations..'>
+<meta name="description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching model diagnostics.'>
+<meta property="og:description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching model diagnostics.'>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -46,11 +46,15 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="surreal-">surreal <img src="reference/figures/logo-surreal.png" align="right" alt="A hexagonal logo of the surreal R package that shows a series of points with varying sizes" width="150"><a class="anchor" aria-label="anchor" href="#surreal-"></a>
+<div class="page-header"><h1 id="surreal-">surreal <img src="reference/figures/logo-surreal.png" align="right" alt="Logo: points of varying sizes forming a hidden pattern" width="150"><a class="anchor" aria-label="anchor" href="#surreal-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>The <code>surreal</code> package seeks to implement the methods inside the paper “Residual Sur(Realism)” by <a href="https://www4.stat.ncsu.edu/~stefansk/" class="external-link">Leonard A. Stefanski</a> (<a href="doi:10.1198/000313007X190079" class="uri">doi:10.1198/000313007X190079</a>). These methods allow for hiding images inside of residual plots.</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p><code>surreal</code> implements the “Residual (Sur)Realism” algorithm described by Leonard A. Stefanski (2007). This package allows you to generate datasets that reveal hidden images or messages in their residual plots, providing a novel approach to understanding and illustrating statistical concepts.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -60,20 +64,22 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"coatless-rpkg/surreal"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>To begin, first load the package:</p>
+<p>First, load the package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/coatless-rpkg/surreal" class="external-link">surreal</a></span><span class="op">)</span></span></code></pre></div>
-<p>Next, we’ll retrieve R logo image included with the package:</p>
+<p>We can take an image with <code>x</code> and <code>y</code> coordinate positions for pixels and embed it into the residual plot.</p>
+<div class="section level3">
+<h3 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
+</h3>
+<p>As an example, let’s use the built-in R logo dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load the R logo data included with the package</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_logo_image_data"</span>, package <span class="op">=</span> <span class="st">"surreal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_logo_image_data"</span>, package <span class="op">=</span> <span class="st">"surreal"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Display original data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_logo_image_data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original data"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_logo_image_data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original R Logo Data"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-load-logo-1.png" width="100%"></p>
-<p>We can see that the data is in a 2D format.</p>
+<p>The data is in a 2D format:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    2000 obs. of  2 variables:</span></span>
@@ -87,30 +93,50 @@
 <span><span class="co">#&gt;  Mean   : 55.29   Mean   :-40.48  </span></span>
 <span><span class="co">#&gt;  3rd Qu.: 77.00   3rd Qu.:-24.00  </span></span>
 <span><span class="co">#&gt;  Max.   :100.00   Max.   : -9.00</span></span></code></pre></div>
-<p>We can apply the surreal method to the data:</p>
+</div>
+<div class="section level3">
+<h3 id="applying-the-surreal-method">Applying the Surreal Method<a class="anchor" aria-label="anchor" href="#applying-the-surreal-method"></a>
+</h3>
+<p>Now, let’s apply the surreal method:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Apply the surreal method to the data</span></span>
-<span><span class="va">transformed_surreal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span></code></pre></div>
-<p>After applying the surreal method, we get a series of additional predictors that when visualized against <code>y</code> look as if they are no underlying patterns.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">114</span><span class="op">)</span></span>
+<span><span class="va">transformed_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span></code></pre></div>
+<p>The transformation adds predictors that appear to have no underlying patterns:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># View the expanded data after transformation</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_surreal_data</span>, main <span class="op">=</span> <span class="st">"Data after transformation"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span>, main <span class="op">=</span> <span class="st">"Data After Transformation"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-surreal-method-data-pair-plot-1.png" width="100%"></p>
-<p>Finally, we’ll fit a linear model to the transformed data and plot the residuals:</p>
+</div>
+<div class="section level3">
+<h3 id="revealing-the-hidden-image">Revealing the Hidden Image<a class="anchor" aria-label="anchor" href="#revealing-the-hidden-image"></a>
+</h3>
+<p>Fit a linear model to the transformed data and plot the residuals:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fit a linear model to the transformed data</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_surreal_data</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Plot the residuals</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, type <span class="op">=</span> <span class="st">"n"</span>, main <span class="op">=</span> <span class="st">"Residual plot from transformed data"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
+<span>     main <span class="op">=</span> <span class="st">"Residual Plot: Hidden R Logo Revealed"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-surreal-method-residual-plot-1.png" width="100%"></p>
-<p>From the residual plot, we get back our original R logo that has a slight border around it to improve the original image recovery.</p>
+<p>The residual plot reveals the original R logo with a slight border, enhancing the image recovery.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="creating-custom-hidden-images">Creating Custom Hidden Images<a class="anchor" aria-label="anchor" href="#creating-custom-hidden-images"></a>
+</h2>
+<p>You can also create datasets with custom hidden images or text. Here’s a quick example using text:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">text_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_text.html">surreal_text</a></span><span class="op">(</span><span class="st">"R\nis\nawesome!"</span><span class="op">)</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">text_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Custom Text in Residuals"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-custom-text-example-1.png" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Stefanski, L. A. (2007). “Residual (Sur)realism”. <em>The American Statistician</em>, 61(2), 163-177. <a href="doi:10.1198/000313007X190079" class="uri">doi:10.1198/000313007X190079</a></p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>Prior work was done to bring the algorithms into R by <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/" class="external-link">John Staudenmayer</a>, <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/" class="external-link">Peter Wolf</a>, and <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/" class="external-link">Ulrike Gromping</a>.</p>
+<p>This package builds upon the work of <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/" class="external-link">John Staudenmayer</a>, <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/" class="external-link">Peter Wolf</a>, and <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/" class="external-link">Ulrike Gromping</a>, who initially brought these algorithms to R.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
