@@ -48,7 +48,7 @@ To disable the border augmentation, set \code{n_add_points = 0}.
 }
 \examples{
 # Generate a 2D data set
-data <- cbind(y = rnorm(100), x = rnorm(100))
+data <- cbind(y_hat = rnorm(100), R_0 = rnorm(100))
 
 # Display original data
 plot(data, pch = 16, main = "Original data")

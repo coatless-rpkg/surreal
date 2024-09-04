@@ -105,7 +105,7 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
   y_hat <- sd(R_0) / sd(y_hat) * sqrt(R_squared / (1 - R_squared)) * y_hat
 
   # Initialize parameters
-  beta <- c(0, seq_len(p))  # beta_0 and beta_{1:p} combined
+  beta <- c(1, seq_len(p))  # beta_0 and beta_{1:p} combined
   j_star <- p + 1  # Adjusting for 1-based indexing in R
 
   # Generate random noise
@@ -173,7 +173,7 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
 #'
 #' @examples
 #' # Generate a 2D data set
-#' data <- cbind(y = rnorm(100), x = rnorm(100))
+#' data <- cbind(y_hat = rnorm(100), R_0 = rnorm(100))
 #'
 #' # Display original data
 #' plot(data, pch = 16, main = "Original data")
