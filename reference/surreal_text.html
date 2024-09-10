@@ -98,11 +98,6 @@ method to the data.</p>
     <p>A data.frame containing the results of the surreal method application.</p>
     </div>
     <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function is not supported on Windows due to the <code>ppm</code> image format
-not being supported by the version of GhostScript included with R.</p>
-    </div>
-    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="surreal.html">surreal()</a></code> for details on the surreal method parameters.</p></div>
     </div>
@@ -112,10 +107,11 @@ not being supported by the version of GhostScript included with R.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a surreal plot of the text "R is fun" appearing on one line</span></span></span>
 <span class="r-in"><span><span class="va">r_is_fun_result</span> <span class="op">&lt;-</span> <span class="fu">surreal_text</span><span class="op">(</span><span class="st">"R is fun"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="surreal_text-1.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal alpha: 1.29999 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - Delta: 27088.11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - Delta: 0.3215369 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - Delta: 0.0002152771 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal alpha: 1.685425 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - Delta: 180889.4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - Delta: 22.63336 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - Delta: 0.09459617 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - Delta: 0.0006190636 </span>
 <span class="r-plt img"><img src="surreal_text-2.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="surreal_text-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -123,10 +119,10 @@ not being supported by the version of GhostScript included with R.</p>
 <span class="r-in"><span><span class="co"># character to create a second line between "Statistics" and "Rocks"</span></span></span>
 <span class="r-in"><span><span class="va">stat_rocks_result</span> <span class="op">&lt;-</span> <span class="fu">surreal_text</span><span class="op">(</span><span class="st">"Statistics\nRocks"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="surreal_text-4.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal alpha: 1.378044 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - Delta: 246657.9 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - Delta: 39.51787 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - Delta: 0.001387357 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal alpha: 1.4555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - Delta: 3338272 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - Delta: 16.96491 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - Delta: 5.024798e-05 </span>
 <span class="r-plt img"><img src="surreal_text-5.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="surreal_text-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
