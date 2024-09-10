@@ -1,14 +1,15 @@
 #' Create a Temporary Text Plot
 #'
-#' This function creates a temporary bitmap image file containing a plot of the given text.
+#' This function creates a temporary png image file containing a plot of the
+#' given text.
 #'
 #' @param text A character string to be plotted.
 #' @param cex A numeric value specifying the relative size of the text. Default is 4.
 #'
 #' @return
-#' A character vector containing the temporary image file.
+#' An array containing data from the temporary image file.
 #'
-#' @importFrom grDevices bitmap dev.off
+#' @importFrom grDevices png dev.off
 #' @importFrom graphics plot text
 #'
 #' @noRd
@@ -22,13 +23,13 @@ temporary_text_plot <- function(text, cex = 4) {
 
   # Create a temporary file path using a known directory
   temp_dir <- tempdir()
-  temp_file <- tempfile(tmpdir = temp_dir, fileext = ".ppm")
+  temp_file <- tempfile(tmpdir = temp_dir, fileext = ".png")
 
   # Ensure the temporary file is removed when the function exits
   on.exit(unlink(temp_file))
 
   # Create a bitmap image
-  bitmap(temp_file, "ppm", height = 5, width = 5)
+  png(temp_file, antialias = "none")
 
   # Create a blank plot
   plot(1, 1, type = "n", axes = FALSE, xlab = "", ylab = "")
@@ -40,7 +41,7 @@ temporary_text_plot <- function(text, cex = 4) {
   dev.off()
 
   # Read the image file
-  image <- scan(temp_file, "", sep = "\n", quiet = TRUE)
+  image <- png::readPNG(temp_file)
 
   image
 }
@@ -67,30 +68,21 @@ temporary_text_plot <- function(text, cex = 4) {
 #' image_data <- process_image(temp_file)
 process_image <- function(image) {
 
-  # Extract image size from the third line
-  size <- as.numeric(unlist(strsplit(image[3], " ")))
+  # Convert the array to integer values between 0 and 255
+  img_array <- round(image * 255)
 
-  # Extract pixel data (skip first 4 lines of metadata)
-  pixel_data <- image[-(1:4)]
-  pixel_data <- unlist(lapply(strsplit(pixel_data, " "), as.numeric))
-
-  # Convert pixel data to a matrix
-  pixel_matrix <- matrix(pixel_data, ncol = 3, byrow = TRUE)
-
-  # Convert to binary (text pixels are where any RGB value is 0)
-  pixel_matrix <- pixel_matrix[,1] == 0 | pixel_matrix[,2] == 0 | pixel_matrix[,3] == 0
-  pixel_matrix <- matrix(pixel_matrix, nrow = size[1], ncol = size[2], byrow = TRUE)
-
-  # Remove empty rows and columns
-  pixel_matrix <- pixel_matrix[apply(pixel_matrix, 1, any), ]
-  pixel_matrix <- pixel_matrix[, apply(pixel_matrix, 2, any)]
-
-  # Generate x and y coordinates
-  x <- col(pixel_matrix)
-  y <- nrow(pixel_matrix) + 1 - row(pixel_matrix)
+  # Find black points (where all channels are 0)
+  activated_points <- which(
+    img_array[,,1] == 0 &
+    img_array[,,2] == 0 &
+    img_array[,,3] == 0,
+    arr.ind = TRUE)
 
   # Return coordinates of text pixels
-  list(x = x[pixel_matrix], y = y[pixel_matrix])
+  list(
+    x = activated_points[, 2],  # Column index represents x
+    y = nrow(img_array) - activated_points[, 1] + 1  # Row index represents y, but flipped
+  )
 }
 
 #' Apply the surreal method to a text string
@@ -105,10 +97,6 @@ process_image <- function(image) {
 #'
 #' @return
 #' A data.frame containing the results of the surreal method application.
-#'
-#' @details
-#' This function is not supported on Windows due to the `ppm` image format
-#' not being supported by the version of GhostScript included with R.
 #'
 #' @examples
 #' # Create a surreal plot of the text "R is fun" appearing on one line
@@ -127,11 +115,6 @@ surreal_text <- function(text = "hello world",
                          R_squared = 0.3, p = 5,
                          n_add_points = 40,
                          max_iter = 100, tolerance = 0.01, verbose = FALSE) {
-
-  if (.Platform$OS.type != "unix") {
-    message("This function is only supported on macOS and Linux versions of R due to limitations in GhostScript.")
-    return(NULL)
-  }
 
   # Create temporary plot of the text
   temp_file <- temporary_text_plot(text = text, cex = cex)

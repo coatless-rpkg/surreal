@@ -100,11 +100,6 @@ enhancing the image recovery.
 
 ## Creating Custom Hidden Images
 
-> \[!IMPORTANT\]
->
-> This function is unable to work on Windows as the version of
-> GhostScript included with R does not support the `ppm` type.
-
 You can also create datasets with custom hidden images or text. Here’s a
 quick example using text:
 

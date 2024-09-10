@@ -40,10 +40,6 @@ This function applies the surreal method to a text string. It first creates a
 temporary plot with the text, processes the image, and then applies the surreal
 method to the data.
 }
-\details{
-This function is not supported on Windows due to the \code{ppm} image format
-not being supported by the version of GhostScript included with R.
-}
 \examples{
 # Create a surreal plot of the text "R is fun" appearing on one line
 r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
