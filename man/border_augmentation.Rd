@@ -24,12 +24,19 @@ to create a frame. It uses an optimization process to find the best alpha parame
 for point distribution, which helps in making the fitted values and residuals orthogonal.
 }
 \examples{
+# Simulate data
 x <- rnorm(100)
 y <- rnorm(100)
+
+# Append border to data
 transformed_data <- border_augmentation(x, y)
 
-par(mfrow = c(1, 2))
+# Modify par settings for plotting side-by-side
+oldpar <- par(mfrow = c(1, 2))
+
 plot(x, y, pch = 16, main = "Original data")
 plot(transformed_data[, 1], transformed_data[, 2], pch = 16, main = "Transformed data")
 
+# Restore original par settings
+par(oldpar)
 }
