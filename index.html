@@ -51,14 +51,14 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><code>surreal</code> implements the “Residual (Sur)Realism” algorithm described by Stefanski (2007). This package allows you to generate datasets that reveal hidden images or messages in their residual plots, providing a novel approach to understanding and illustrating statistical concepts.</p>
+<p>Ever wanted to hide secret messages or images in your data? That’s what the <code>surreal</code> package does! It lets you create datasets with hidden images or text that appear when you plot the residuals of a linear model by providing an implementation of the “Residual (Sur)Realism” algorithm described by Stefanski (2007).</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the stable version of the package from <a href="https://CRAN.R-project.org/package=surreal" class="external-link">CRAN</a> with:</p>
+<p>You can install <code>surreal</code> from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"surreal"</span><span class="op">)</span></span></code></pre></div>
-<p>If you prefer to be on the cutting-edge, you can install the development version of the package from <a href="https://github.com/" class="external-link">GitHub</a> using:</p>
+<p>Or get the latest version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"coatless-rpkg/surreal"</span><span class="op">)</span></span></code></pre></div>
@@ -69,7 +69,7 @@
 <p>First, load the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/coatless-rpkg/surreal" class="external-link">surreal</a></span><span class="op">)</span></span></code></pre></div>
-<p>Once loaded, we can take any series of <code>(x, y)</code> coordinate positions for an image or a text message and apply the surreal method to it. The method will create a dataset that, when fit with a linear model, will reveal the hidden image or text.</p>
+<p>Once loaded, we can take any series of <code>(x, y)</code> coordinate positions for an image or a text message and apply the surreal method to it.</p>
 <div class="section level3">
 <h3 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
 </h3>
@@ -119,13 +119,17 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="creating-custom-hidden-images">Creating Custom Hidden Images<a class="anchor" aria-label="anchor" href="#creating-custom-hidden-images"></a>
+<h2 id="hide-your-own-message">Hide Your Own Message<a class="anchor" aria-label="anchor" href="#hide-your-own-message"></a>
 </h2>
-<p>You can also create datasets with custom text. Here’s a quick example that hides a multi-line message:</p>
+<p>Want to hide your own message? You can also create datasets with custom text:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">text_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_text.html">surreal_text</a></span><span class="op">(</span><span class="st">"R\nis\nawesome!"</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">text_data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Custom Text in Residuals"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Generate a dataset with a hidden message across multiple lines</span></span>
+<span><span class="va">message_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_text.html">surreal_text</a></span><span class="op">(</span><span class="st">"R\nis\nawesome!"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Reveal the hidden message</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">message_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
+<span>     main <span class="op">=</span> <span class="st">"Custom Message in Residuals"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-custom-text-example-1.png" width="100%"></p>
 </div>
 <div class="section level2">
@@ -136,7 +140,7 @@
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>This package builds upon the work of <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/" class="external-link">John Staudenmayer</a>, <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/" class="external-link">Peter Wolf</a>, and <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/" class="external-link">Ulrike Gromping</a>, who initially brought these algorithms to R.</p>
+<p>This package is based on Stefanski (2007) and builds upon earlier R implementations by <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/" class="external-link">John Staudenmayer</a>, <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/" class="external-link">Peter Wolf</a>, and <a href="https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/" class="external-link">Ulrike Gromping</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
