@@ -73,7 +73,8 @@ summary(r_logo_image_data)
 ### Applying the Surreal Method
 
 Now, let’s apply the surreal method to the R logo data to hide it in a
-dataset:
+dataset. We’ll want to set a seed for reproducibility purposes since the
+algorithm relies on an optimization routine:
 
 ``` r
 set.seed(114)
@@ -105,8 +106,8 @@ plot(model$fitted, model$resid, pch = 16,
 <img src="man/figures/README-surreal-method-residual-plot-1.png" width="100%" />
 
 The residual plot reveals the original R logo with a slight border. This
-border is automatically added to within the surreal method to enhance
-the recovery of the hidden image in the residual plot.
+border is automatically added inside the surreal method to enhance the
+recovery of the hidden image in the residual plot.
 
 ## Hide Your Own Message
 
