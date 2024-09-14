@@ -19,22 +19,21 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/coatless-rpkg/surreal/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coatless-rpkg/surreal/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-`surreal` implements the "Residual (Sur)Realism" algorithm described by 
-Stefanski (2007). This package allows you to generate datasets that 
-reveal hidden images or messages in their residual plots, providing a novel 
-approach to understanding and illustrating statistical concepts.
+Ever wanted to hide secret messages or images in your data? That's what the 
+`surreal` package does! It lets you create datasets with hidden images or text 
+that appear when you plot the residuals of a linear model by providing an
+implementation of the "Residual (Sur)Realism" algorithm described by 
+Stefanski (2007).
 
 ## Installation
 
-You can install the stable version of the package from
-[CRAN](https://CRAN.R-project.org/package=surreal) with:
+You can install `surreal` from CRAN:
 
 ```r
 install.packages("surreal")
 ```
 
-If you prefer to be on the cutting-edge, you can install the development 
-version of the package from [GitHub](https://github.com/) using:
+Or get the latest version from GitHub:
 
 ``` r
 # install.packages("remotes")
@@ -51,8 +50,7 @@ library(surreal)
 ```
 
 Once loaded, we can take any series of `(x, y)` coordinate positions for an image
-or a text message and apply the surreal method to it. The method will create
-a dataset that, when fit with a linear model, will reveal the hidden image or text.
+or a text message and apply the surreal method to it.
 
 ### Importing Data
 
@@ -107,16 +105,19 @@ The residual plot reveals the original R logo with a slight border. This
 border is automatically added to within the surreal method to enhance the
 recovery of the hidden image in the residual plot.
 
-## Creating Custom Hidden Images
+## Hide Your Own Message
 
-You can also create datasets with custom text. Here's a quick 
-example that hides a multi-line message:
+Want to hide your own message? You can also create datasets with custom text:
 
 ```{r}
 #| label: custom-text-example
-text_data <- surreal_text("R\nis\nawesome!")
-model <- lm(y ~ ., data = text_data)
-plot(model$fitted, model$resid, pch = 16, main = "Custom Text in Residuals")
+# Generate a dataset with a hidden message across multiple lines
+message_data <- surreal_text("R\nis\nawesome!")
+
+# Reveal the hidden message
+model <- lm(y ~ ., data = message_data)
+plot(model$fitted, model$resid, pch = 16, 
+     main = "Custom Message in Residuals")
 ```
 
 ## References
@@ -125,7 +126,6 @@ Stefanski, L. A. (2007). "Residual (Sur)realism". *The American Statistician*, 6
 
 ## Acknowledgements
 
-This package builds upon the work of [John Staudenmayer](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/),
+This package is based on Stefanski (2007) and builds upon earlier R implementations by [John Staudenmayer](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/John_Staudenmayer/),
 [Peter Wolf](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Peter_Wolf/), and
-[Ulrike Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/),
-who initially brought these algorithms to R.
+[Ulrike Gromping](https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/000_R_Programs/Ulrike_Gromping/).
