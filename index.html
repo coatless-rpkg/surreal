@@ -97,7 +97,7 @@
 <div class="section level3">
 <h3 id="applying-the-surreal-method">Applying the Surreal Method<a class="anchor" aria-label="anchor" href="#applying-the-surreal-method"></a>
 </h3>
-<p>Now, let’s apply the surreal method to the R logo data to hide it in a dataset:</p>
+<p>Now, let’s apply the surreal method to the R logo data to hide it in a dataset. We’ll want to set a seed for reproducibility purposes since the algorithm relies on an optimization routine:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">114</span><span class="op">)</span></span>
 <span><span class="va">transformed_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span></code></pre></div>
@@ -115,7 +115,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Residual Plot: Hidden R Logo Revealed"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-surreal-method-residual-plot-1.png" width="100%"></p>
-<p>The residual plot reveals the original R logo with a slight border. This border is automatically added to within the surreal method to enhance the recovery of the hidden image in the residual plot.</p>
+<p>The residual plot reveals the original R logo with a slight border. This border is automatically added inside the surreal method to enhance the recovery of the hidden image in the residual plot.</p>
 </div>
 </div>
 <div class="section level2">
