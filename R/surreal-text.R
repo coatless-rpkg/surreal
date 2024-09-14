@@ -3,8 +3,8 @@
 #' This function creates a temporary png image file containing a plot of the
 #' given text.
 #'
-#' @param text A character string to be plotted.
-#' @param cex A numeric value specifying the relative size of the text. Default is 4.
+#' @param text Character. A plain text message to be plotted.
+#' @param cex  Numeric. A value specifying the relative size of the text. Default is 4.
 #'
 #' @return
 #' An array containing data from the temporary image file.
@@ -51,7 +51,7 @@ temporary_text_plot <- function(text, cex = 4) {
 #' This function processes a temporary image file created by `temporary_text_plot()`.
 #' It extracts the pixel data and converts it into x and y coordinates.
 #'
-#' @param image A character vector containing the bitmap image plot.
+#' @param image An array containing the image plot.
 #'
 #' @return
 #' A list with two elements:
@@ -91,8 +91,8 @@ process_image <- function(image) {
 #' temporary plot with the text, processes the image, and then applies the surreal
 #' method to the data.
 #'
-#' @param text A character string to apply the surreal method to
-#' @param cex A numeric value for the size of the text
+#' @param text Character. A plain text message to be plotted. Default is "hello world".
+#' @param cex  Numeric. A value specifying the relative size of the text. Default is 4.
 #' @inheritParams surreal
 #'
 #' @return

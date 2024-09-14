@@ -16,11 +16,11 @@ surreal_text(
 )
 }
 \arguments{
-\item{text}{A character string to apply the surreal method to}
+\item{text}{Character. A plain text message to be plotted. Default is "hello world".}
 
-\item{cex}{A numeric value for the size of the text}
+\item{cex}{Numeric. A value specifying the relative size of the text. Default is 4.}
 
-\item{R_squared}{Desired R-squared value. Default is 0.3.}
+\item{R_squared}{Numeric. Desired R-squared value. Default is 0.3.}
 
 \item{p}{Integer. Desired number of columns for matrix X. Default is 5.}
 

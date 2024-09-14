@@ -5,7 +5,7 @@
 \alias{r_logo_image_data}
 \title{R Logo Pixel Data}
 \format{
-A data frame with 2000 observations and 2 variables describing the
+A data frame with 2,000 observations and 2 variables describing the
 x and y coordinates of the R logo.
 }
 \usage{

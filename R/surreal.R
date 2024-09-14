@@ -24,8 +24,12 @@
 #' # Modify par settings for plotting side-by-side
 #' oldpar <- par(mfrow = c(1, 2))
 #'
+#' # Graph original and transformed data
 #' plot(x, y, pch = 16, main = "Original data")
-#' plot(transformed_data[, 1], transformed_data[, 2], pch = 16, main = "Transformed data")
+#' plot(
+#'   transformed_data[, 1], transformed_data[, 2], pch = 16,
+#'   main = "Transformed data", xlab = 'x', ylab = 'y'
+#' )
 #'
 #' # Restore original par settings
 #' par(oldpar)
@@ -161,7 +165,7 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
 #' @param data         A data frame or matrix with two columns representing the `y_hat` and `R_0` values.
 #' @param y_hat        Numeric vector of desired fitted values (only used if `data` is not provided).
 #' @param R_0          Numeric vector of desired residuals (only used if `data` is not provided).
-#' @param R_squared    Desired R-squared value. Default is 0.3.
+#' @param R_squared    Numeric. Desired R-squared value. Default is 0.3.
 #' @param p            Integer. Desired number of columns for matrix X. Default is 5.
 #' @param n_add_points Integer. Number of points to add in border transformation. Default is 40.
 #' @param max_iter     Integer. Maximum number of iterations for convergence. Default is 100.

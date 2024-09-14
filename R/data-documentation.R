@@ -3,7 +3,7 @@
 #' 2D data set with the shape of the R Logo in x and y coordinate pairings.
 #'
 #' @format
-#' A data frame with 2000 observations and 2 variables describing the
+#' A data frame with 2,000 observations and 2 variables describing the
 #' x and y coordinates of the R logo.
 #'
 #' @examples

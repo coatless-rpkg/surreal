@@ -34,8 +34,12 @@ transformed_data <- border_augmentation(x, y)
 # Modify par settings for plotting side-by-side
 oldpar <- par(mfrow = c(1, 2))
 
+# Graph original and transformed data
 plot(x, y, pch = 16, main = "Original data")
-plot(transformed_data[, 1], transformed_data[, 2], pch = 16, main = "Transformed data")
+plot(
+  transformed_data[, 1], transformed_data[, 2], pch = 16,
+  main = "Transformed data", xlab = 'x', ylab = 'y'
+)
 
 # Restore original par settings
 par(oldpar)

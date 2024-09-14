@@ -23,7 +23,7 @@ surreal(
 
 \item{R_0}{Numeric vector of desired residuals (only used if \code{data} is not provided).}
 
-\item{R_squared}{Desired R-squared value. Default is 0.3.}
+\item{R_squared}{Numeric. Desired R-squared value. Default is 0.3.}
 
 \item{p}{Integer. Desired number of columns for matrix X. Default is 5.}
 
