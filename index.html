@@ -51,16 +51,15 @@
 </h1></div>
 <!-- badges: start -->
 
-<div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
 <p><code>surreal</code> implements the “Residual (Sur)Realism” algorithm described by Stefanski (2007). This package allows you to generate datasets that reveal hidden images or messages in their residual plots, providing a novel approach to understanding and illustrating statistical concepts.</p>
-</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of surreal from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the stable version of the package from <a href="https://CRAN.R-project.org/package=surreal" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"surreal"</span><span class="op">)</span></span></code></pre></div>
+<p>If you prefer to be on the cutting-edge, you can install the development version of the package from <a href="https://github.com/" class="external-link">GitHub</a> using:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"coatless-rpkg/surreal"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -68,20 +67,20 @@
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <p>First, load the package:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/coatless-rpkg/surreal" class="external-link">surreal</a></span><span class="op">)</span></span></code></pre></div>
-<p>We can take an image with <code>x</code> and <code>y</code> coordinate positions for pixels and embed it into the residual plot.</p>
+<p>Once loaded, we can take any series of <code>(x, y)</code> coordinate positions for an image or a text message and apply the surreal method to it. The method will create a dataset that, when fit with a linear model, will reveal the hidden image or text.</p>
 <div class="section level3">
 <h3 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
 </h3>
 <p>As an example, let’s use the built-in R logo dataset:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_logo_image_data"</span>, package <span class="op">=</span> <span class="st">"surreal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_logo_image_data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original R Logo Data"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-load-logo-1.png" width="100%"></p>
-<p>The data is in a 2D format:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The data for the R logo is stored in a data frame with two columns, <code>x</code> and <code>y</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    2000 obs. of  2 variables:</span></span>
 <span><span class="co">#&gt;  $ x: int  54 55 56 57 58 59 34 35 36 49 ...</span></span>
@@ -98,32 +97,32 @@
 <div class="section level3">
 <h3 id="applying-the-surreal-method">Applying the Surreal Method<a class="anchor" aria-label="anchor" href="#applying-the-surreal-method"></a>
 </h3>
-<p>Now, let’s apply the surreal method:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>Now, let’s apply the surreal method to the R logo data to hide it in a dataset:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">114</span><span class="op">)</span></span>
 <span><span class="va">transformed_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal.html">surreal</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span></code></pre></div>
-<p>The transformation adds predictors that appear to have no underlying patterns:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>We can note that the transformed data has additional covariates that obfuscate the original image. If we observe the transformed data by using a scatterplot matrix graph, we can see that the new covariates do not reveal the original image:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span>, main <span class="op">=</span> <span class="st">"Data After Transformation"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-surreal-method-data-pair-plot-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="revealing-the-hidden-image">Revealing the Hidden Image<a class="anchor" aria-label="anchor" href="#revealing-the-hidden-image"></a>
 </h3>
-<p>Fit a linear model to the transformed data and plot the residuals:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>We need to fit a linear model to the transformed data and plot the residuals:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Residual Plot: Hidden R Logo Revealed"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-surreal-method-residual-plot-1.png" width="100%"></p>
-<p>The residual plot reveals the original R logo with a slight border, enhancing the image recovery.</p>
+<p>The residual plot reveals the original R logo with a slight border. This border is automatically added to within the surreal method to enhance the recovery of the hidden image in the residual plot.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="creating-custom-hidden-images">Creating Custom Hidden Images<a class="anchor" aria-label="anchor" href="#creating-custom-hidden-images"></a>
 </h2>
-<p>You can also create datasets with custom hidden images or text. Here’s a quick example using text:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>You can also create datasets with custom text. Here’s a quick example that hides a multi-line message:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">text_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_text.html">surreal_text</a></span><span class="op">(</span><span class="st">"R\nis\nawesome!"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">text_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Custom Text in Residuals"</span><span class="op">)</span></span></code></pre></div>
