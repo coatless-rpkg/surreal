@@ -2,3 +2,22 @@ url: https://r-pkg.thecoatlessprofessor.com/surreal/
 template:
   bootstrap: 5
 
+reference:
+- title: Core Functions
+  desc: Create surreal datasets with hidden images in residuals
+  contents:
+  - surreal
+  - surreal_text
+  - surreal_image
+  - border_augmentation
+
+- title: Interactive App
+  desc: Explore the surreal algorithm interactively
+  contents:
+  - surreal_app
+
+- title: Datasets
+  desc: Built-in datasets for demos and examples
+  contents:
+  - r_logo_image_data
+  - jackolantern_surreal_data
