@@ -50,7 +50,7 @@ data("r_logo_image_data", package = "surreal")
 plot(r_logo_image_data, pch = 16, main = "Original R Logo Data")
 ```
 
-<img src="man/figures/README-load-logo-1.png" width="100%" />
+<img src="man/figures/README-load-logo-1.png" alt="" width="100%" />
 
 The data for the R logo is stored in a data frame with two columns, `x`
 and `y`:
@@ -90,7 +90,7 @@ not reveal the original image:
 pairs(y ~ ., data = transformed_data, main = "Data After Transformation")
 ```
 
-<img src="man/figures/README-surreal-method-data-pair-plot-1.png" width="100%" />
+<img src="man/figures/README-surreal-method-data-pair-plot-1.png" alt="" width="100%" />
 
 ### Revealing the Hidden Image
 
@@ -103,7 +103,7 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Residual Plot: Hidden R Logo Revealed")
 ```
 
-<img src="man/figures/README-surreal-method-residual-plot-1.png" width="100%" />
+<img src="man/figures/README-surreal-method-residual-plot-1.png" alt="" width="100%" />
 
 The residual plot reveals the original R logo with a slight border. This
 border is automatically added inside the surreal method to enhance the
@@ -124,7 +124,43 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Custom Message in Residuals")
 ```
 
-<img src="man/figures/README-custom-text-example-1.png" width="100%" />
+<img src="man/figures/README-custom-text-example-1.png" alt="" width="100%" />
+
+## Use Any Image
+
+You can create surreal datasets directly from image files or URLs using
+`surreal_image()`:
+
+``` r
+# From a local file
+result <- surreal_image("path/to/image.png")
+
+# From a URL
+result <- surreal_image("https://www.r-project.org/logo/Rlogo.png")
+
+# Reveal the hidden image
+model <- lm(y ~ ., data = result)
+plot(model$fitted, model$resid, pch = 16)
+```
+
+The function supports PNG, JPEG, BMP, TIFF, and SVG formats, with
+automatic mode detection (dark/light) and threshold calculation.
+
+## Interactive App
+
+For a point-and-click experience, launch the interactive Shiny app:
+
+``` r
+surreal_app()
+```
+
+The app lets you:
+
+- Try demo datasets (Jack-o-Lantern, R Logo)
+- Enter custom text messages
+- Upload your own images
+- Adjust parameters and see results in real-time
+- Export data to CSV or download plots
 
 ## References
 

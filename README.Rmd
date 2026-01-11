@@ -122,6 +122,45 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Custom Message in Residuals")
 ```
 
+## Use Any Image
+
+You can create surreal datasets directly from image files or URLs using `surreal_image()`:
+
+```{r}
+#| label: image-example
+#| eval: false
+# From a local file
+result <- surreal_image("path/to/image.png")
+
+# From a URL
+result <- surreal_image("https://www.r-project.org/logo/Rlogo.png")
+
+# Reveal the hidden image
+model <- lm(y ~ ., data = result)
+plot(model$fitted, model$resid, pch = 16)
+```
+
+The function supports PNG, JPEG, BMP, TIFF, and SVG formats, with automatic
+mode detection (dark/light) and threshold calculation.
+
+## Interactive App
+
+For a point-and-click experience, launch the interactive Shiny app:
+
+```{r}
+#| label: app-example
+#| eval: false
+surreal_app()
+```
+
+The app lets you:
+
+- Try demo datasets (Jack-o-Lantern, R Logo)
+- Enter custom text messages
+- Upload your own images
+- Adjust parameters and see results in real-time
+- Export data to CSV or download plots
+
 ## References
 
 Stefanski, L. A. (2007). "Residual (Sur)realism". *The American Statistician*, 61(2), 163-177. doi:10.1198/000313007X190079
