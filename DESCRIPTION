@@ -23,3 +23,9 @@ LazyData: true
 Imports:
     cli,
     png
+Suggests:
+    bmp,
+    bslib,
+    jpeg,
+    rsvg,
+    tiff
