@@ -2,6 +2,8 @@
 
 ## surreal 0.0.2
 
+CRAN release: 2026-01-11
+
 ### New Features
 
 - [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md):

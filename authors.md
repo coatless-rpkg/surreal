@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/coatless-rpkg/surreal/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/coatless-rpkg/surreal/blob/0.0.2/DESCRIPTION)
 
 Balamuta J (2026). *surreal: Create Datasets with Hidden Images in
 Residual Plots*. R package version 0.0.2,
