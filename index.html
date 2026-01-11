@@ -8,8 +8,8 @@
 <title>Create Datasets with Hidden Images in Residual Plots • surreal</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Create Datasets with Hidden Images in Residual Plots">
 <meta name="description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching model diagnostics.'>
 <meta property="og:description" content='Implements the "Residual (Sur)Realism" algorithm described by Stefanski (2007) &lt;doi:10.1198/000313007X190079&gt; to generate datasets that reveal hidden images or messages in their residual plots. It offers both predefined datasets and tools to embed custom text or images into residual structures. Allowing users to create intriguing visual demonstrations for teaching model diagnostics.'>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">surreal</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_logo_image_data"</span>, package <span class="op">=</span> <span class="st">"surreal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_logo_image_data</span>, pch <span class="op">=</span> <span class="fl">16</span>, main <span class="op">=</span> <span class="st">"Original R Logo Data"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-load-logo-1.png" width="100%"></p>
+<p><img src="reference/figures/README-load-logo-1.png" alt="" width="100%"></p>
 <p>The data for the R logo is stored in a data frame with two columns, <code>x</code> and <code>y</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">r_logo_image_data</span><span class="op">)</span></span>
@@ -104,7 +104,7 @@
 <p>We can note that the transformed data has additional covariates that obfuscate the original image. If we observe the transformed data by using a scatterplot matrix graph, we can see that the new covariates do not reveal the original image:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span>, main <span class="op">=</span> <span class="st">"Data After Transformation"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-surreal-method-data-pair-plot-1.png" width="100%"></p>
+<p><img src="reference/figures/README-surreal-method-data-pair-plot-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="revealing-the-hidden-image">Revealing the Hidden Image<a class="anchor" aria-label="anchor" href="#revealing-the-hidden-image"></a>
@@ -114,7 +114,7 @@
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">transformed_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Residual Plot: Hidden R Logo Revealed"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-surreal-method-residual-plot-1.png" width="100%"></p>
+<p><img src="reference/figures/README-surreal-method-residual-plot-1.png" alt="" width="100%"></p>
 <p>The residual plot reveals the original R logo with a slight border. This border is automatically added inside the surreal method to enhance the recovery of the hidden image in the residual plot.</p>
 </div>
 </div>
@@ -130,7 +130,38 @@
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">message_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Custom Message in Residuals"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-custom-text-example-1.png" width="100%"></p>
+<p><img src="reference/figures/README-custom-text-example-1.png" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="use-any-image">Use Any Image<a class="anchor" aria-label="anchor" href="#use-any-image"></a>
+</h2>
+<p>You can create surreal datasets directly from image files or URLs using <code><a href="reference/surreal_image.html">surreal_image()</a></code>:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># From a local file</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_image.html">surreal_image</a></span><span class="op">(</span><span class="st">"path/to/image.png"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># From a URL</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/surreal_image.html">surreal_image</a></span><span class="op">(</span><span class="st">"https://www.r-project.org/logo/Rlogo.png"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Reveal the hidden image</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">result</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">fitted</span>, <span class="va">model</span><span class="op">$</span><span class="va">resid</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+<p>The function supports PNG, JPEG, BMP, TIFF, and SVG formats, with automatic mode detection (dark/light) and threshold calculation.</p>
+</div>
+<div class="section level2">
+<h2 id="interactive-app">Interactive App<a class="anchor" aria-label="anchor" href="#interactive-app"></a>
+</h2>
+<p>For a point-and-click experience, launch the interactive Shiny app:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/surreal_app.html">surreal_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The app lets you:</p>
+<ul>
+<li>Try demo datasets (Jack-o-Lantern, R Logo)</li>
+<li>Enter custom text messages</li>
+<li>Upload your own images</li>
+<li>Adjust parameters and see results in real-time</li>
+<li>Export data to CSV or download plots</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -171,7 +202,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>James Joseph Balamuta <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-2826-8458" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>James Joseph Balamuta <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-2826-8458" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -191,7 +222,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
