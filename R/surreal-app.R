@@ -37,13 +37,13 @@
 #' @examples
 #' \dontrun{
 #' # Launch the app in the default browser
-#' run_app()
+#' surreal_app()
 #'
 #' # Launch on a specific port
-#' run_app(port = 3838)
+#' surreal_app(port = 3838)
 #'
 #' # Get the app without launching browser
-#' run_app(launch.browser = FALSE)
+#' surreal_app(launch.browser = FALSE)
 #' }
 #'
 #' @seealso
@@ -52,7 +52,7 @@
 #' [surreal_image()] for processing images programmatically.
 #'
 #' @export
-run_app <- function(launch.browser = TRUE, port = NULL, host = "127.0.0.1") {
+surreal_app <- function(launch.browser = TRUE, port = NULL, host = "127.0.0.1") {
   require_packages(c("shiny", "bslib"))
 
   app_dir <- system.file("surreal-app", package = "surreal")
