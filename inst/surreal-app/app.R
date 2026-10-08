@@ -24,6 +24,20 @@ check_image_package <- function(ext) {
   list(available = requireNamespace(pkg, quietly = TRUE), package = pkg)
 }
 
+# Shinylive serves a download through a service worker, and Chromium skips the
+# service worker for a link that carries the `download` attribute. When R is
+# running in the browser the buttons go without it, so the file arrives.
+download_button <- function(
+  ...,
+  in_browser = identical(R.version$os, "emscripten")
+) {
+  button <- downloadButton(...)
+  if (in_browser) {
+    button$attribs$download <- NULL
+  }
+  button
+}
+
 # UI
 ui <- page_navbar(
   title = span("Surreal", class = "fw-bold"),
@@ -252,7 +266,7 @@ ui <- page_navbar(
                 card_header(
                   class = "py-1 small d-flex justify-content-between align-items-center",
                   span("Source"),
-                  downloadButton(
+                  download_button(
                     "download_source",
                     "PNG",
                     class = "btn-sm btn-outline-secondary py-0 px-2"
@@ -272,7 +286,7 @@ ui <- page_navbar(
                 card_header(
                   class = "py-1 small d-flex justify-content-between align-items-center",
                   span("Residuals"),
-                  downloadButton(
+                  download_button(
                     "download_residual",
                     "PNG",
                     class = "btn-sm btn-outline-secondary py-0 px-2"
@@ -336,7 +350,7 @@ ui <- page_navbar(
             div(
               class = "d-flex justify-content-between align-items-center mb-2 ps-2 py-1 small text-body-secondary border-start border-primary border-3 bg-body-secondary rounded-end",
               span("First 20 rows of the generated dataset."),
-              downloadButton(
+              download_button(
                 "download",
                 "Download CSV",
                 class = "btn-sm btn-outline-primary"

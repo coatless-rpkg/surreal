@@ -81,3 +81,15 @@ test_that("the Source download holds the message that was generated", {
     expect_identical(edited, generated)
   })
 })
+
+test_that("download buttons drop the download attribute when R runs in the browser", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  app <- load_app()
+  in_browser <- app$download_button("save", "Save", in_browser = TRUE)
+  installed <- app$download_button("save", "Save", in_browser = FALSE)
+
+  expect_null(in_browser$attribs[["download"]])
+  expect_identical(installed$attribs[["download"]], NA)
+})
