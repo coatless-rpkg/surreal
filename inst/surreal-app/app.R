@@ -373,6 +373,7 @@ server <- function(input, output, session) {
     data = NULL,
     source_coords = NULL,
     source_type = NULL,
+    source_text = NULL,
     history = list()
   )
 
@@ -383,6 +384,7 @@ server <- function(input, output, session) {
       rv$data <- NULL
       rv$source_coords <- NULL
       rv$source_type <- NULL
+      rv$source_text <- NULL
       rv$history <- list()
     },
     ignoreInit = TRUE
@@ -436,6 +438,7 @@ server <- function(input, output, session) {
     rv$data <- last_state$data
     rv$source_coords <- last_state$source_coords
     rv$source_type <- last_state$source_type
+    rv$source_text <- last_state$source_text
 
     # Restore settings if available
     if (!is.null(last_state$settings)) {
@@ -498,6 +501,7 @@ server <- function(input, output, session) {
           data = rv$data,
           source_coords = rv$source_coords,
           source_type = rv$source_type,
+          source_text = rv$source_text,
           settings = list(
             r_squared = input$r_squared,
             p = input$p,
@@ -549,6 +553,7 @@ server <- function(input, output, session) {
             req(nchar(trimws(input$text)) > 0)
             rv$source_type <- "text"
             rv$source_coords <- NULL
+            rv$source_text <- input$text
             surreal_text(input$text, R_squared = input$r_squared, p = input$p)
           },
           "image" = {
@@ -657,7 +662,7 @@ server <- function(input, output, session) {
       } else if (rv$source_type == "text") {
         par(mar = c(0, 0, 0, 0), bg = bg, fg = fg)
         plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
-        text(0.5, 0.5, isolate(input$text), cex = 4, col = pt, font = 2)
+        text(0.5, 0.5, rv$source_text, cex = 4, col = pt, font = 2)
       } else if (!is.null(rv$source_coords)) {
         par(mar = c(4, 4, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
         plot(
@@ -718,7 +723,7 @@ server <- function(input, output, session) {
       } else if (rv$source_type == "text") {
         par(mar = c(0, 0, 0, 0), bg = bg, fg = fg)
         plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
-        text(0.5, 0.5, isolate(input$text), cex = 3, col = pt, font = 2)
+        text(0.5, 0.5, rv$source_text, cex = 3, col = pt, font = 2)
       } else {
         par(mar = c(3, 3, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
         plot(
