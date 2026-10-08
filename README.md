@@ -162,6 +162,9 @@ The app lets you:
 - Adjust parameters and see results in real-time
 - Export data to CSV or download plots
 
+You can also [try the app in your browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/),
+with nothing to install. The demo runs on [Shinylive](https://posit-dev.github.io/r-shinylive/).
+
 ## References
 
 Stefanski, L. A. (2007). “Residual (Sur)realism”. *The American
