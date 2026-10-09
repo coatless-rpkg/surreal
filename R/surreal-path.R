@@ -172,7 +172,8 @@ print.surreal_path <- function(x, ...) {
 #' `x`, invisibly. Called for the plot it draws.
 #'
 #' @details
-#' A solid line marks the step that is drawn, and a dashed line the best step.
+#' A solid line marks the step that is drawn, and a dashed green line the best
+#' step.
 #' A path is blue once its predictor is in the model at the step, and gray
 #' until then. A decoy in the model is orange, when the path knows its decoys.
 #'
@@ -197,9 +198,14 @@ plot.surreal_path <- function(x, step = x$best, ...) {
   oldpar <- graphics::par(mfrow = c(1, 3))
   on.exit(graphics::par(oldpar))
 
+  # The step that is drawn, then the best step over it in green dashes, so
+  # that both show when they are the same step
+  best_color <- "#1baf7a"
+  background <- graphics::par("bg")
+  if (background == "transparent") background <- "white"
   mark <- function() {
-    graphics::abline(v = x$best, lty = 2)
     graphics::abline(v = step)
+    graphics::abline(v = x$best, lty = 2, lwd = 2, col = best_color)
   }
 
   # Coefficient of every predictor along the path, colored by the part the
@@ -223,11 +229,9 @@ plot.surreal_path <- function(x, step = x$best, ...) {
   mark()
   # The key is drawn on the plot's own background, over the lines that mark
   # the steps
-  background <- graphics::par("bg")
   graphics::legend(
     "topleft", legend = key, col = colors[names(key)],
-    lty = 1, lwd = 2, cex = 0.8, box.col = NA,
-    bg = if (background == "transparent") "white" else background
+    lty = 1, lwd = 2, cex = 0.8, box.col = NA, bg = background
   )
 
   # The criterion along the path
@@ -237,6 +241,11 @@ plot.surreal_path <- function(x, step = x$best, ...) {
     xlab = "Step", ylab = x$criterion, main = x$criterion
   )
   mark()
+  graphics::legend(
+    "topright", legend = c("this step", paste("lowest", x$criterion)),
+    col = c(graphics::par("fg"), best_color),
+    lty = c(1, 2), lwd = c(1, 2), cex = 0.8, box.col = NA, bg = background
+  )
 
   # The residual plot at the step. With no predictors in the model every
   # fitted value is the same, give or take rounding, so the axis gets a unit

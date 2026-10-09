@@ -96,6 +96,13 @@ ui <- page_navbar(
       [data-bs-theme='dark'] .path-key-real { background: #3987e5; }
       [data-bs-theme='dark'] .path-key-decoy { background: #d95926; }
       [data-bs-theme='dark'] .path-key-out { background: #718096; }
+      .path-key-step { background: var(--bs-body-color); }
+      .path-key-best {
+        height: 0;
+        border-top: 3px dashed #1baf7a;
+        border-radius: 0;
+      }
+      [data-bs-theme='dark'] .path-key-best { border-top-color: #199e70; }
 
       /* Dark mode outline button fix */
       [data-bs-theme='dark'] .btn-outline-secondary {

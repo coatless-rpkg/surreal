@@ -145,6 +145,22 @@ path_key <- function() {
   )
 }
 
+# The key to the two lines that mark steps on the plots along the path
+step_key <- function() {
+  entry <- function(part, label) {
+    span(
+      class = "ms-2 text-nowrap",
+      span(class = paste0("path-key path-key-", part)),
+      label
+    )
+  }
+  span(
+    class = "text-body-secondary",
+    entry("step", "this step"),
+    entry("best", "lowest")
+  )
+}
+
 selection_tab <- function() {
   nav_panel(
     title = "Selection",
@@ -166,7 +182,11 @@ selection_tab <- function() {
             "170px"
           ),
           plot_card(
-            "Criterion along the path",
+            div(
+              class = "d-flex flex-wrap justify-content-between",
+              span("Criterion along the path"),
+              step_key()
+            ),
             "selection_criterion",
             "170px",
             selectInput("criterion", "Criterion", c("BIC", "AIC"))

@@ -342,6 +342,8 @@ test_that("the Selection tab says which color is which", {
   expect_match(tab, "path-key-real", fixed = TRUE)
   expect_match(tab, "path-key-decoy", fixed = TRUE)
   expect_match(tab, "path-key-out", fixed = TRUE)
+  expect_match(tab, "path-key-step", fixed = TRUE)
+  expect_match(tab, "path-key-best", fixed = TRUE)
 })
 
 test_that("the search that is shown ends on the data that was generated", {
