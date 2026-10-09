@@ -123,16 +123,19 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
   Z <- rnorm(n, sd = sd(R_0))
   M <- matrix(rnorm(n * p, sd = sd(y_hat)), n, p)
 
-  # Calculate projection matrix
-  P_R_0 <- tcrossprod(R_0) / sum(R_0^2)
+  # The projection onto R_0 is applied to vectors as they come, so the
+  # n-by-n matrix behind it is never built
+  R_0_ss <- sum(R_0^2)
+  remove_R_0 <- function(V) V - R_0 %*% (crossprod(R_0, V) / R_0_ss)
 
   # Iterative optimization
   for (i in seq_len(max_iter)) {
-    W <- cbind(1, (diag(n) - P_R_0) %*% M)
-    A_M <- W %*% solve(crossprod(W), t(W))
+    W <- cbind(1, remove_R_0(M))
+    A_M_Z <- W %*% solve(crossprod(W), crossprod(W, Z))
 
     SUM_beta_M_all <- M %*% beta[-1]  # Exclude beta_0
-    FIRST <- y_hat - beta[1] - A_M %*% Z + P_R_0 %*% M %*% beta[-1] - SUM_beta_M_all
+    P_R_0_M_beta <- R_0 * (sum(R_0 * SUM_beta_M_all) / R_0_ss)
+    FIRST <- y_hat - beta[1] - A_M_Z + P_R_0_M_beta - SUM_beta_M_all
 
     M_new <- M
     M_new[, j_star - 1] <- (FIRST + beta[j_star] * M[, j_star - 1]) / beta[j_star]
@@ -149,8 +152,8 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
   }
 
   # Calculate final X and Y
-  eps <- R_0 + A_M %*% Z
-  X <- (diag(n) - P_R_0) %*% M
+  eps <- R_0 + A_M_Z
+  X <- remove_R_0(M)
   Y <- beta[1] + X %*% beta[-1] + eps
 
   list(y = Y, X = X)

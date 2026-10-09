@@ -6,6 +6,13 @@
   <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>. The documentation
   site builds it with Shinylive.
 
+## Improvements
+
+- `surreal()`, `surreal_text()` and `surreal_image()` are much faster and use
+  far less memory on large pictures. A picture of 5,000 points took about 20
+  seconds and over a gigabyte of memory, and now takes a fraction of a second.
+  The data they return for a given seed is unchanged.
+
 ## Bug Fixes
 
 - `surreal_app()`: the download buttons hand over their files when the app runs
