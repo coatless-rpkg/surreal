@@ -31,6 +31,13 @@ reference:
   - surreal_trace
   - plot.surreal_trace
 
+- title: Variable Selection
+  desc: Hide the image among decoy predictors and select the real ones step by step
+  contents:
+  - surreal_decoys
+  - surreal_path
+  - plot.surreal_path
+
 - title: Interactive App
   desc: Explore the surreal algorithm interactively
   contents:

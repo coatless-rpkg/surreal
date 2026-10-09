@@ -2,6 +2,13 @@
 
 ## New Features
 
+- `surreal_decoys()` adds predictors of pure noise to a dataset, so the hidden
+  image shows only for the model with the real predictors. `surreal_path()`
+  then runs forward selection and records every step: which predictor
+  entered, the BIC or AIC, the coefficients and the residuals. Its `plot()`
+  method draws the coefficient paths, the criterion and the residual plot at
+  a step.
+
 - `surreal_trace()` records how the method finds its data: the fitted values at
   every iteration of the search, how far they were from their targets and how
   much each iteration changed. Its `plot()` method draws the picture as it
