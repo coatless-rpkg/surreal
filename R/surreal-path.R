@@ -199,9 +199,16 @@ plot.surreal_path <- function(x, step = x$best, ...) {
   )
   mark()
 
-  # The residual plot at the step
+  # The residual plot at the step. With no predictors in the model every
+  # fitted value is the same, give or take rounding, so the axis gets a unit
+  # of room on each side.
+  fitted <- x$fitted[, step + 1]
+  xlim <- range(fitted)
+  if (diff(xlim) < 1e-8 * max(1, abs(xlim))) {
+    xlim <- mean(xlim) + c(-1, 1)
+  }
   defaults <- list(
-    x = x$fitted[, step + 1], y = x$residuals[, step + 1], pch = 16,
+    x = fitted, y = x$residuals[, step + 1], pch = 16, xlim = xlim,
     xlab = "Fitted", ylab = "Residuals", main = paste("Step", step)
   )
   do.call(plot, utils::modifyList(defaults, list(...)))

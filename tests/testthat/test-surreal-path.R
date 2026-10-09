@@ -121,6 +121,15 @@ test_that("plot() draws the paths, the criterion and the residuals at a step", {
   expect_no_error(plot(path, step = 25))
 })
 
+test_that("plot() draws the first step, where every fitted value is the same", {
+  withr::local_pdf(NULL)
+  path <- surreal_path(decoyed_logo())
+  # Rounding leaves a spread of this size at times, which makes R's axis warn
+  path$fitted[, "0"] <- 27.00666 + c(0, 1) * 1.14e-13
+
+  expect_no_warning(plot(path, step = 0))
+})
+
 test_that("plot() rejects a step that is not on the path", {
   withr::local_pdf(NULL)
   path <- surreal_path(decoyed_logo())

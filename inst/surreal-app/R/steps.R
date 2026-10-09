@@ -105,7 +105,7 @@ selection_tab <- function() {
     card_body(
       class = "p-2",
       tab_note(
-        "How an analyst finds the image. Forward selection adds one predictor at each step. Among decoys, the criterion is lowest where the image is clear."
+        "How an analyst finds the image. Forward selection adds one predictor at each step. Among decoys, set under Plot Settings, the criterion is lowest where the image is clear."
       ),
       layout_columns(
         col_widths = c(5, 7),
@@ -119,18 +119,7 @@ selection_tab <- function() {
             "Criterion along the path",
             "selection_criterion",
             "170px",
-            layout_columns(
-              col_widths = c(6, 6),
-              numericInput(
-                "decoys",
-                "Decoy predictors",
-                value = 20,
-                min = 0,
-                max = 60,
-                step = 5
-              ),
-              selectInput("criterion", "Criterion", c("BIC", "AIC"))
-            )
+            selectInput("criterion", "Criterion", c("BIC", "AIC"))
           )
         ),
         plot_card(

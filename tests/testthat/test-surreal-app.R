@@ -221,6 +221,43 @@ test_that("the Search and Selection tabs are offered when the package can fill t
   expect_match(page, 'data-value="Selection"', fixed = TRUE)
 })
 
+test_that("the number of decoys is set with the other inputs, not in the Selection tab", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  page <- as.character(app$ui)
+  tab <- as.character(app$selection_tab())
+
+  expect_length(gregexpr('id="decoys"', page, fixed = TRUE)[[1]], 1)
+  expect_match(page, 'id="decoys"', fixed = TRUE)
+  expect_no_match(tab, 'id="decoys"', fixed = TRUE)
+})
+
+test_that("axis_labels() writes numbers in full, with commas in the thousands", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  expect_equal(app$axis_labels(c(100, 1, 0.01)), c("100", "1", "0.01"))
+  expect_equal(app$axis_labels(c(47000, 48500)), c("47,000", "48,500"))
+  expect_equal(app$axis_labels(c(-2, 0, 2.5)), c("-2", "0", "2.5"))
+})
+
+test_that("a frame whose fitted values are all but equal is drawn without complaint", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  withr::local_pdf(NULL)
+  app <- load_app()
+  # A spread this small is what the first step of a selection can have, and
+  # it is in the narrow band that makes R's axis warn
+  flat <- 27.00666 + c(0, 1, 1 / 2, 1 / 3, 0, 1) * 1.14e-13
+
+  expect_no_warning(
+    app$draw_frame(flat, c(-2, -1, 0, 1, 2, 3), app$plot_palette(FALSE), 0.6)
+  )
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")
@@ -288,6 +325,9 @@ test_that("the selection scores the model of the real predictors best among deco
   skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
+  # The app draws a new seed for each dataset. With this one, no decoy
+  # happens to improve the criterion, which about one draw in ten does.
+  withr::local_seed(2007)
 
   shiny::testServer(app_dir(), {
     do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))

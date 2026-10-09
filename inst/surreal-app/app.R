@@ -191,6 +191,10 @@ ui <- page_navbar(
               0.05
             ),
             sliderInput("p", "Predictors", 2, 10, 5, 1),
+            # Noise predictors for the Selection tab to tell from the real ones
+            if (steps_available()) {
+              sliderInput("decoys", "Decoy predictors", 0, 60, 20, 5)
+            },
             sliderInput("point_size", "Point Size", 0.2, 2, 0.6, 0.1)
           )
         ),
@@ -465,8 +469,18 @@ server <- function(input, output, session) {
 
     # Restore settings if available
     if (!is.null(last_state$settings)) {
-      sliders <- c("r_squared", "p", "point_size", "max_points", "threshold")
-      set_sliders(session, last_state$settings[sliders])
+      sliders <- c(
+        "r_squared",
+        "p",
+        "point_size",
+        "max_points",
+        "threshold",
+        "decoys"
+      )
+      set_sliders(
+        session,
+        Filter(Negate(is.null), last_state$settings[sliders])
+      )
       updateSelectInput(
         session,
         "image_mode",
@@ -514,7 +528,8 @@ server <- function(input, output, session) {
             point_size = input$point_size,
             max_points = input$max_points,
             image_mode = input$image_mode,
-            threshold = input$threshold
+            threshold = input$threshold,
+            decoys = input$decoys
           )
         ))
       )
