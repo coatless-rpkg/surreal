@@ -372,7 +372,11 @@ ui <- page_navbar(
             ),
             tableOutput("data_table")
           )
-        )
+        ),
+
+        # The method one step at a time, when the package has what it takes
+        if (steps_available()) search_tab(),
+        if (steps_available()) selection_tab()
       )
     )
   ),
@@ -402,6 +406,8 @@ server <- function(input, output, session) {
     source_coords = NULL,
     source_type = NULL,
     source_text = NULL,
+    seed = NULL,
+    used = NULL,
     history = list()
   )
 
@@ -413,6 +419,8 @@ server <- function(input, output, session) {
       rv$source_coords <- NULL
       rv$source_type <- NULL
       rv$source_text <- NULL
+      rv$seed <- NULL
+      rv$used <- NULL
       rv$history <- list()
     },
     ignoreInit = TRUE
@@ -452,6 +460,8 @@ server <- function(input, output, session) {
     rv$source_coords <- last_state$source_coords
     rv$source_type <- last_state$source_type
     rv$source_text <- last_state$source_text
+    rv$seed <- last_state$seed
+    rv$used <- last_state$used
 
     # Restore settings if available
     if (!is.null(last_state$settings)) {
@@ -496,6 +506,8 @@ server <- function(input, output, session) {
           source_coords = rv$source_coords,
           source_type = rv$source_type,
           source_text = rv$source_text,
+          seed = rv$seed,
+          used = rv$used,
           settings = list(
             r_squared = input$r_squared,
             p = input$p,
@@ -521,60 +533,80 @@ server <- function(input, output, session) {
       return()
     }
 
+    # The data is generated from a seed that is kept, so the Search tab can
+    # run the same search again and show its iterations
+    seed <- sample.int(1e9, 1)
+
     tryCatch(
       {
-        result <- switch(
-          input$input_mode,
-          "demo_jack" = {
-            rv$source_coords <- data.frame(
-              x = jackolantern_surreal_data[[2]],
-              y = jackolantern_surreal_data[[1]]
-            )
-            rv$source_type <- "demo"
-            showNotification(
-              "Jack-o-Lantern uses pre-built data. R^2 and Predictor sliders don't apply.",
-              type = "warning",
-              duration = 4
-            )
-            jackolantern_surreal_data
-          },
-          "demo_rlogo" = {
-            rv$source_coords <- r_logo_image_data
-            rv$source_type <- "demo"
-            surreal(r_logo_image_data, R_squared = input$r_squared, p = input$p)
-          },
-          "text" = {
-            req(nchar(trimws(input$text)) > 0)
-            rv$source_type <- "text"
-            rv$source_coords <- NULL
-            rv$source_text <- input$text
-            surreal_text(input$text, R_squared = input$r_squared, p = input$p)
-          },
-          "image" = {
-            req(input$image)
-            ext <- tools::file_ext(input$image$name)
-            check <- check_image_package(ext)
-            validate(need(
-              check$available,
-              paste("Install", check$package, "package")
-            ))
-            rv$source_type <- "image"
-            rv$source_coords <- input$image$datapath
-            surreal_image(
-              input$image$datapath,
-              mode = input$image_mode,
-              threshold = if (input$image_mode == "auto") {
-                NULL
-              } else {
-                input$threshold
-              },
-              max_points = input$max_points,
-              R_squared = input$r_squared,
-              p = input$p
-            )
-          }
+        result <- with_seed(
+          seed,
+          switch(
+            input$input_mode,
+            "demo_jack" = {
+              rv$source_coords <- data.frame(
+                x = jackolantern_surreal_data[[2]],
+                y = jackolantern_surreal_data[[1]]
+              )
+              rv$source_type <- "demo"
+              showNotification(
+                "Jack-o-Lantern uses pre-built data. R^2 and Predictor sliders don't apply.",
+                type = "warning",
+                duration = 4
+              )
+              jackolantern_surreal_data
+            },
+            "demo_rlogo" = {
+              rv$source_coords <- r_logo_image_data
+              rv$source_type <- "demo"
+              surreal(
+                r_logo_image_data,
+                R_squared = input$r_squared,
+                p = input$p
+              )
+            },
+            "text" = {
+              req(nchar(trimws(input$text)) > 0)
+              rv$source_type <- "text"
+              rv$source_coords <- NULL
+              rv$source_text <- input$text
+              surreal_text(input$text, R_squared = input$r_squared, p = input$p)
+            },
+            "image" = {
+              req(input$image)
+              ext <- tools::file_ext(input$image$name)
+              check <- check_image_package(ext)
+              validate(need(
+                check$available,
+                paste("Install", check$package, "package")
+              ))
+              rv$source_type <- "image"
+              rv$source_coords <- input$image$datapath
+              surreal_image(
+                input$image$datapath,
+                mode = input$image_mode,
+                threshold = if (input$image_mode == "auto") {
+                  NULL
+                } else {
+                  input$threshold
+                },
+                max_points = input$max_points,
+                R_squared = input$r_squared,
+                p = input$p
+              )
+            }
+          )
         )
         rv$data <- result
+        rv$seed <- seed
+        rv$used <- list(
+          mode = input$input_mode,
+          r_squared = input$r_squared,
+          p = input$p,
+          image_mode = input$image_mode,
+          threshold = input$threshold,
+          max_points = input$max_points
+        )
         showNotification(
           paste("Generated", format(nrow(result), big.mark = ","), "points"),
           type = "message",
@@ -667,6 +699,126 @@ server <- function(input, output, session) {
     {
       req(model())
       draw_residuals(model(), colors(), isolate(input$point_size))
+    },
+    bg = "transparent",
+    res = 96
+  )
+
+  # The search: the same run that made the data, with its iterations kept
+  trace <- reactive({
+    req(steps_available(), rv$data, rv$used, input$search_step)
+    used <- rv$used
+    validate(need(
+      used$mode != "demo_jack",
+      "The jack-o'-lantern data comes ready-made, so there is no search to show. Pick another source."
+    ))
+
+    with_seed(rv$seed, {
+      points <- switch(
+        used$mode,
+        "demo_rlogo" = r_logo_image_data,
+        "text" = surreal_text_points(rv$source_text),
+        "image" = surreal_image_points(
+          rv$source_coords,
+          mode = used$image_mode,
+          threshold = if (used$image_mode == "auto") NULL else used$threshold,
+          max_points = used$max_points
+        )
+      )
+      surreal_trace(
+        points,
+        R_squared = used$r_squared,
+        p = used$p,
+        step = input$search_step
+      )
+    })
+  })
+
+  # The selection: forward selection over the data, with decoys added to it
+  path <- reactive({
+    req(steps_available(), rv$data, input$criterion)
+    decoys <- input$decoys
+    data <- rv$data
+    if (isTRUE(decoys >= 1)) {
+      data <- with_seed(
+        rv$seed + 1,
+        surreal_decoys(data, n = min(round(decoys), 60), shuffle = FALSE)
+      )
+    }
+    surreal_path(data, criterion = input$criterion)
+  })
+
+  # Each slider covers the steps there are, and starts where the story does.
+  # A search or selection that cannot be shown leaves its slider alone.
+  quietly <- function(code) tryCatch(code, error = function(e) NULL)
+
+  observeEvent(quietly(trace()), {
+    updateSliderInput(
+      session,
+      "search_iteration",
+      max = nrow(trace()$iterations),
+      value = 1
+    )
+  })
+  observeEvent(quietly(path()), {
+    updateSliderInput(
+      session,
+      "selection_step",
+      max = nrow(path()$steps) - 1,
+      value = path()$best
+    )
+  })
+
+  output$search_path <- renderPlot(
+    {
+      iteration <- min(input$search_iteration, nrow(trace()$iterations))
+      draw_search_path(trace(), iteration, colors())
+    },
+    bg = "transparent",
+    res = 96
+  )
+
+  output$search_picture <- renderPlot(
+    {
+      iteration <- min(input$search_iteration, nrow(trace()$iterations))
+      draw_frame(
+        trace()$fitted[, iteration],
+        trace()$residuals,
+        colors(),
+        isolate(input$point_size)
+      )
+    },
+    bg = "transparent",
+    res = 96
+  )
+
+  output$selection_paths <- renderPlot(
+    {
+      step <- min(input$selection_step, nrow(path()$steps) - 1)
+      draw_coefficient_paths(path(), step, colors())
+    },
+    bg = "transparent",
+    res = 96
+  )
+
+  output$selection_criterion <- renderPlot(
+    {
+      step <- min(input$selection_step, nrow(path()$steps) - 1)
+      draw_criterion(path(), step, colors())
+    },
+    bg = "transparent",
+    res = 96
+  )
+
+  output$selection_residual <- renderPlot(
+    {
+      step <- min(input$selection_step, nrow(path()$steps) - 1)
+      draw_frame(
+        path()$fitted[, step + 1],
+        path()$residuals[, step + 1],
+        colors(),
+        isolate(input$point_size)
+      )
     },
     bg = "transparent",
     res = 96

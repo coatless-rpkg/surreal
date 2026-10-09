@@ -23,7 +23,12 @@ app_inputs <- function(...) {
     max_points = 3000,
     image_mode = "auto",
     threshold = 0.5,
-    dark_mode = "light"
+    dark_mode = "light",
+    search_step = 1,
+    search_iteration = 1,
+    decoys = 20,
+    criterion = "BIC",
+    selection_step = 0
   )
   utils::modifyList(inputs, list(...))
 }

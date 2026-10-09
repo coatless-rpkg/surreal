@@ -5,9 +5,21 @@
 # The colors the plots use in light and in dark mode
 plot_palette <- function(is_dark) {
   if (is_dark) {
-    list(bg = "#1a202c", fg = "#f7fafc", point = "#63b3ed", rule = "#4a5568")
+    list(
+      bg = "#1a202c",
+      fg = "#f7fafc",
+      point = "#63b3ed",
+      rule = "#4a5568",
+      mark = "#ed8936"
+    )
   } else {
-    list(bg = "#ffffff", fg = "#2d3748", point = "#1a365d", rule = "#cbd5e0")
+    list(
+      bg = "#ffffff",
+      fg = "#2d3748",
+      point = "#1a365d",
+      rule = "#cbd5e0",
+      mark = "#ed8936"
+    )
   }
 }
 
@@ -96,4 +108,82 @@ draw_pairs <- function(data, palette) {
     col.lab = palette$fg
   )
   pairs(data, pch = 20, cex = 0.3, col = paste0(palette$point, "60"))
+}
+
+# One frame of a recorded search or selection: the residual plot as it stood
+draw_frame <- function(fitted, residuals, palette, point_size) {
+  draw_residuals(
+    list(fitted.values = fitted, residuals = residuals),
+    palette,
+    point_size
+  )
+}
+
+# The plotting area for a quantity that runs along the steps, with the step on
+# screen marked in color and the best step, when there is one, dashed
+draw_along <- function(x, y, at, palette, xlab, best = NULL, ...) {
+  par(
+    mar = c(3.5, 3.5, 1, 1),
+    mgp = c(2.2, 0.7, 0),
+    bg = palette$bg,
+    fg = palette$fg,
+    col.axis = palette$fg,
+    col.lab = palette$fg
+  )
+  matplot(x, y, xlab = xlab, ylab = "", axes = FALSE, ...)
+  # Steps are whole numbers, so the axis is labeled at whole numbers only
+  axis(1, at = unique(round(axTicks(1))), cex.axis = 0.8)
+  axis(2, cex.axis = 0.8)
+  box()
+  if (!is.null(best)) {
+    abline(v = best, lty = 2, col = palette$fg)
+  }
+  abline(v = at, col = palette$mark, lwd = 2)
+}
+
+# How far the fitted values were from their targets at each iteration
+draw_search_path <- function(trace, iteration, palette) {
+  draw_along(
+    trace$iterations$iteration,
+    trace$iterations$distance,
+    at = iteration,
+    palette = palette,
+    xlab = "Iteration",
+    type = "o",
+    pch = 20,
+    lty = 1,
+    col = palette$point,
+    log = "y"
+  )
+}
+
+# The coefficient of every predictor along a selection, decoys in gray
+draw_coefficient_paths <- function(path, step, palette) {
+  slopes <- path$coefficients[, -1, drop = FALSE]
+  draw_along(
+    path$steps$step,
+    slopes,
+    at = step,
+    palette = palette,
+    xlab = "Step",
+    best = path$best,
+    type = "s",
+    lty = 1,
+    col = ifelse(colnames(slopes) %in% path$decoys, palette$rule, palette$point)
+  )
+}
+
+# The criterion along a selection
+draw_criterion <- function(path, step, palette) {
+  draw_along(
+    path$steps$step,
+    path$steps$criterion,
+    at = step,
+    palette = palette,
+    xlab = "Step",
+    best = path$best,
+    type = "l",
+    lty = 1,
+    col = palette$point
+  )
 }

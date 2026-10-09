@@ -14,6 +14,11 @@
   much each iteration changed. Its `plot()` method draws the picture as it
   stood at an iteration. A `step` below 1 slows the search down to watch it.
 
+- `surreal_app()` has two new tabs. Search plays back how the method finds the
+  data, one iteration at a time, with a step size to slow it down. Selection
+  adds decoy predictors and steps through forward selection, with the
+  coefficient paths, the criterion and the residual plot at each step.
+
 - `surreal_text_points()` and `surreal_image_points()` return the points that
   draw a message or an image, as `x` and `y` coordinates. These are the points
   `surreal_text()` and `surreal_image()` hide, so you can look at them, change

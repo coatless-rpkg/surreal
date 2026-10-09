@@ -196,6 +196,125 @@ test_that("the code shown for an image has no blank line inside the call", {
   expect_no_match(code, "\n\n", fixed = TRUE)
 })
 
+test_that("with_seed() runs from a seed and leaves the random numbers as they were", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  withr::local_seed(1)
+  next_number <- withr::with_seed(1, runif(1))
+
+  seeded <- app$with_seed(99, runif(2))
+
+  expect_equal(seeded, withr::with_seed(99, runif(2)))
+  expect_equal(runif(1), next_number)
+})
+
+test_that("the Search and Selection tabs are offered when the package can fill them", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  page <- as.character(app$ui)
+
+  expect_identical(app$steps_available(), TRUE)
+  expect_match(page, 'data-value="Search"', fixed = TRUE)
+  expect_match(page, 'data-value="Selection"', fixed = TRUE)
+})
+
+test_that("the search that is shown ends on the data that was generated", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "text", text = "Hi"))
+    session$setInputs(generate = 1)
+
+    expect_equal(trace()$data, rv$data)
+    expect_match(output$search_picture$src, "^data:image/png")
+    expect_match(output$search_path$src, "^data:image/png")
+  })
+})
+
+test_that("a smaller step gives the search more iterations to show", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))
+    session$setInputs(generate = 1)
+    whole <- nrow(trace()$iterations)
+
+    session$setInputs(search_step = 0.25)
+
+    expect_gt(nrow(trace()$iterations), 3 * whole)
+  })
+})
+
+test_that("Undo brings back the search that went with the restored data", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "text", text = "Hi"))
+    session$setInputs(generate = 1)
+    first <- rv$data
+    session$setInputs(text = "Ho", p = 3)
+    session$setInputs(generate = 2)
+
+    session$setInputs(undo = 1)
+
+    expect_equal(rv$data, first)
+    expect_equal(trace()$data, first)
+  })
+})
+
+test_that("there is no search to show for the ready-made data", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_jack"))
+    session$setInputs(generate = 1)
+
+    expect_error(trace(), "ready-made")
+  })
+})
+
+test_that("the selection scores the model of the real predictors best among decoys", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))
+    session$setInputs(generate = 1)
+
+    expect_equal(nrow(path()$steps), 5 + 20 + 1)
+    expect_equal(path()$best, 5)
+    expect_match(output$selection_residual$src, "^data:image/png")
+    expect_match(output$selection_paths$src, "^data:image/png")
+    expect_match(output$selection_criterion$src, "^data:image/png")
+  })
+})
+
+test_that("the selection runs over the real predictors alone when no decoys are asked for", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_jack", decoys = 0))
+    session$setInputs(generate = 1)
+
+    expect_equal(path()$steps$step, 0:6)
+    expect_null(path()$decoys)
+  })
+})
+
 test_that("download buttons drop the download attribute when R runs in the browser", {
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")

@@ -33,6 +33,10 @@ The app provides:
 \item Interactive controls for R², predictors, and image processing settings
 \item Dark/light mode toggle
 \item Data export to CSV
+\item A Search tab that plays back how the method finds the data, one
+iteration at a time
+\item A Selection tab that hides the image among decoy predictors and
+selects the real ones one step at a time
 }
 }
 \section{Requirements}{
@@ -64,4 +68,6 @@ surreal_app(launch.browser = FALSE)
 \code{\link[=surreal]{surreal()}} for the core algorithm.
 \code{\link[=surreal_text]{surreal_text()}} for embedding text programmatically.
 \code{\link[=surreal_image]{surreal_image()}} for processing images programmatically.
+\code{\link[=surreal_trace]{surreal_trace()}} and \code{\link[=surreal_path]{surreal_path()}} for what the Search and Selection
+tabs show.
 }
