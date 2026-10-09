@@ -25,6 +25,12 @@ reference:
   - surreal_text_points
   - surreal_image_points
 
+- title: How It Works
+  desc: Watch the method find its data
+  contents:
+  - surreal_trace
+  - plot.surreal_trace
+
 - title: Interactive App
   desc: Explore the surreal algorithm interactively
   contents:

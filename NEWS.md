@@ -2,6 +2,11 @@
 
 ## New Features
 
+- `surreal_trace()` records how the method finds its data: the fitted values at
+  every iteration of the search, how far they were from their targets and how
+  much each iteration changed. Its `plot()` method draws the picture as it
+  stood at an iteration. A `step` below 1 slows the search down to watch it.
+
 - `surreal_text_points()` and `surreal_image_points()` return the points that
   draw a message or an image, as `x` and `y` coordinates. These are the points
   `surreal_text()` and `surreal_image()` hide, so you can look at them, change
