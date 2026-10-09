@@ -19,6 +19,8 @@ browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/), with
 nothing to install. The demo runs on
 [Shinylive](https://posit-dev.github.io/r-shinylive/).
 
+You can learn a bit more about the package in the following video:
+
 [![Watch surreal in 100 seconds on
 YouTube](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg)](https://www.youtube.com/watch?v=JJtKLPDNoMo)
 
