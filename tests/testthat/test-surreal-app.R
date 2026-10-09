@@ -221,6 +221,19 @@ test_that("the Search and Selection tabs are offered when the package can fill t
   expect_match(page, 'data-value="Selection"', fixed = TRUE)
 })
 
+test_that("each preset sets every slider it shares with the others, the decoys among them", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  settings <- c("r_squared", "p", "point_size", "max_points", "decoys")
+
+  expect_named(app$presets, c("fast", "balanced", "detail"))
+  expect_named(app$presets$fast, settings)
+  expect_named(app$presets$balanced, settings)
+  expect_named(app$presets$detail, settings)
+  expect_lt(app$presets$fast$decoys, app$presets$detail$decoys)
+})
+
 test_that("the number of decoys is set with the other inputs, not in the Selection tab", {
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")

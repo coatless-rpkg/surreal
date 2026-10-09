@@ -40,9 +40,27 @@ download_button <- function(
 
 # The settings each preset button applies
 presets <- list(
-  fast = list(r_squared = 0.3, p = 3, point_size = 0.4, max_points = 1500),
-  balanced = list(r_squared = 0.3, p = 5, point_size = 0.6, max_points = 3000),
-  detail = list(r_squared = 0.2, p = 8, point_size = 0.8, max_points = 6000)
+  fast = list(
+    r_squared = 0.3,
+    p = 3,
+    point_size = 0.4,
+    max_points = 1500,
+    decoys = 10
+  ),
+  balanced = list(
+    r_squared = 0.3,
+    p = 5,
+    point_size = 0.6,
+    max_points = 3000,
+    decoys = 20
+  ),
+  detail = list(
+    r_squared = 0.2,
+    p = 8,
+    point_size = 0.8,
+    max_points = 6000,
+    decoys = 40
+  )
 )
 
 # Move sliders to the values given for them by name
