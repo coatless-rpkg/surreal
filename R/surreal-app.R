@@ -22,7 +22,7 @@
 #'   \item Interactive controls for R², predictors, and image processing settings
 #'   \item Dark/light mode toggle
 #'   \item Data export to CSV
-#'   \item A Search tab that plays back how the method finds the data, one
+#'   \item A Search tab that plays back the search that makes the data, one
 #'     iteration at a time
 #'   \item A Selection tab that hides the image among decoy predictors and
 #'     selects the real ones one step at a time
@@ -54,8 +54,8 @@
 #' [surreal()] for the core algorithm.
 #' [surreal_text()] for embedding text programmatically.
 #' [surreal_image()] for processing images programmatically.
-#' [surreal_trace()] and [surreal_path()] for what the Search and Selection
-#' tabs show.
+#' [surreal_trace()] and [surreal_path()] for the functions behind the Search
+#' and Selection tabs.
 #'
 #' @export
 surreal_app <- function(launch.browser = TRUE, port = NULL, host = "127.0.0.1") {

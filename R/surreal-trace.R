@@ -1,13 +1,14 @@
-#' Record How the Surreal Method Finds Its Data
+#' Record the Search Behind a Surreal Dataset
 #'
 #' This function runs the same search as [`surreal()`] and keeps what it had at
 #' every iteration, so the search can be plotted or played back. The data it
 #' ends on is the data [`surreal()`] returns for the same seed.
 #'
 #' @inheritParams surreal
-#' @param step Numeric. How far each iteration moves toward its proposed
-#'   update, from above 0 to 1. The default of 1 is what [`surreal()`] does.
-#'   A smaller step slows the search down, which gives more iterations to watch.
+#' @param step Numeric. The fraction of its proposed update that each
+#'   iteration takes, from above 0 to 1. The default of 1 is the step
+#'   [`surreal()`] takes. A smaller step slows the search down and gives more
+#'   iterations to watch.
 #'
 #' @return
 #' An object of class `surreal_trace`, a list with:
@@ -27,8 +28,8 @@
 #' @details
 #' The search starts from random predictors. The picture's vertical positions,
 #' the residuals, are exact from the first iteration: the predictors are built
-#' to be unrelated to them. What the search moves is the fitted values, the
-#' picture's horizontal positions. Each iteration rebuilds one predictor so
+#' to be unrelated to them. The search moves the fitted values, the picture's
+#' horizontal positions. Each iteration rebuilds one predictor so
 #' that the fitted values land on their targets, which shifts the model
 #' slightly, so the next iteration corrects again. With the default step this
 #' settles in a handful of iterations.
@@ -47,7 +48,7 @@
 #' plot(trace)
 #' par(oldpar)
 #'
-#' # How quickly the fitted values reached their targets
+#' # The distance of the fitted values from their targets, by iteration
 #' plot(trace, type = "trace")
 #'
 #' # A smaller step gives a longer search to watch

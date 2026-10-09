@@ -100,8 +100,8 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' [`surreal_trace()`] after performing the border transformation.
 #'
 #' @inheritParams surreal
-#' @param step   Numeric. How far each iteration moves toward its proposed
-#'   update, from above 0 to 1. The default of 1 takes the update whole.
+#' @param step   Numeric. The fraction of its proposed update that each
+#'   iteration takes, from above 0 to 1. The default of 1 takes it whole.
 #' @param record Logical. If TRUE, the state at each iteration is kept.
 #'
 #' @return A list with two elements:

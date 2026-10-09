@@ -55,7 +55,7 @@ search_tab <- function() {
     card_body(
       class = "p-2",
       tab_note(
-        "How the method finds the data. Each iteration moves the fitted values toward their targets. The residuals are right from the first one."
+        "The search that makes the data, one iteration at a time. The residuals are in place from the first iteration, and each one moves the fitted values toward their targets."
       ),
       layout_columns(
         col_widths = c(5, 7),
@@ -74,7 +74,7 @@ search_tab <- function() {
           ),
           div(
             class = "text-body-secondary",
-            "A step of 1 is what surreal() takes. A smaller one slows the search down to watch it."
+            "surreal() takes a step of 1. Try a smaller step to slow the search and watch the image form."
           )
         ),
         plot_card(
@@ -105,7 +105,7 @@ selection_tab <- function() {
     card_body(
       class = "p-2",
       tab_note(
-        "How an analyst finds the image. Forward selection adds one predictor at each step. Among decoys, set under Plot Settings, the criterion is lowest where the image is clear."
+        "Forward selection over the data, one predictor at each step. With decoy predictors, set under Plot Settings, the criterion is lowest at the step with the clearest image. Step past it to see the image blur."
       ),
       layout_columns(
         col_widths = c(5, 7),

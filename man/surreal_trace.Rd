@@ -2,7 +2,7 @@
 % Please edit documentation in R/surreal-trace.R
 \name{surreal_trace}
 \alias{surreal_trace}
-\title{Record How the Surreal Method Finds Its Data}
+\title{Record the Search Behind a Surreal Dataset}
 \usage{
 surreal_trace(
   data,
@@ -33,9 +33,10 @@ surreal_trace(
 
 \item{tolerance}{Numeric. Criteria for detecting convergence and stopping optimization early. Default is 0.01.}
 
-\item{step}{Numeric. How far each iteration moves toward its proposed
-update, from above 0 to 1. The default of 1 is what \code{\link[=surreal]{surreal()}} does.
-A smaller step slows the search down, which gives more iterations to watch.}
+\item{step}{Numeric. The fraction of its proposed update that each
+iteration takes, from above 0 to 1. The default of 1 is the step
+\code{\link[=surreal]{surreal()}} takes. A smaller step slows the search down and gives more
+iterations to watch.}
 }
 \value{
 An object of class \code{surreal_trace}, a list with:
@@ -60,8 +61,8 @@ ends on is the data \code{\link[=surreal]{surreal()}} returns for the same seed.
 \details{
 The search starts from random predictors. The picture's vertical positions,
 the residuals, are exact from the first iteration: the predictors are built
-to be unrelated to them. What the search moves is the fitted values, the
-picture's horizontal positions. Each iteration rebuilds one predictor so
+to be unrelated to them. The search moves the fitted values, the picture's
+horizontal positions. Each iteration rebuilds one predictor so
 that the fitted values land on their targets, which shifts the model
 slightly, so the next iteration corrects again. With the default step this
 settles in a handful of iterations.
@@ -80,7 +81,7 @@ plot(trace, iteration = 1)
 plot(trace)
 par(oldpar)
 
-# How quickly the fitted values reached their targets
+# The distance of the fitted values from their targets, by iteration
 plot(trace, type = "trace")
 
 # A smaller step gives a longer search to watch

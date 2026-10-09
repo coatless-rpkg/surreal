@@ -271,6 +271,17 @@ test_that("a frame whose fitted values are all but equal is drawn without compla
   )
 })
 
+test_that("the Search and Selection tabs describe themselves without question words", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  question_words <- "\\b(how|what|why|where|when|which|who)\\b"
+
+  words <- gsub("<[^>]+>", " ", paste(app$search_tab(), app$selection_tab()))
+
+  expect_no_match(words, question_words, ignore.case = TRUE)
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

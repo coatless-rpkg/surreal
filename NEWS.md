@@ -9,12 +9,12 @@
   method draws the coefficient paths, the criterion and the residual plot at
   a step.
 
-- `surreal_trace()` records how the method finds its data: the fitted values at
-  every iteration of the search, how far they were from their targets and how
-  much each iteration changed. Its `plot()` method draws the picture as it
+- `surreal_trace()` records the search that makes the data: the fitted values
+  at every iteration, their distance from their targets and the size of each
+  change. Its `plot()` method draws the picture as it
   stood at an iteration. A `step` below 1 slows the search down to watch it.
 
-- `surreal_app()` has two new tabs. Search plays back how the method finds the
+- `surreal_app()` has two new tabs. Search plays back the search that makes the
   data, one iteration at a time, with a step size to slow it down. Selection
   adds decoy predictors and steps through forward selection, with the
   coefficient paths, the criterion and the residual plot at each step.
