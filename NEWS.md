@@ -1,64 +1,52 @@
 # surreal (development version)
 
-## New Features
+## New features
 
-- `surreal_decoys()` adds predictors of pure noise to a dataset, so the hidden
-  image shows only for the model with the real predictors. `surreal_path()`
-  then runs forward selection and records every step: which predictor
-  entered, the BIC or AIC, the coefficients and the residuals. Its `plot()`
+* `surreal_app()` has a demo that runs in a web browser through Shinylive, with
+  nothing to install, at <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>
+  (#5).
+
+* `surreal_app()` gains two tabs. Search plays back the search that makes a
+  dataset, and Selection steps through forward selection among decoy
+  predictors (#6, #7).
+
+* `surreal_decoys()` adds predictors of pure noise to a dataset, so the hidden
+  image shows only for the model with the real predictors (#6).
+
+* `surreal_path()` runs forward selection and records every step. Its `plot()`
   method draws the share each step explained against the criterion's charge
-  for a predictor, the criterion along the path and the residual plot at a
-  step, with the coefficient paths as a further panel.
+  for a predictor, the criterion and the residual plot at a step (#6, #7).
 
-- `surreal_trace()` records the search that makes the data: the fitted values
-  at every iteration, their distance from their targets and the size of each
-  change. Its `plot()` method draws the picture as it
-  stood at an iteration. A `step` below 1 slows the search down to watch it.
+* `surreal_text_points()` and `surreal_image_points()` return the points that
+  `surreal_text()` and `surreal_image()` hide, as `x` and `y` coordinates (#6).
 
-- `surreal_app()` has two new tabs. Search plays back the search that makes the
-  data, one iteration at a time, with a step size to slow it down. Selection
-  adds decoy predictors and steps through forward selection, with the share
-  each step explained or the coefficient paths, the criterion under BIC or
-  AIC, and the residual plot at each step.
+* `surreal_trace()` records every iteration of the search that makes a
+  dataset, and its `plot()` method draws the image as it stood at an
+  iteration. A `step` below 1 slows the search down (#6).
 
-- `surreal_text_points()` and `surreal_image_points()` return the points that
-  draw a message or an image, as `x` and `y` coordinates. These are the points
-  `surreal_text()` and `surreal_image()` hide, so you can look at them, change
-  them or combine them before handing them to `surreal()`.
+## Minor improvements and bug fixes
 
-- The Shiny app has a demo that runs in a web browser, with nothing to install:
-  <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>. The documentation
-  site builds it with Shinylive.
+* `surreal()`, `surreal_text()` and `surreal_image()` are much faster and use
+  far less memory on large images. The data they return for a given seed is
+  unchanged (#6).
 
-## Improvements
+* `surreal_app()` download buttons hand over their files when the app runs in
+  a web browser (#5).
 
-- `surreal()`, `surreal_text()` and `surreal_image()` are much faster and use
-  far less memory on large pictures. A picture of 5,000 points took about 20
-  seconds and over a gigabyte of memory, and now takes a fraction of a second.
-  The data they return for a given seed is unchanged.
+* `surreal_app()` shows the generated message in the Source pane, in its
+  download and after Undo (#5).
 
-## Bug Fixes
+* `surreal_app()` shows code that runs when the message has a quotation mark
+  or a line break in it (#6).
 
-- `surreal_app()`: the Code dialog shows code that runs when the message has
-  a quotation mark or a line break in it.
+* `surreal_image()` finds an image drawn in two light tones, such as light
+  gray on white (#6).
 
-- `surreal_app()`: the download buttons hand over their files when the app runs
-  in a web browser through Shinylive.
+* `surreal_image()` reads an image address with a query string, such as
+  `picture.jpg?raw=1`, in its own format (#6).
 
-- `surreal_app()`: the Source pane, the Source download and Undo show the
-  message that was generated. The pane kept the first message when a second
-  one was generated.
-
-- `surreal_image()`: a picture in two light tones, such as light gray on
-  white, is found. The automatic threshold fell just under the darker tone,
-  so no points were selected.
-
-- `surreal_image()`: an image address with a query string, such as
-  `picture.jpg?raw=1`, is read in its own format. It was saved and read as a
-  PNG.
-
-- `surreal_text()`: text with no visible characters gives an error that says
-  so.
+* `surreal_text()` gives a clear error for text with no visible characters
+  (#6).
 
 # surreal 0.0.2
 
