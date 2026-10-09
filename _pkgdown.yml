@@ -19,6 +19,25 @@ reference:
   - surreal_image
   - border_augmentation
 
+- title: Points
+  desc: Get the points that draw a message or an image before hiding them
+  contents:
+  - surreal_text_points
+  - surreal_image_points
+
+- title: The Search
+  desc: Watch the method arrive at its data
+  contents:
+  - surreal_trace
+  - plot.surreal_trace
+
+- title: Variable Selection
+  desc: Hide the image among decoy predictors and select the real ones step by step
+  contents:
+  - surreal_decoys
+  - surreal_path
+  - plot.surreal_path
+
 - title: Interactive App
   desc: Explore the surreal algorithm interactively
   contents:

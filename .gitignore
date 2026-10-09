@@ -6,3 +6,4 @@
 .quarto
 docs
 CRAN-SUBMISSION
+tests/testthat/_problems/

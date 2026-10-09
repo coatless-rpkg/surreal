@@ -96,20 +96,27 @@ border_augmentation <- function(x, y, n_add_points = 40, verbose = FALSE) {
 #' Core Algorithm for Finding X and Y
 #'
 #' This function implements the core algorithm for finding X and y in the
-#' Residual (Sur)Realism method. It's called by [`surreal()`] after
-#' performing the border transformation.
+#' Residual (Sur)Realism method. It's called by [`surreal()`] and
+#' [`surreal_trace()`] after performing the border transformation.
 #'
 #' @inheritParams surreal
+#' @param step   Numeric. The fraction of its proposed update that each
+#'   iteration takes, from above 0 to 1. The default of 1 takes it whole.
+#' @param record Logical. If TRUE, the state at each iteration is kept.
 #'
 #' @return A list with two elements:
 #' \describe{
 #'   \item{X}{The generated X matrix}
 #'   \item{y}{The generated y vector}
 #' }
+#' When `record` is TRUE, a third element `trace` holds the target for the
+#' fitted values and, for each iteration, the fitted values, their distance
+#' from the target and the size of the proposed update.
 #'
 #' @importFrom stats rnorm sd lm
 #' @noRd
-find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, tolerance = 0.01, verbose = FALSE) {
+find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, tolerance = 0.01, verbose = FALSE,
+                          step = 1, record = FALSE) {
   n <- length(R_0)
 
   # Scale y_hat to achieve desired R-squared
@@ -123,16 +130,29 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
   Z <- rnorm(n, sd = sd(R_0))
   M <- matrix(rnorm(n * p, sd = sd(y_hat)), n, p)
 
-  # Calculate projection matrix
-  P_R_0 <- tcrossprod(R_0) / sum(R_0^2)
+  # The projection onto R_0 is applied to vectors as they come, so the
+  # n-by-n matrix behind it is never built
+  R_0_ss <- sum(R_0^2)
+  remove_R_0 <- function(V) V - R_0 %*% (crossprod(R_0, V) / R_0_ss)
+
+  fitted <- change <- distance <- NULL
 
   # Iterative optimization
   for (i in seq_len(max_iter)) {
-    W <- cbind(1, (diag(n) - P_R_0) %*% M)
-    A_M <- W %*% solve(crossprod(W), t(W))
+    X <- remove_R_0(M)
+    W <- cbind(1, X)
+    A_M_Z <- W %*% solve(crossprod(W), crossprod(W, Z))
+
+    if (record) {
+      # The fitted values of the full model on the data as it stands
+      fitted_i <- beta[1] + X %*% beta[-1] + A_M_Z
+      fitted <- cbind(fitted, fitted_i)
+      distance <- c(distance, sqrt(mean((fitted_i - y_hat)^2)))
+    }
 
     SUM_beta_M_all <- M %*% beta[-1]  # Exclude beta_0
-    FIRST <- y_hat - beta[1] - A_M %*% Z + P_R_0 %*% M %*% beta[-1] - SUM_beta_M_all
+    P_R_0_M_beta <- R_0 * (sum(R_0 * SUM_beta_M_all) / R_0_ss)
+    FIRST <- y_hat - beta[1] - A_M_Z + P_R_0_M_beta - SUM_beta_M_all
 
     M_new <- M
     M_new[, j_star - 1] <- (FIRST + beta[j_star] * M[, j_star - 1]) / beta[j_star]
@@ -143,17 +163,97 @@ find_X_y_core <- function(y_hat, R_0, R_squared = 0.3, p = 5, max_iter = 100, to
       cat("Iteration", i, "- Delta:", delta, "\n")
     }
 
+    if (record) change <- c(change, delta)
+
     if (delta < tolerance) break
 
-    M <- M_new
+    M <- if (step == 1) M_new else M + step * (M_new - M)
   }
 
   # Calculate final X and Y
-  eps <- R_0 + A_M %*% Z
-  X <- (diag(n) - P_R_0) %*% M
+  eps <- R_0 + A_M_Z
+  X <- remove_R_0(M)
   Y <- beta[1] + X %*% beta[-1] + eps
 
-  list(y = Y, X = X)
+  result <- list(y = Y, X = X)
+  if (record) {
+    result$trace <- list(
+      target = y_hat, fitted = unname(fitted),
+      change = change, distance = distance
+    )
+  }
+
+  result
+}
+
+#' Check the settings of the surreal method
+#'
+#' Stops with the message [`surreal()`] has always given, reported as coming
+#' from the function that was called.
+#'
+#' @inheritParams surreal
+#'
+#' @return `NULL`, invisibly. Called for its errors.
+#'
+#' @noRd
+check_settings <- function(R_squared, p, n_add_points, max_iter, tolerance) {
+  call <- sys.call(-1)
+  fail <- function(...) stop(simpleError(paste0(...), call = call))
+
+  if (R_squared <= 0 || R_squared >= 1) {
+    fail("`R_squared` must be between 0 and 1 (supplied: ", R_squared ,")")
+  }
+  if (p < 1) {
+    fail("`p` must be at least 1 (supplied: ", p ,")")
+  }
+  if (n_add_points < 0) {
+    fail("`n_add_points` must be a non-negative integer (supplied: ", n_add_points ,")")
+  }
+  if (max_iter < 1) {
+    fail("`max_iter` must be at least 1 (supplied: ", max_iter ,")")
+  }
+  if (tolerance <= 0) {
+    fail("`tolerance` must be a positive number (supplied: ", tolerance ,")")
+  }
+
+  invisible()
+}
+
+#' Check that the two halves of a picture match in length
+#'
+#' @inheritParams surreal
+#'
+#' @return `NULL`, invisibly. Called for its error.
+#'
+#' @noRd
+check_lengths <- function(y_hat, R_0) {
+  if (length(y_hat) != length(R_0)) {
+    message <- paste0(
+      "`y_hat` and `R_0` must have the same length. (",
+      length(y_hat), "!= ", length(R_0), ")"
+    )
+    stop(simpleError(message, call = sys.call(-1)))
+  }
+
+  invisible()
+}
+
+#' Frame a picture and center its residuals
+#'
+#' @inheritParams surreal
+#'
+#' @return A list with the `y_hat` and `R_0` the core algorithm works from.
+#'
+#' @noRd
+frame_picture <- function(y_hat, R_0, n_add_points, verbose = FALSE) {
+  # Apply bordering to data if n_add_points > 0
+  if (n_add_points > 0) {
+    xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
+  } else {
+    xy <- cbind(y_hat, R_0)
+  }
+
+  list(y_hat = xy[, 1], R_0 = xy[, 2] - mean(xy[, 2]))
 }
 
 #' Find X Matrix and Y Vector for Residual Surrealism
@@ -213,21 +313,7 @@ surreal <- function(
     max_iter = 100, tolerance = 0.01, verbose = FALSE) {
 
   # Input validation
-  if (R_squared <= 0 || R_squared >= 1) {
-    stop("`R_squared` must be between 0 and 1 (supplied: ", R_squared ,")")
-  }
-  if (p < 1) {
-    stop("`p` must be at least 1 (supplied: ", p ,")")
-  }
-  if (n_add_points < 0) {
-    stop("`n_add_points` must be a non-negative integer (supplied: ", n_add_points ,")")
-  }
-  if (max_iter < 1) {
-    stop("`max_iter` must be at least 1 (supplied: ", max_iter ,")")
-  }
-  if (tolerance <= 0) {
-    stop("`tolerance` must be a positive number (supplied: ", tolerance ,")")
-  }
+  check_settings(R_squared, p, n_add_points, max_iter, tolerance)
 
   # Check if data is provided and extract y_hat and R_0
   if (!missing(data) && (is.data.frame(data) | is.matrix(data)) && ncol(data) == 2) {
@@ -235,29 +321,19 @@ surreal <- function(
     R_0 <- as.vector(data[, 2])
   }
 
-  if (length(y_hat) != length(R_0)) {
-    stop("`y_hat` and `R_0` must have the same length. (", length(y_hat) ,"!= ", length(R_0) ,")")
-  }
+  check_lengths(y_hat, R_0)
 
   # Plot original data if verbose
   if (verbose) {
     plot(y_hat, R_0, main = "Original data", xlab = '', ylab = '')
   }
 
-  # Apply bordering to data if n_add_points > 0
-  if (n_add_points > 0) {
-    xy <- border_augmentation(y_hat, R_0, n_add_points = n_add_points, verbose = verbose)
-  } else {
-    xy <- cbind(y_hat, R_0)
-  }
-
-  # Extract transformed y_hat and R_0
-  y_hat <- xy[, 1]
-  R_0 <- xy[, 2] - mean(xy[, 2])
+  # Frame the picture and center its residuals
+  picture <- frame_picture(y_hat, R_0, n_add_points, verbose = verbose)
 
   # Find X and y using core algorithm
   data <- find_X_y_core(
-    y_hat, R_0, R_squared = R_squared, p = p,
+    picture$y_hat, picture$R_0, R_squared = R_squared, p = p,
     max_iter = max_iter, tolerance = tolerance, verbose = verbose)
 
   # Create result data frame

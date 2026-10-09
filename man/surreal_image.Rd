@@ -100,4 +100,5 @@ result <- surreal_image("image.png", max_points = Inf)
 \seealso{
 \code{\link[=surreal]{surreal()}} for details on the surreal method parameters.
 \code{\link[=surreal_text]{surreal_text()}} for embedding text instead of images.
+\code{\link[=surreal_image_points]{surreal_image_points()}} for the points of the image on their own.
 }
