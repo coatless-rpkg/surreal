@@ -73,9 +73,9 @@ for details on the surreal method parameters.
 r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 
 #> Optimal alpha: 1.49389 
-#> Iteration 1 - Delta: 135455.9 
-#> Iteration 2 - Delta: 1.578257 
-#> Iteration 3 - Delta: 0.0005664963 
+#> Iteration 1 - Delta: 135189.8 
+#> Iteration 2 - Delta: 1.225437 
+#> Iteration 3 - Delta: 0.0001048469 
 
 
 
@@ -84,9 +84,9 @@ r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 stat_rocks_result <- surreal_text("Statistics\nRocks", verbose = TRUE)
 
 #> Optimal alpha: 1.339718 
-#> Iteration 1 - Delta: 2483899 
-#> Iteration 2 - Delta: 21.29123 
-#> Iteration 3 - Delta: 0.005526626 
+#> Iteration 1 - Delta: 2482614 
+#> Iteration 2 - Delta: 20.20316 
+#> Iteration 3 - Delta: 0.00607195 
 
 
 ```

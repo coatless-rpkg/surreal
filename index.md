@@ -6,17 +6,29 @@ images or text that appear when you plot the residuals of a linear model
 by providing an implementation of the “Residual (Sur)Realism” algorithm
 described by Stefanski (2007).
 
+You can [try it right now in your
+browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/), with
+nothing to install. The demo runs on
+[Shinylive](https://posit-dev.github.io/r-shinylive/).
+
+You can learn a bit more about the package in the following video:
+
+[![Watch surreal in 100 seconds on
+YouTube](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg)](https://www.youtube.com/watch?v=JJtKLPDNoMo)
+
 ## Installation
 
 You can install `surreal` from CRAN:
 
 ``` r
+
 install.packages("surreal")
 ```
 
 Or get the latest version from GitHub:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("coatless-rpkg/surreal")
 ```
@@ -26,6 +38,7 @@ remotes::install_github("coatless-rpkg/surreal")
 First, load the package:
 
 ``` r
+
 library(surreal)
 ```
 
@@ -37,17 +50,24 @@ an image or a text message and apply the surreal method to it.
 As an example, let’s use the built-in R logo dataset:
 
 ``` r
+
 data("r_logo_image_data", package = "surreal")
 
 plot(r_logo_image_data, pch = 16, main = "Original R Logo Data")
 ```
 
-![](reference/figures/README-load-logo-1.png)
+![Scatterplot titled Original R Logo Data. Black points trace the R
+logo, a letter R inside a
+ring.](reference/figures/README-load-logo-1.png)
+
+Scatterplot titled Original R Logo Data. Black points trace the R logo,
+a letter R inside a ring.
 
 The data for the R logo is stored in a data frame with two columns, `x`
 and `y`:
 
 ``` r
+
 str(r_logo_image_data)
 #> 'data.frame':    2000 obs. of  2 variables:
 #>  $ x: int  54 55 56 57 58 59 34 35 36 49 ...
@@ -69,6 +89,7 @@ dataset. We’ll want to set a seed for reproducibility purposes since the
 algorithm relies on an optimization routine:
 
 ``` r
+
 set.seed(114)
 transformed_data <- surreal(r_logo_image_data)
 ```
@@ -79,10 +100,17 @@ using a scatterplot matrix graph, we can see that the new covariates do
 not reveal the original image:
 
 ``` r
+
 pairs(y ~ ., data = transformed_data, main = "Data After Transformation")
 ```
 
-![](reference/figures/README-surreal-method-data-pair-plot-1.png)
+![Scatterplot matrix titled Data After Transformation, for y and five
+predictors, X.1 to X.5. Every panel is a cloud of points, and none shows
+the logo.](reference/figures/README-surreal-method-data-pair-plot-1.png)
+
+Scatterplot matrix titled Data After Transformation, for y and five
+predictors, X.1 to X.5. Every panel is a cloud of points, and none shows
+the logo.
 
 ### Revealing the Hidden Image
 
@@ -90,12 +118,18 @@ We need to fit a linear model to the transformed data and plot the
 residuals:
 
 ``` r
+
 model <- lm(y ~ ., data = transformed_data)
 plot(model$fitted, model$resid, pch = 16, 
      main = "Residual Plot: Hidden R Logo Revealed")
 ```
 
-![](reference/figures/README-surreal-method-residual-plot-1.png)
+![Residual plot titled Residual Plot: Hidden R Logo Revealed. Residuals
+against fitted values trace the R logo inside a border of
+points.](reference/figures/README-surreal-method-residual-plot-1.png)
+
+Residual plot titled Residual Plot: Hidden R Logo Revealed. Residuals
+against fitted values trace the R logo inside a border of points.
 
 The residual plot reveals the original R logo with a slight border. This
 border is automatically added inside the surreal method to enhance the
@@ -107,6 +141,7 @@ Want to hide your own message? You can also create datasets with custom
 text:
 
 ``` r
+
 # Generate a dataset with a hidden message across multiple lines
 message_data <- surreal_text("R\nis\nawesome!")
 
@@ -116,7 +151,12 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Custom Message in Residuals")
 ```
 
-![](reference/figures/README-custom-text-example-1.png)
+![Residual plot titled Custom Message in Residuals. The points spell R,
+is and awesome! on three lines inside a border of
+points.](reference/figures/README-custom-text-example-1.png)
+
+Residual plot titled Custom Message in Residuals. The points spell R, is
+and awesome! on three lines inside a border of points.
 
 ## Use Any Image
 
@@ -124,6 +164,7 @@ You can create surreal datasets directly from image files or URLs using
 [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md):
 
 ``` r
+
 # From a local file
 result <- surreal_image("path/to/image.png")
 
@@ -143,8 +184,17 @@ automatic mode detection (dark/light) and threshold calculation.
 For a point-and-click experience, launch the interactive Shiny app:
 
 ``` r
+
 surreal_app()
 ```
+
+![The surreal Shiny app. The message “Check your residuals!” is entered
+as custom text, and the Compare tab shows it beside the residual plot
+that spells it out.](reference/figures/app-surreal.png)
+
+The surreal Shiny app. The message “Check your residuals!” is entered as
+custom text, and the Compare tab shows it beside the residual plot that
+spells it out.
 
 The app lets you:
 
@@ -153,6 +203,11 @@ The app lets you:
 - Upload your own images
 - Adjust parameters and see results in real-time
 - Export data to CSV or download plots
+
+You can also [try the app in your
+browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/), with
+nothing to install. The demo runs on
+[Shinylive](https://posit-dev.github.io/r-shinylive/).
 
 ## References
 

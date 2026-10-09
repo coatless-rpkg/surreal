@@ -1,5 +1,24 @@
 # Changelog
 
+## surreal (development version)
+
+### New Features
+
+- The Shiny app has a demo that runs in a web browser, with nothing to
+  install: <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>. The
+  documentation site builds it with Shinylive.
+
+### Bug Fixes
+
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md):
+  the download buttons hand over their files when the app runs in a web
+  browser through Shinylive.
+
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md):
+  the Source pane, the Source download and Undo show the message that
+  was generated. The pane kept the first message when a second one was
+  generated.
+
 ## surreal 0.0.2
 
 CRAN release: 2026-01-11
