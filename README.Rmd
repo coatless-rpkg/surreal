@@ -25,6 +25,8 @@ that appear when you plot the residuals of a linear model by providing an
 implementation of the "Residual (Sur)Realism" algorithm described by 
 Stefanski (2007).
 
+[![Watch surreal in 100 seconds on YouTube](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg)](https://www.youtube.com/watch?v=JJtKLPDNoMo)
+
 ## Installation
 
 You can install `surreal` from CRAN:
