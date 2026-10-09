@@ -203,6 +203,39 @@ test_that("downsample_points() reports what it did when verbose", {
   })
 })
 
+test_that("surreal_image_points() returns the dark pixels of the picture as x and y", {
+  path <- local_square_png()
+
+  points <- surreal_image_points(path, max_points = Inf)
+
+  expect_s3_class(points, "data.frame")
+  expect_named(points, c("x", "y"))
+  expect_equal(nrow(points), 20 * 20)
+  expect_equal(range(points$x), c(21, 40))
+  expect_equal(range(points$y), c(11, 30))
+})
+
+test_that("surreal_image_points() keeps no more than max_points", {
+  path <- local_square_png()
+  withr::local_seed(11)
+
+  points <- surreal_image_points(path, max_points = 100)
+
+  expect_equal(nrow(points), 100)
+})
+
+test_that("surreal_image() hides the points that surreal_image_points() returns", {
+  path <- local_square_png()
+
+  direct <- withr::with_seed(11, surreal_image(path, max_points = 100))
+  by_hand <- withr::with_seed(
+    11,
+    surreal(surreal_image_points(path, max_points = 100))
+  )
+
+  expect_equal(direct, by_hand)
+})
+
 test_that("surreal_image() returns a row for each dark pixel and its frame", {
   path <- local_square_png()
   withr::local_seed(11)
@@ -303,4 +336,14 @@ test_that("surreal_image() takes only the modes it knows", {
   path <- local_square_png()
 
   expect_error(surreal_image(path, mode = "dim"), "should be one of")
+})
+
+test_that("surreal_image_points() rejects arguments it cannot use", {
+  path <- local_square_png()
+
+  expect_snapshot(error = TRUE, {
+    surreal_image_points(c("a.png", "b.png"))
+    surreal_image_points(path, threshold = 2)
+    surreal_image_points(path, max_points = 0)
+  })
 })

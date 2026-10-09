@@ -19,6 +19,12 @@ reference:
   - surreal_image
   - border_augmentation
 
+- title: Points
+  desc: Get the points that draw a message or an image before hiding them
+  contents:
+  - surreal_text_points
+  - surreal_image_points
+
 - title: Interactive App
   desc: Explore the surreal algorithm interactively
   contents:

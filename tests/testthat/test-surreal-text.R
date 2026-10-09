@@ -36,6 +36,28 @@ test_that("temporary_text_plot() draws more pixels for larger text", {
   expect_gt(length(large$x), length(small$x))
 })
 
+test_that("surreal_text_points() returns the pixels of the text as x and y", {
+  skip_if_not(capabilities("png"))
+  pixels <- process_image(temporary_text_plot("Hi"))
+
+  points <- surreal_text_points("Hi")
+
+  expect_s3_class(points, "data.frame")
+  expect_named(points, c("x", "y"))
+  expect_equal(points$x, pixels$x)
+  expect_equal(points$y, pixels$y)
+})
+
+test_that("surreal_text() hides the points that surreal_text_points() returns", {
+  skip_if_not(capabilities("png"))
+  points <- surreal_text_points("Hi", cex = 3)
+
+  direct <- withr::with_seed(3, surreal_text("Hi", cex = 3))
+  by_hand <- withr::with_seed(3, surreal(points))
+
+  expect_equal(direct, by_hand)
+})
+
 test_that("surreal_text() returns a row for each pixel of the text and its frame", {
   skip_if_not(capabilities("png"))
   withr::local_seed(3)
@@ -63,4 +85,10 @@ test_that("surreal_text() says so when the text draws nothing", {
   skip_if_not(capabilities("png"))
 
   expect_snapshot(error = TRUE, surreal_text(""))
+})
+
+test_that("surreal_text_points() says so when the text draws nothing", {
+  skip_if_not(capabilities("png"))
+
+  expect_snapshot(error = TRUE, surreal_text_points(" "))
 })

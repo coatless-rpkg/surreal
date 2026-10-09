@@ -36,9 +36,9 @@ surreal_text(
 A data.frame containing the results of the surreal method application.
 }
 \description{
-This function applies the surreal method to a text string. It first creates a
-temporary plot with the text, processes the image, and then applies the surreal
-method to the data.
+This function applies the surreal method to a text string. It first finds
+the points that draw the text with \code{\link[=surreal_text_points]{surreal_text_points()}}, and then
+applies the surreal method to them.
 }
 \examples{
 # Create a surreal plot of the text "R is fun" appearing on one line
@@ -51,4 +51,5 @@ stat_rocks_result <- surreal_text("Statistics\nRocks", verbose = TRUE)
 }
 \seealso{
 \code{\link[=surreal]{surreal()}} for details on the surreal method parameters.
+\code{\link[=surreal_text_points]{surreal_text_points()}} for the points of the text on their own.
 }

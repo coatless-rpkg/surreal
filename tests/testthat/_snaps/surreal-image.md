@@ -62,3 +62,21 @@
       Error in `surreal_image()`:
       ! `max_points` must be a positive integer, Inf, or NULL for auto-detection (got 0).
 
+# surreal_image_points() rejects arguments it cannot use
+
+    Code
+      surreal_image_points(c("a.png", "b.png"))
+    Condition
+      Error in `surreal_image_points()`:
+      ! `image_path` must be a single character string.
+    Code
+      surreal_image_points(path, threshold = 2)
+    Condition
+      Error in `surreal_image_points()`:
+      ! `threshold` must be a numeric value between 0 and 1, or NULL for auto-detection (got 2).
+    Code
+      surreal_image_points(path, max_points = 0)
+    Condition
+      Error in `surreal_image_points()`:
+      ! `max_points` must be a positive integer, Inf, or NULL for auto-detection (got 0).
+

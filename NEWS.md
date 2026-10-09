@@ -2,6 +2,11 @@
 
 ## New Features
 
+- `surreal_text_points()` and `surreal_image_points()` return the points that
+  draw a message or an image, as `x` and `y` coordinates. These are the points
+  `surreal_text()` and `surreal_image()` hide, so you can look at them, change
+  them or combine them before handing them to `surreal()`.
+
 - The Shiny app has a demo that runs in a web browser, with nothing to install:
   <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>. The documentation
   site builds it with Shinylive.

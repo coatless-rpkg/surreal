@@ -289,90 +289,40 @@ downsample_points <- function(coords, max_points, verbose = FALSE) {
   )
 }
 
-#' Apply the surreal method to an image file
+#' Find the points that draw an image
 #'
-#' This function loads an image file, extracts pixel coordinates based on
-#' a brightness threshold, and applies the surreal method to create a dataset
-#' where the image appears in the residual plot.
+#' Does the work of [`surreal_image_points()`]. An error about an argument is
+#' reported as coming from the function the user called, which is `call`.
 #'
-#' @param image_path Character. Path to an image file or a URL (PNG, JPEG, BMP, TIFF, or SVG).
-#' @param mode Character. Either `"auto"` (default) to automatically detect,
-#'   `"dark"` to select dark pixels, or `"light"` to select light pixels.
-#' @param threshold Numeric or `NULL`. Value between 0 and 1 for grayscale
-#'   threshold. If `NULL` (default), automatically calculated using Otsu's method.
-#'   For `"dark"` mode, pixels below threshold are selected.
-#'   For `"light"` mode, pixels above threshold are selected.
-#' @param max_points Integer or `NULL`. Maximum number of points to use. If
-#'   `NULL` (default), automatically estimated based on image size (typically
-#'   2000-5000 points). Set to `Inf` to use all points without downsampling.
-#' @param invert_y Logical. If `TRUE`, flip y-coordinates so image appears
-#'   right-side up in residual plot. Default is `TRUE`.
-#' @inheritParams surreal
+#' @inheritParams surreal_image_points
+#' @param call The environment of the function to name in an error.
 #'
-#' @return A `data.frame` containing the results of the surreal method
-#'   application with columns `y`, `X1`, `X2`, ..., `Xp`.
+#' @return A data.frame of `x` and `y` coordinates.
 #'
-#' @details
-#' By default, all parameters are automatically detected:
-#' - **mode**: Detected from image histogram (dark subject on light background or vice versa)
-#' - **threshold**: Calculated using Otsu's method to optimally separate foreground/background
-#' - **max_points**: Estimated based on image dimensions (2000-5000 points)
-#'
-#' You can override any of these by specifying explicit values.
-#'
-#' **Input Support:**
-#' - Local file paths
-#' - URLs (http:// or https://) - images are downloaded to a temporary file
-#'
-#' **Format Support:**
-#' - PNG: Supported via the `png` package (included)
-#' - JPEG: Requires the `jpeg` package
-#' - BMP: Requires the `bmp` package
-#' - TIFF: Requires the `tiff` package
-#' - SVG: Requires the `rsvg` package (renders vector graphics to bitmap)
-#'
-#' @examples
-#' \dontrun{
-#' # Simplest usage - everything auto-detected
-#' result <- surreal_image("https://www.r-project.org/logo/Rlogo.png")
-#' model <- lm(y ~ ., data = result)
-#' plot(model$fitted, model$residuals, pch = 16)
-#'
-#' # Override specific parameters
-#' result <- surreal_image("image.png", mode = "dark", threshold = 0.3)
-#'
-#' # Use all points (no downsampling)
-#' result <- surreal_image("image.png", max_points = Inf)
-#' }
-#'
-#' @seealso
-#' [surreal()] for details on the surreal method parameters.
-#' [surreal_text()] for embedding text instead of images.
-#'
-#' @export
-surreal_image <- function(
+#' @noRd
+image_points <- function(
     image_path,
-    mode = "auto",
-    threshold = NULL,
-    max_points = NULL,
-    invert_y = TRUE,
-    R_squared = 0.3,
-    p = 5,
-    n_add_points = 40,
-    max_iter = 100,
-    tolerance = 0.01,
-    verbose = FALSE) {
+    mode,
+    threshold,
+    max_points,
+    invert_y,
+    verbose,
+    call = parent.frame()) {
 
   mode <- match.arg(mode, c("auto", "dark", "light"))
 
   if (!is.character(image_path) || length(image_path) != 1) {
-    cli::cli_abort("{.arg image_path} must be a single character string.")
+    cli::cli_abort(
+      "{.arg image_path} must be a single character string.",
+      call = call
+    )
   }
 
   if (!is.null(threshold)) {
     if (!is.numeric(threshold) || threshold < 0 || threshold > 1) {
       cli::cli_abort(
-        "{.arg threshold} must be a numeric value between 0 and 1, or NULL for auto-detection (got {.val {threshold}})."
+        "{.arg threshold} must be a numeric value between 0 and 1, or NULL for auto-detection (got {.val {threshold}}).",
+        call = call
       )
     }
   }
@@ -382,7 +332,8 @@ surreal_image <- function(
   if (!is.null(max_points) && !is.infinite(max_points)) {
     if (!is.numeric(max_points) || max_points < 1) {
       cli::cli_abort(
-        "{.arg max_points} must be a positive integer, Inf, or NULL for auto-detection (got {.val {max_points}})."
+        "{.arg max_points} must be a positive integer, Inf, or NULL for auto-detection (got {.val {max_points}}).",
+        call = call
       )
     }
     max_points <- as.integer(max_points)
@@ -442,11 +393,149 @@ surreal_image <- function(
   # Step 7: Downsample if necessary
   coords <- downsample_points(coords, max_points, verbose)
 
-  # Step 8: Apply the surreal method
+  data.frame(x = coords$x, y = coords$y)
+}
+
+#' Turn an image into the points that draw it
+#'
+#' This function loads an image file and returns the position of every pixel
+#' that passes a brightness threshold. These are the points that
+#' [`surreal_image()`] hides. Getting them first lets you look at them, change
+#' them, or combine them with other points before handing them to
+#' [`surreal()`].
+#'
+#' @inheritParams surreal_image
+#'
+#' @return
+#' A data.frame with one row for each point of the image and two columns,
+#' `x` and `y`.
+#'
+#' @details
+#' The mode, the threshold and the number of points are chosen automatically
+#' unless you set them, as described for [`surreal_image()`].
+#'
+#' @examples
+#' \dontrun{
+#' # The points of the R logo
+#' points <- surreal_image_points("https://www.r-project.org/logo/Rlogo.png")
+#' plot(points, pch = 16, asp = 1)
+#'
+#' # Hide them in a dataset, as surreal_image() does
+#' result <- surreal(points)
+#' }
+#'
+#' @seealso
+#' [`surreal_image()`] to go from an image to a dataset in one step.
+#' [`surreal_text_points()`] for the points of a text message.
+#'
+#' @export
+surreal_image_points <- function(
+    image_path,
+    mode = "auto",
+    threshold = NULL,
+    max_points = NULL,
+    invert_y = TRUE,
+    verbose = FALSE) {
+  image_points(
+    image_path,
+    mode = mode,
+    threshold = threshold,
+    max_points = max_points,
+    invert_y = invert_y,
+    verbose = verbose
+  )
+}
+
+#' Apply the surreal method to an image file
+#'
+#' This function loads an image file, extracts pixel coordinates based on
+#' a brightness threshold, and applies the surreal method to create a dataset
+#' where the image appears in the residual plot.
+#'
+#' @param image_path Character. Path to an image file or a URL (PNG, JPEG, BMP, TIFF, or SVG).
+#' @param mode Character. Either `"auto"` (default) to automatically detect,
+#'   `"dark"` to select dark pixels, or `"light"` to select light pixels.
+#' @param threshold Numeric or `NULL`. Value between 0 and 1 for grayscale
+#'   threshold. If `NULL` (default), automatically calculated using Otsu's method.
+#'   For `"dark"` mode, pixels below threshold are selected.
+#'   For `"light"` mode, pixels above threshold are selected.
+#' @param max_points Integer or `NULL`. Maximum number of points to use. If
+#'   `NULL` (default), automatically estimated based on image size (typically
+#'   2000-5000 points). Set to `Inf` to use all points without downsampling.
+#' @param invert_y Logical. If `TRUE`, flip y-coordinates so image appears
+#'   right-side up in residual plot. Default is `TRUE`.
+#' @inheritParams surreal
+#'
+#' @return A `data.frame` containing the results of the surreal method
+#'   application with columns `y`, `X1`, `X2`, ..., `Xp`.
+#'
+#' @details
+#' By default, all parameters are automatically detected:
+#' - **mode**: Detected from image histogram (dark subject on light background or vice versa)
+#' - **threshold**: Calculated using Otsu's method to optimally separate foreground/background
+#' - **max_points**: Estimated based on image dimensions (2000-5000 points)
+#'
+#' You can override any of these by specifying explicit values.
+#'
+#' **Input Support:**
+#' - Local file paths
+#' - URLs (http:// or https://) - images are downloaded to a temporary file
+#'
+#' **Format Support:**
+#' - PNG: Supported via the `png` package (included)
+#' - JPEG: Requires the `jpeg` package
+#' - BMP: Requires the `bmp` package
+#' - TIFF: Requires the `tiff` package
+#' - SVG: Requires the `rsvg` package (renders vector graphics to bitmap)
+#'
+#' @examples
+#' \dontrun{
+#' # Simplest usage - everything auto-detected
+#' result <- surreal_image("https://www.r-project.org/logo/Rlogo.png")
+#' model <- lm(y ~ ., data = result)
+#' plot(model$fitted, model$residuals, pch = 16)
+#'
+#' # Override specific parameters
+#' result <- surreal_image("image.png", mode = "dark", threshold = 0.3)
+#'
+#' # Use all points (no downsampling)
+#' result <- surreal_image("image.png", max_points = Inf)
+#' }
+#'
+#' @seealso
+#' [surreal()] for details on the surreal method parameters.
+#' [surreal_text()] for embedding text instead of images.
+#' [surreal_image_points()] for the points of the image on their own.
+#'
+#' @export
+surreal_image <- function(
+    image_path,
+    mode = "auto",
+    threshold = NULL,
+    max_points = NULL,
+    invert_y = TRUE,
+    R_squared = 0.3,
+    p = 5,
+    n_add_points = 40,
+    max_iter = 100,
+    tolerance = 0.01,
+    verbose = FALSE) {
+
+  # Find the points that draw the image
+  points <- image_points(
+    image_path,
+    mode = mode,
+    threshold = threshold,
+    max_points = max_points,
+    invert_y = invert_y,
+    verbose = verbose
+  )
+
+  # Apply the surreal method
   if (verbose) cli::cli_alert_info("Applying surreal method.")
   result <- surreal(
-    y_hat = coords$x,
-    R_0 = coords$y,
+    y_hat = points$x,
+    R_0 = points$y,
     R_squared = R_squared,
     p = p,
     n_add_points = n_add_points,
