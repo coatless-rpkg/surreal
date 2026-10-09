@@ -295,6 +295,28 @@ test_that("the search starts at a step below 1, with the reason behind an inform
   expect_match(tab, "takes a step of 1", fixed = TRUE)
 })
 
+test_that("each stepping slider has its play button beside its label", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  in_label <- function(id) {
+    paste0(
+      '(?s)id="',
+      id,
+      '-label"[^>]*>(?:(?!</label>).)*',
+      'slider-animate-button[^>]*data-target-id="',
+      id,
+      '"'
+    )
+  }
+
+  tabs <- paste(app$search_tab(), app$selection_tab())
+
+  expect_match(tabs, in_label("search_iteration"), perl = TRUE)
+  expect_match(tabs, in_label("selection_step"), perl = TRUE)
+  expect_no_match(tabs, "slider-animate-container", fixed = TRUE)
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

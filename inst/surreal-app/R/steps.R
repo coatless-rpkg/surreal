@@ -49,6 +49,35 @@ plot_card <- function(title, plot_id, height, ..., full_screen = FALSE) {
   )
 }
 
+# A slider over whole steps, with its play button beside its label. Shiny
+# puts the button at the lower right of a slider, and there it sits under the
+# button that expands the card. Shiny plays any link of this class through
+# the slider named in `data-target-id`.
+step_slider <- function(id, label, min, max, value) {
+  play <- tags$a(
+    href = "#",
+    class = "slider-animate-button ms-2",
+    role = "button",
+    title = "Play",
+    `data-target-id` = id,
+    `data-interval` = 500,
+    `data-loop` = "FALSE",
+    span(class = "play", icon("play")),
+    span(class = "pause", icon("pause"))
+  )
+
+  sliderInput(
+    id,
+    span(label, play),
+    min = min,
+    max = max,
+    value = value,
+    step = 1,
+    width = "100%",
+    ticks = FALSE
+  )
+}
+
 search_tab <- function() {
   nav_panel(
     title = "Search",
@@ -85,16 +114,12 @@ search_tab <- function() {
           "Fitted vs residuals at an iteration",
           "search_picture",
           "340px",
-          sliderInput(
+          step_slider(
             "search_iteration",
             "Iteration",
             min = 1,
             max = 4,
-            value = 1,
-            step = 1,
-            width = "100%",
-            ticks = FALSE,
-            animate = animationOptions(interval = 500)
+            value = 1
           ),
           full_screen = TRUE
         )
@@ -130,17 +155,7 @@ selection_tab <- function() {
           "Fitted vs residuals at a step",
           "selection_residual",
           "340px",
-          sliderInput(
-            "selection_step",
-            "Step",
-            min = 0,
-            max = 25,
-            value = 5,
-            step = 1,
-            width = "100%",
-            ticks = FALSE,
-            animate = animationOptions(interval = 500)
-          ),
+          step_slider("selection_step", "Step", min = 0, max = 25, value = 5),
           full_screen = TRUE
         )
       )
