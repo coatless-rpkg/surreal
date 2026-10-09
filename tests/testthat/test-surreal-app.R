@@ -93,3 +93,16 @@ test_that("download buttons drop the download attribute when R runs in the brows
   expect_null(in_browser$attribs[["download"]])
   expect_identical(installed$attribs[["download"]], NA)
 })
+
+test_that("surreal_app() runs the app that comes with the package", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  local_mocked_bindings(runApp = function(...) list(...), .package = "shiny")
+
+  started <- surreal_app(launch.browser = FALSE, port = 4321)
+
+  expect_equal(started$appDir, app_dir())
+  expect_identical(started$launch.browser, FALSE)
+  expect_equal(started$port, 4321)
+  expect_equal(started$host, "127.0.0.1")
+})
