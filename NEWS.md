@@ -15,6 +15,9 @@
 
 ## Bug Fixes
 
+- `surreal_app()`: the Code dialog shows code that runs when the message has
+  a quotation mark or a line break in it.
+
 - `surreal_app()`: the download buttons hand over their files when the app runs
   in a web browser through Shinylive.
 

@@ -21,10 +21,12 @@ plot(model$fitted.values, model$residuals, pch = 20)',
 
     "text" = sprintf(
       'library(surreal)
-result <- surreal_text("%s", R_squared = %.2f, p = %d)
+result <- surreal_text(%s, R_squared = %.2f, p = %d)
 model <- lm(y ~ ., data = result)
 plot(model$fitted.values, model$residuals, pch = 20)',
-      settings$text,
+      # Quoted as R would print it, so quotes and line breaks in the message
+      # stay inside the string
+      encodeString(settings$text, quote = '"'),
       settings$r_squared,
       settings$p
     ),
@@ -36,7 +38,6 @@ result <- surreal_image(
   mode = "%s",
   threshold = %s,
   max_points = %d,
-
   R_squared = %.2f,
   p = %d
 )

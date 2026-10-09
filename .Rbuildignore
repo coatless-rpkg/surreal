@@ -9,3 +9,4 @@
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^data-raw$
+^tests/testthat/_problems$

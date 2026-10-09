@@ -174,6 +174,28 @@ test_that("the Code dialog leaves the threshold to the package in auto mode", {
   })
 })
 
+test_that("the code shown for a message runs to that message", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  message <- 'Say "hi"\nnow'
+
+  code <- app$example_code("text", app_inputs(text = message))
+  made <- parse(text = code)[[2]]
+
+  expect_equal(made[[3]][[2]], message)
+})
+
+test_that("the code shown for an image has no blank line inside the call", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  code <- app$example_code("image", app_inputs(input_mode = "image"))
+
+  expect_no_match(code, "\n\n", fixed = TRUE)
+})
+
 test_that("download buttons drop the download attribute when R runs in the browser", {
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
