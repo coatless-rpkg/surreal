@@ -122,6 +122,13 @@ surreal_text <- function(text = "hello world",
   # Process the image to extract coordinate data
   image_data <- process_image(temp_file)
 
+  if (length(image_data$x) == 0) {
+    cli::cli_abort(c(
+      "{.arg text} draws no points.",
+      "i" = "Use text with at least one visible character."
+    ))
+  }
+
   # Apply the surreal method to the extracted data
   result <- surreal(
     R_0 = image_data$y, y_hat = image_data$x,

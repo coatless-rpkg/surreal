@@ -10,6 +10,23 @@ is_url <- function(x) {
   grepl("^https?://", x, ignore.case = TRUE)
 }
 
+#' Get the file extension of a URL
+#'
+#' Reads the extension ahead of any query string or fragment, so that
+#' `picture.jpg?raw=1` is a JPEG. A URL without one is taken to be a PNG.
+#'
+#' @param url URL to read
+#'
+#' @return Lowercase extension without the dot
+#'
+#' @noRd
+url_extension <- function(url) {
+  ext <- tolower(tools::file_ext(sub("[?#].*$", "", url)))
+  if (!nzchar(ext)) ext <- "png"
+
+  ext
+}
+
 #' Download a URL to a temporary file
 #'
 #' @param url URL to download
@@ -18,11 +35,7 @@ is_url <- function(x) {
 #'
 #' @noRd
 download_to_temp <- function(url) {
-  ext <- tolower(tools::file_ext(url))
-  # Handle URLs with query strings
-
-ext <- sub("\\?.*$", "", ext)
-  if (!nzchar(ext)) ext <- "png"
+  ext <- url_extension(url)
 
   temp_file <- tempfile(fileext = paste0(".", ext))
 
@@ -50,7 +63,7 @@ ext <- sub("\\?.*$", "", ext)
 #' @noRd
 load_image_file <- function(image_path) {
   # Handle URLs by downloading to temp file
- if (is_url(image_path)) {
+  if (is_url(image_path)) {
     image_path <- download_to_temp(image_path)
     on.exit(unlink(image_path), add = TRUE)
   } else if (!file.exists(image_path)) {
@@ -61,8 +74,6 @@ load_image_file <- function(image_path) {
   }
 
   ext <- tolower(tools::file_ext(image_path))
-  # Handle URLs with query strings
-  ext <- sub("\\?.*$", "", ext)
 
   image <- switch(ext,
     "png" = {
@@ -165,7 +176,7 @@ otsu_threshold <- function(gray_image) {
 
   sum_bg <- 0
   weight_bg <- 0
- max_variance <- 0
+  max_variance <- 0
   best_threshold <- 0.5
 
   for (i in seq_along(counts)) {
@@ -185,7 +196,8 @@ otsu_threshold <- function(gray_image) {
 
     if (variance > max_variance) {
       max_variance <- variance
-      best_threshold <- mids[i]
+      # The top edge of the bin, so every pixel in it falls below the threshold
+      best_threshold <- breaks[i + 1]
     }
   }
 

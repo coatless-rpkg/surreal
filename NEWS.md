@@ -22,6 +22,17 @@
   message that was generated. The pane kept the first message when a second
   one was generated.
 
+- `surreal_image()`: a picture in two light tones, such as light gray on
+  white, is found. The automatic threshold fell just under the darker tone,
+  so no points were selected.
+
+- `surreal_image()`: an image address with a query string, such as
+  `picture.jpg?raw=1`, is read in its own format. It was saved and read as a
+  PNG.
+
+- `surreal_text()`: text with no visible characters gives an error that says
+  so.
+
 # surreal 0.0.2
 
 ## New Features

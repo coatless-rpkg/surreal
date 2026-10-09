@@ -10,6 +10,17 @@ test_that("is_url() recognizes web addresses and nothing else", {
   )
 })
 
+test_that("url_extension() reads the extension before a query string or fragment", {
+  expect_equal(url_extension("https://example.com/a.JPG?raw=1"), "jpg")
+  expect_equal(url_extension("https://example.com/a.svg#top"), "svg")
+  expect_equal(url_extension("https://example.com/a.png"), "png")
+})
+
+test_that("url_extension() falls back to png when the address has none", {
+  expect_equal(url_extension("https://example.com/picture"), "png")
+  expect_equal(url_extension("https://example.com/picture?id=3"), "png")
+})
+
 test_that("download_to_temp() saves the file under its own extension", {
   path <- local_square_png()
 
@@ -105,6 +116,14 @@ test_that("otsu_threshold() falls between the two groups of gray levels", {
 
   expect_gt(threshold, 0.2)
   expect_lt(threshold, 0.8)
+})
+
+test_that("otsu_threshold() sits above every pixel of the darker tone", {
+  image <- matrix(rep(c(0.8, 1), each = 50), nrow = 10)
+
+  threshold <- otsu_threshold(image)
+
+  expect_equal(sum(image < threshold), 50)
 })
 
 test_that("auto_max_points() keeps every point of a small picture", {
@@ -216,6 +235,18 @@ test_that("surreal_image() keeps every point of a small picture by default", {
   withr::local_seed(11)
 
   hidden <- surreal_image(path, n_add_points = 5)
+
+  expect_equal(nrow(hidden), 20 * 20 + 4 * 5)
+})
+
+test_that("surreal_image() finds a light gray picture on white", {
+  path <- withr::local_tempfile(fileext = ".png")
+  image <- square_image()
+  image[image == 0] <- 0.8
+  png::writePNG(image, path)
+  withr::local_seed(11)
+
+  hidden <- surreal_image(path, max_points = Inf, n_add_points = 5)
 
   expect_equal(nrow(hidden), 20 * 20 + 4 * 5)
 })

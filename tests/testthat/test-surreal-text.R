@@ -58,3 +58,9 @@ test_that("surreal_text() leaves the text as the residuals of the full model", {
 
   expect_equal(unname(residuals(fit)), framed[, 2] - mean(framed[, 2]))
 })
+
+test_that("surreal_text() says so when the text draws nothing", {
+  skip_if_not(capabilities("png"))
+
+  expect_snapshot(error = TRUE, surreal_text(""))
+})
