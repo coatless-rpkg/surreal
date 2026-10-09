@@ -34,11 +34,16 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: any::pkgdown, any::shinylive, local::.
           needs: website
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      # The Shiny app, exported to run in a web browser and served at /demo/.
+      - name: Build Shinylive demo
+        run: shinylive::export("inst/surreal-app", "docs/demo")
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀

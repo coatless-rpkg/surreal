@@ -1,17 +1,15 @@
 ---
-output: github_document
+format: gfm
+# In GitHub Markdown, Quarto writes a plot's fig-cap as its alt text and
+# shows no caption. It leaves fig-alt out, so the alt text goes in fig-cap.
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    fig.path: "man/figures/README-"
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # surreal <img src="man/figures/logo-surreal.png" align="right" alt="Logo: points of varying sizes forming a hidden pattern" width="150"/>
 
@@ -24,6 +22,13 @@ Ever wanted to hide secret messages or images in your data? That's what the
 that appear when you plot the residuals of a linear model by providing an
 implementation of the "Residual (Sur)Realism" algorithm described by 
 Stefanski (2007).
+
+You can [try it right now in your browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/),
+with nothing to install. The demo runs on [Shinylive](https://posit-dev.github.io/r-shinylive/).
+
+You can learn a bit more about the package in the following video:
+
+[![](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg){alt="Watch surreal in 100 seconds on YouTube"}](https://www.youtube.com/watch?v=JJtKLPDNoMo)
 
 ## Installation
 
@@ -58,6 +63,7 @@ As an example, let's use the built-in R logo dataset:
 
 ```{r}
 #| label: load-logo
+#| fig-cap: "Scatterplot titled Original R Logo Data. Black points trace the R logo, a letter R inside a ring."
 data("r_logo_image_data", package = "surreal")
 
 plot(r_logo_image_data, pch = 16, main = "Original R Logo Data")
@@ -89,6 +95,7 @@ matrix graph, we can see that the new covariates do not reveal the original imag
 
 ```{r}
 #| label: surreal-method-data-pair-plot
+#| fig-cap: "Scatterplot matrix titled Data After Transformation, for y and five predictors, X.1 to X.5. Every panel is a cloud of points, and none shows the logo."
 pairs(y ~ ., data = transformed_data, main = "Data After Transformation")
 ```
 
@@ -98,6 +105,7 @@ We need to fit a linear model to the transformed data and plot the residuals:
 
 ```{r}
 #| label: surreal-method-residual-plot
+#| fig-cap: "Residual plot titled Residual Plot: Hidden R Logo Revealed. Residuals against fitted values trace the R logo inside a border of points."
 model <- lm(y ~ ., data = transformed_data)
 plot(model$fitted, model$resid, pch = 16, 
      main = "Residual Plot: Hidden R Logo Revealed")
@@ -113,6 +121,7 @@ Want to hide your own message? You can also create datasets with custom text:
 
 ```{r}
 #| label: custom-text-example
+#| fig-cap: "Residual plot titled Custom Message in Residuals. The points spell R, is and awesome! on three lines inside a border of points."
 # Generate a dataset with a hidden message across multiple lines
 message_data <- surreal_text("R\nis\nawesome!")
 
@@ -153,6 +162,8 @@ For a point-and-click experience, launch the interactive Shiny app:
 surreal_app()
 ```
 
+![The surreal Shiny app. The message "Check your residuals!" is entered as custom text, and the Compare tab shows it beside the residual plot that spells it out.](man/figures/app-surreal.png)
+
 The app lets you:
 
 - Try demo datasets (Jack-o-Lantern, R Logo)
@@ -160,6 +171,9 @@ The app lets you:
 - Upload your own images
 - Adjust parameters and see results in real-time
 - Export data to CSV or download plots
+
+You can also [try the app in your browser](https://r-pkg.thecoatlessprofessor.com/surreal/demo/),
+with nothing to install. The demo runs on [Shinylive](https://posit-dev.github.io/r-shinylive/).
 
 ## References
 

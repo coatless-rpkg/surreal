@@ -1,6 +1,6 @@
 Package: surreal
 Title: Create Datasets with Hidden Images in Residual Plots
-Version: 0.0.2
+Version: 0.0.2.9000
 Authors@R: c(
     person("James Joseph", "Balamuta", email = "james.balamuta@gmail.com", 
            role = c("aut", "cre", "cph"), 
@@ -29,4 +29,6 @@ Suggests:
     jpeg,
     rsvg,
     shiny,
+    testthat (>= 3.0.0),
     tiff
+Config/testthat/edition: 3
