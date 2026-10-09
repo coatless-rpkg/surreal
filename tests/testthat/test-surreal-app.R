@@ -82,6 +82,98 @@ test_that("the Source download holds the message that was generated", {
   })
 })
 
+test_that("every pane is drawn once data is generated", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))
+    session$setInputs(generate = 1)
+
+    expect_match(output$compare_source$src, "^data:image/png")
+    expect_match(output$compare_residual$src, "^data:image/png")
+    expect_match(output$pairs_plot$src, "^data:image/png")
+    expect_equal(output$obs_count, "2,160 points")
+    expect_match(output$data_table, "X.5", fixed = TRUE)
+    expect_match(output$coef_table, "(Intercept)", fixed = TRUE)
+  })
+})
+
+test_that("dark mode redraws the plots in other colors", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))
+    session$setInputs(generate = 1)
+    light <- c(output$compare_source$src, output$compare_residual$src)
+
+    session$setInputs(dark_mode = "dark")
+    dark <- c(output$compare_source$src, output$compare_residual$src)
+
+    expect_length(unique(c(light, dark)), 4)
+  })
+})
+
+test_that("the downloads hold the plots and the data that are on screen", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "demo_rlogo"))
+    session$setInputs(generate = 1)
+
+    residual <- readBin(output$download_residual, "raw", 8)
+    saved <- read.csv(output$download)
+
+    expect_identical(residual, png_signature())
+    expect_equal(saved, rv$data, ignore_attr = TRUE)
+  })
+})
+
+test_that("the Code dialog shows the call for the source that is chosen", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "text", text = "A"))
+    expect_match(
+      generate_code(),
+      'surreal_text("A", R_squared = 0.30, p = 5)',
+      fixed = TRUE
+    )
+
+    session$setInputs(input_mode = "demo_rlogo", p = 3)
+    expect_match(
+      generate_code(),
+      "surreal(r_logo_image_data, R_squared = 0.30, p = 3)",
+      fixed = TRUE
+    )
+
+    session$setInputs(input_mode = "demo_jack")
+    expect_match(generate_code(), "jackolantern_surreal_data", fixed = TRUE)
+  })
+})
+
+test_that("the Code dialog leaves the threshold to the package in auto mode", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(session$setInputs, app_inputs(input_mode = "image"))
+    expect_match(generate_code(), "threshold = NULL", fixed = TRUE)
+
+    session$setInputs(image_mode = "dark", threshold = 0.4)
+    expect_match(generate_code(), 'mode = "dark"', fixed = TRUE)
+    expect_match(generate_code(), "threshold = 0.40", fixed = TRUE)
+  })
+})
+
 test_that("download buttons drop the download attribute when R runs in the browser", {
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
