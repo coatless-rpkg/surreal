@@ -1,17 +1,13 @@
 ---
-output: github_document
+format: gfm
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    fig.path: "man/figures/README-"
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # surreal <img src="man/figures/logo-surreal.png" align="right" alt="Logo: points of varying sizes forming a hidden pattern" width="150"/>
 
@@ -30,7 +26,7 @@ with nothing to install. The demo runs on [Shinylive](https://posit-dev.github.i
 
 You can learn a bit more about the package in the following video:
 
-[![Watch surreal in 100 seconds on YouTube](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg)](https://www.youtube.com/watch?v=JJtKLPDNoMo)
+[![](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg){alt="Watch surreal in 100 seconds on YouTube"}](https://www.youtube.com/watch?v=JJtKLPDNoMo)
 
 ## Installation
 
@@ -160,7 +156,7 @@ For a point-and-click experience, launch the interactive Shiny app:
 surreal_app()
 ```
 
-<img src="man/figures/app-surreal.png" alt="The surreal Shiny app. The message “Check your residuals!” is entered as custom text, and the Compare tab shows it beside the residual plot that spells it out." width="100%" />
+![The surreal Shiny app. The message "Check your residuals!" is entered as custom text, and the Compare tab shows it beside the residual plot that spells it out.](man/figures/app-surreal.png)
 
 The app lets you:
 

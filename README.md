@@ -1,5 +1,6 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # surreal <img src="man/figures/logo-surreal.png" align="right" alt="Logo: points of varying sizes forming a hidden pattern" width="150"/>
 
@@ -21,8 +22,8 @@ nothing to install. The demo runs on
 
 You can learn a bit more about the package in the following video:
 
-[![Watch surreal in 100 seconds on
-YouTube](https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg)](https://www.youtube.com/watch?v=JJtKLPDNoMo)
+[<img src="https://img.youtube.com/vi/JJtKLPDNoMo/maxresdefault.jpg"
+alt="Watch surreal in 100 seconds on YouTube" />](https://www.youtube.com/watch?v=JJtKLPDNoMo)
 
 ## Installation
 
@@ -60,7 +61,7 @@ data("r_logo_image_data", package = "surreal")
 plot(r_logo_image_data, pch = 16, main = "Original R Logo Data")
 ```
 
-<img src="man/figures/README-load-logo-1.png" alt="" width="100%" />
+![](man/figures/README-load-logo-1.png)
 
 The data for the R logo is stored in a data frame with two columns, `x`
 and `y`:
@@ -100,7 +101,7 @@ not reveal the original image:
 pairs(y ~ ., data = transformed_data, main = "Data After Transformation")
 ```
 
-<img src="man/figures/README-surreal-method-data-pair-plot-1.png" alt="" width="100%" />
+![](man/figures/README-surreal-method-data-pair-plot-1.png)
 
 ### Revealing the Hidden Image
 
@@ -113,7 +114,7 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Residual Plot: Hidden R Logo Revealed")
 ```
 
-<img src="man/figures/README-surreal-method-residual-plot-1.png" alt="" width="100%" />
+![](man/figures/README-surreal-method-residual-plot-1.png)
 
 The residual plot reveals the original R logo with a slight border. This
 border is automatically added inside the surreal method to enhance the
@@ -134,7 +135,7 @@ plot(model$fitted, model$resid, pch = 16,
      main = "Custom Message in Residuals")
 ```
 
-<img src="man/figures/README-custom-text-example-1.png" alt="" width="100%" />
+![](man/figures/README-custom-text-example-1.png)
 
 ## Use Any Image
 
@@ -164,7 +165,9 @@ For a point-and-click experience, launch the interactive Shiny app:
 surreal_app()
 ```
 
-<img src="man/figures/app-surreal.png" alt="The surreal Shiny app. The message “Check your residuals!” is entered as custom text, and the Compare tab shows it beside the residual plot that spells it out." width="100%" />
+![The surreal Shiny app. The message “Check your residuals!” is entered
+as custom text, and the Compare tab shows it beside the residual plot
+that spells it out.](man/figures/app-surreal.png)
 
 The app lets you:
 
@@ -182,7 +185,7 @@ nothing to install. The demo runs on
 ## References
 
 Stefanski, L. A. (2007). “Residual (Sur)realism”. *The American
-Statistician*, 61(2), 163-177. <doi:10.1198/000313007X190079>
+Statistician*, 61(2), 163-177. doi:10.1198/000313007X190079
 
 ## Acknowledgements
 
