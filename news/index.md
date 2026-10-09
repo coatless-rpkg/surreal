@@ -2,83 +2,84 @@
 
 ## surreal (development version)
 
-### New Features
+### New features
+
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
+  has a demo that runs in a web browser through Shinylive, with nothing
+  to install, at <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>
+  ([\#5](https://github.com/coatless-rpkg/surreal/issues/5)).
+
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
+  gains two tabs. Search plays back the search that makes a dataset, and
+  Selection steps through forward selection among decoy predictors
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6),
+  [\#7](https://github.com/coatless-rpkg/surreal/issues/7)).
 
 - [`surreal_decoys()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_decoys.md)
   adds predictors of pure noise to a dataset, so the hidden image shows
-  only for the model with the real predictors.
-  [`surreal_path()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_path.md)
-  then runs forward selection and records every step: which predictor
-  entered, the BIC or AIC, the coefficients and the residuals. Its
+  only for the model with the real predictors
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
+
+- [`surreal_path()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_path.md)
+  runs forward selection and records every step. Its
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method draws
-  the coefficient paths, the criterion and the residual plot at a step.
-
-- [`surreal_trace()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_trace.md)
-  records the search that makes the data: the fitted values at every
-  iteration, their distance from their targets and the size of each
-  change. Its [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
-  method draws the picture as it stood at an iteration. A `step` below 1
-  slows the search down to watch it.
-
-- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
-  has two new tabs. Search plays back the search that makes the data,
-  one iteration at a time, with a step size to slow it down. Selection
-  adds decoy predictors and steps through forward selection, with the
-  coefficient paths, the criterion and the residual plot at each step.
+  the share each step explained against the criterion’s charge for a
+  predictor, the criterion and the residual plot at a step
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6),
+  [\#7](https://github.com/coatless-rpkg/surreal/issues/7)).
 
 - [`surreal_text_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text_points.md)
   and
   [`surreal_image_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image_points.md)
-  return the points that draw a message or an image, as `x` and `y`
-  coordinates. These are the points
+  return the points that
   [`surreal_text()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text.md)
   and
   [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md)
-  hide, so you can look at them, change them or combine them before
-  handing them to
-  [`surreal()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal.md).
+  hide, as `x` and `y` coordinates
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-- The Shiny app has a demo that runs in a web browser, with nothing to
-  install: <https://r-pkg.thecoatlessprofessor.com/surreal/demo/>. The
-  documentation site builds it with Shinylive.
+- [`surreal_trace()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_trace.md)
+  records every iteration of the search that makes a dataset, and its
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method draws
+  the image as it stood at an iteration. A `step` below 1 slows the
+  search down
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-### Improvements
+### Minor improvements and bug fixes
 
 - [`surreal()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal.md),
   [`surreal_text()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text.md)
   and
   [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md)
-  are much faster and use far less memory on large pictures. A picture
-  of 5,000 points took about 20 seconds and over a gigabyte of memory,
-  and now takes a fraction of a second. The data they return for a given
-  seed is unchanged.
+  are much faster and use far less memory on large images. The data they
+  return for a given seed is unchanged
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-### Bug Fixes
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
+  download buttons hand over their files when the app runs in a web
+  browser ([\#5](https://github.com/coatless-rpkg/surreal/issues/5)).
 
-- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md):
-  the Code dialog shows code that runs when the message has a quotation
-  mark or a line break in it.
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
+  shows the generated message in the Source pane, in its download and
+  after Undo ([\#5](https://github.com/coatless-rpkg/surreal/issues/5)).
 
-- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md):
-  the download buttons hand over their files when the app runs in a web
-  browser through Shinylive.
+- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
+  shows code that runs when the message has a quotation mark or a line
+  break in it
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-- [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md):
-  the Source pane, the Source download and Undo show the message that
-  was generated. The pane kept the first message when a second one was
-  generated.
+- [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md)
+  finds an image drawn in two light tones, such as light gray on white
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-- [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md):
-  a picture in two light tones, such as light gray on white, is found.
-  The automatic threshold fell just under the darker tone, so no points
-  were selected.
+- [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md)
+  reads an image address with a query string, such as
+  `picture.jpg?raw=1`, in its own format
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
-- [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md):
-  an image address with a query string, such as `picture.jpg?raw=1`, is
-  read in its own format. It was saved and read as a PNG.
-
-- [`surreal_text()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text.md):
-  text with no visible characters gives an error that says so.
+- [`surreal_text()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text.md)
+  gives a clear error for text with no visible characters
+  ([\#6](https://github.com/coatless-rpkg/surreal/issues/6)).
 
 ## surreal 0.0.2
 
