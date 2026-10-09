@@ -282,6 +282,19 @@ test_that("the Search and Selection tabs describe themselves without question wo
   expect_no_match(words, question_words, ignore.case = TRUE)
 })
 
+test_that("the search starts at a step below 1, with the reason behind an information icon", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$search_tab())
+
+  expect_match(tab, 'id="search_step"[^>]*data-from="0.25"')
+  expect_match(tab, "<bslib-tooltip", fixed = TRUE)
+  expect_match(tab, "circle-info", fixed = TRUE)
+  expect_match(tab, "takes a step of 1", fixed = TRUE)
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

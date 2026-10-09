@@ -63,18 +63,22 @@ search_tab <- function() {
           "Distance of the fitted values from their targets",
           "search_path",
           "300px",
+          # The slider starts below 1, the step surreal() takes, so that there
+          # are enough iterations to watch
           sliderInput(
             "search_step",
-            "Step size",
+            span(
+              "Step size",
+              tooltip(
+                icon("circle-info", class = "ms-1 text-body-secondary"),
+                "surreal() takes a step of 1 and finishes in a few iterations. A smaller step slows the search, so the image can be watched as it forms."
+              )
+            ),
             min = 0.05,
             max = 1,
-            value = 1,
+            value = 0.25,
             step = 0.05,
             width = "100%"
-          ),
-          div(
-            class = "text-body-secondary",
-            "surreal() takes a step of 1. Try a smaller step to slow the search and watch the image form."
           )
         ),
         plot_card(
