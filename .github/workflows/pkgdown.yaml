@@ -7,6 +7,10 @@ on:
     branches: [main, master]
   release:
     types: [published]
+  # Once a day, so the demo picks up the build of the package that r-universe
+  # makes some time after each push.
+  schedule:
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 name: pkgdown
@@ -42,8 +46,13 @@ jobs:
         shell: Rscript {0}
 
       # The Shiny app, exported to run in a web browser and served at /demo/.
+      # Shinylive bundles a package from wherever it was installed from, so the
+      # package is installed from r-universe first. That makes the demo run the
+      # browser build r-universe makes of this repository, not the CRAN release.
       - name: Build Shinylive demo
-        run: shinylive::export("inst/surreal-app", "docs/demo")
+        run: |
+          install.packages("surreal", repos = "https://coatless-rpkg.r-universe.dev")
+          shinylive::export("inst/surreal-app", "docs/demo")
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
