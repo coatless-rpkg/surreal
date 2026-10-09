@@ -317,6 +317,33 @@ test_that("each stepping slider has its play button beside its label", {
   expect_no_match(tabs, "slider-animate-container", fixed = TRUE)
 })
 
+test_that("the app colors a path by the part its predictor plays at the step", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  path <- surreal_path(decoyed_logo())
+  real <- names(hidden_logo())[-1]
+
+  at_best <- app$path_states(path, 5)
+  at_last <- app$path_states(path, 25)
+
+  expect_setequal(at_best[real], "real")
+  expect_setequal(at_best[path$decoys], "out")
+  expect_setequal(at_last[path$decoys], "decoy")
+})
+
+test_that("the Selection tab says which color is which", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, "path-key-real", fixed = TRUE)
+  expect_match(tab, "path-key-decoy", fixed = TRUE)
+  expect_match(tab, "path-key-out", fixed = TRUE)
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

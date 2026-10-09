@@ -10,7 +10,9 @@ plot_palette <- function(is_dark) {
       fg = "#f7fafc",
       point = "#63b3ed",
       rule = "#4a5568",
-      mark = "#ed8936"
+      real = "#3987e5",
+      decoy = "#d95926",
+      out = "#718096"
     )
   } else {
     list(
@@ -18,7 +20,9 @@ plot_palette <- function(is_dark) {
       fg = "#2d3748",
       point = "#1a365d",
       rule = "#cbd5e0",
-      mark = "#ed8936"
+      real = "#2a78d6",
+      decoy = "#eb6834",
+      out = "#a0aec0"
     )
   }
 }
@@ -139,8 +143,8 @@ axis_labels <- function(at) {
 }
 
 # The plotting area for a quantity that runs along the steps, with the step on
-# screen marked in color and the best step, when there is one, dashed. The
-# labels on the y axis read across, so long numbers stay legible.
+# screen marked by a solid line and the best step, when there is one, by a
+# dashed one. The labels on the y axis read across, so long numbers stay legible.
 draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   par(
     mar = c(3.5, 5.6, 1, 1),
@@ -160,7 +164,7 @@ draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   if (!is.null(best)) {
     abline(v = best, lty = 2, col = palette$fg)
   }
-  abline(v = at, col = palette$mark, lwd = 2)
+  abline(v = at, col = palette$fg, lwd = 2)
 }
 
 # How far the fitted values were from their targets at each iteration
@@ -180,7 +184,20 @@ draw_search_path <- function(trace, iteration, palette) {
   )
 }
 
-# The coefficient of every predictor along a selection, decoys in gray
+# The part each predictor plays at a step of a selection: "real" for one in
+# the model, "decoy" for a known decoy in the model, "out" for one yet to enter
+path_states <- function(path, step) {
+  predictors <- colnames(path$coefficients)[-1]
+  entered <- path$steps$entered[seq_len(step) + 1]
+
+  states <- ifelse(predictors %in% path$decoys, "decoy", "real")
+  states[!predictors %in% entered] <- "out"
+
+  setNames(states, predictors)
+}
+
+# The coefficient of every predictor along a selection, colored by the part
+# the predictor plays at the step
 draw_coefficient_paths <- function(path, step, palette) {
   slopes <- path$coefficients[, -1, drop = FALSE]
   draw_along(
@@ -193,7 +210,7 @@ draw_coefficient_paths <- function(path, step, palette) {
     best = path$best,
     type = "s",
     lty = 1,
-    col = ifelse(colnames(slopes) %in% path$decoys, palette$rule, palette$point)
+    col = unlist(palette[path_states(path, step)])
   )
 }
 

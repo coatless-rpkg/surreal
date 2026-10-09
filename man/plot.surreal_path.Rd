@@ -25,7 +25,8 @@ criterion along the path, and the residual plot of the model at the step.
 }
 \details{
 A solid line marks the step that is drawn, and a dashed line the best step.
-Decoy predictors, when the path knows which they are, are drawn in gray.
+A path is blue once its predictor is in the model at the step, and gray
+until then. A decoy in the model is orange, when the path knows its decoys.
 }
 \examples{
 set.seed(114)

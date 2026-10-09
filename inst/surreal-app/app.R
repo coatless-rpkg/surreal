@@ -81,6 +81,22 @@ ui <- page_navbar(
     useBusyIndicators(),
     tags$style(HTML(
       "
+      /* The key to the colors of the coefficient paths */
+      .path-key {
+        display: inline-block;
+        width: 14px;
+        height: 3px;
+        margin-right: 4px;
+        vertical-align: middle;
+        border-radius: 2px;
+      }
+      .path-key-real { background: #2a78d6; }
+      .path-key-decoy { background: #eb6834; }
+      .path-key-out { background: #a0aec0; }
+      [data-bs-theme='dark'] .path-key-real { background: #3987e5; }
+      [data-bs-theme='dark'] .path-key-decoy { background: #d95926; }
+      [data-bs-theme='dark'] .path-key-out { background: #718096; }
+
       /* Dark mode outline button fix */
       [data-bs-theme='dark'] .btn-outline-secondary {
         --bs-btn-color: #adb5bd;

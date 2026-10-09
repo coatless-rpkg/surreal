@@ -118,6 +118,26 @@ surreal_path <- function(data, criterion = c("BIC", "AIC")) {
   )
 }
 
+#' Say what part each predictor plays at a step of a selection
+#'
+#' @param x    A `surreal_path` object.
+#' @param step Integer. The step to look at.
+#'
+#' @return A character vector named by predictor: `"real"` for a predictor in
+#'   the model at the step, `"decoy"` for one in the model that is known to be
+#'   a decoy, and `"out"` for one that has not entered yet.
+#'
+#' @noRd
+path_states <- function(x, step) {
+  predictors <- colnames(x$coefficients)[-1]
+  entered <- x$steps$entered[seq_len(step) + 1]
+
+  states <- ifelse(predictors %in% x$decoys, "decoy", "real")
+  states[!predictors %in% entered] <- "out"
+
+  stats::setNames(states, predictors)
+}
+
 #' @export
 print.surreal_path <- function(x, ...) {
   predictors <- nrow(x$steps) - 1
@@ -153,7 +173,8 @@ print.surreal_path <- function(x, ...) {
 #'
 #' @details
 #' A solid line marks the step that is drawn, and a dashed line the best step.
-#' Decoy predictors, when the path knows which they are, are drawn in gray.
+#' A path is blue once its predictor is in the model at the step, and gray
+#' until then. A decoy in the model is orange, when the path knows its decoys.
 #'
 #' @examples
 #' set.seed(114)
@@ -181,15 +202,33 @@ plot.surreal_path <- function(x, step = x$best, ...) {
     graphics::abline(v = step)
   }
 
-  # Coefficient of every predictor along the path
+  # Coefficient of every predictor along the path, colored by the part the
+  # predictor plays at the step
+  colors <- c(real = "#2a78d6", decoy = "#eb6834", out = "gray70")
+  key <- if (is.null(x$decoys)) {
+    c(real = "in the model", out = "not in the model")
+  } else {
+    c(real = "real, in the model", decoy = "decoy, in the model", out = "not in the model")
+  }
   slopes <- x$coefficients[, -1, drop = FALSE]
+  # Room above the paths for the key
+  ylim <- range(slopes, na.rm = TRUE)
+  ylim[2] <- ylim[2] + 0.3 * diff(ylim)
   graphics::matplot(
     0:last, slopes,
-    type = "s", lty = 1,
-    col = ifelse(colnames(slopes) %in% x$decoys, "gray60", "black"),
+    type = "s", lty = 1, ylim = ylim,
+    col = colors[path_states(x, step)],
     xlab = "Step", ylab = "Coefficient", main = "Coefficient paths"
   )
   mark()
+  # The key is drawn on the plot's own background, over the lines that mark
+  # the steps
+  background <- graphics::par("bg")
+  graphics::legend(
+    "topleft", legend = key, col = colors[names(key)],
+    lty = 1, lwd = 2, cex = 0.8, box.col = NA,
+    bg = if (background == "transparent") "white" else background
+  )
 
   # The criterion along the path
   plot(

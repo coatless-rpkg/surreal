@@ -89,6 +89,29 @@ test_that("surreal_path() remembers which predictors are decoys", {
   expect_equal(path$decoys, paste0("D.", 1:20))
 })
 
+test_that("path_states() tells the predictors in the model at a step from the rest", {
+  path <- surreal_path(decoyed_logo())
+  real <- names(hidden_logo())[-1]
+
+  at_first <- path_states(path, 0)
+  at_best <- path_states(path, 5)
+  at_last <- path_states(path, 25)
+
+  expect_named(at_best, colnames(path$coefficients)[-1])
+  expect_setequal(at_first, "out")
+  expect_setequal(at_best[real], "real")
+  expect_setequal(at_best[path$decoys], "out")
+  expect_setequal(at_last[real], "real")
+  expect_setequal(at_last[path$decoys], "decoy")
+})
+
+test_that("path_states() takes every predictor in the model for real when no decoys are known", {
+  path <- surreal_path(hidden_logo())
+
+  expect_setequal(path_states(path, 5), "real")
+  expect_equal(sum(path_states(path, 2) == "real"), 2)
+})
+
 test_that("surreal_path() rejects data it cannot use", {
   hidden <- hidden_logo()
 

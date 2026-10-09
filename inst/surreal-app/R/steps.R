@@ -128,6 +128,23 @@ search_tab <- function() {
   )
 }
 
+# The key to the colors of the coefficient paths, for a card's header
+path_key <- function() {
+  entry <- function(part, label) {
+    span(
+      class = "ms-2 text-nowrap",
+      span(class = paste0("path-key path-key-", part)),
+      label
+    )
+  }
+  span(
+    class = "text-body-secondary",
+    entry("real", "real"),
+    entry("decoy", "decoy"),
+    entry("out", "not in the model")
+  )
+}
+
 selection_tab <- function() {
   nav_panel(
     title = "Selection",
@@ -140,7 +157,11 @@ selection_tab <- function() {
         col_widths = c(5, 7),
         div(
           plot_card(
-            "Coefficients along the path",
+            div(
+              class = "d-flex flex-wrap justify-content-between",
+              span("Coefficients along the path"),
+              path_key()
+            ),
             "selection_paths",
             "170px"
           ),
