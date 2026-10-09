@@ -239,6 +239,36 @@ Create surreal datasets with hidden images in residuals
 - [`border_augmentation()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/border_augmentation.md)
   : Transform Data by Adding a Border
 
+## Points
+
+Get the points that draw a message or an image before hiding them
+
+- [`surreal_text_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text_points.md)
+  : Turn text into the points that draw it
+- [`surreal_image_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image_points.md)
+  : Turn an image into the points that draw it
+
+## The Search
+
+Watch the method arrive at its data
+
+- [`surreal_trace()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_trace.md)
+  : Record the Search Behind a Surreal Dataset
+- [`plot(`*`<surreal_trace>`*`)`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/plot.surreal_trace.md)
+  : Plot a Recorded Search
+
+## Variable Selection
+
+Hide the image among decoy predictors and select the real ones step by
+step
+
+- [`surreal_decoys()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_decoys.md)
+  : Add Decoy Predictors to a Surreal Dataset
+- [`surreal_path()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_path.md)
+  : Select Predictors One Step at a Time
+- [`plot(`*`<surreal_path>`*`)`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/plot.surreal_path.md)
+  : Plot a Recorded Selection
+
 ## Interactive App
 
 Explore the surreal algorithm interactively

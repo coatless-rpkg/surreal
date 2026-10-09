@@ -47,6 +47,12 @@ The app provides:
 
 - Data export to CSV
 
+- A Search tab that plays back the search that makes the data, one
+  iteration at a time
+
+- A Selection tab that hides the image among decoy predictors and
+  selects the real ones one step at a time
+
 ## Requirements
 
 The app requires the shiny and bslib packages to be installed. For image
@@ -68,6 +74,10 @@ for the core algorithm.
 for embedding text programmatically.
 [`surreal_image()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image.md)
 for processing images programmatically.
+[`surreal_trace()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_trace.md)
+and
+[`surreal_path()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_path.md)
+for the functions behind the Search and Selection tabs.
 
 ## Examples
 

@@ -122,6 +122,8 @@ You can override any of these by specifying explicit values.
 for details on the surreal method parameters.
 [`surreal_text()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text.md)
 for embedding text instead of images.
+[`surreal_image_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_image_points.md)
+for the points of the image on their own.
 
 ## Examples
 

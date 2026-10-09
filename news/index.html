@@ -37,12 +37,25 @@
 <h2 class="pkg-version" data-toc-text="development version" id="surreal-development-version">surreal (development version)<a class="anchor" aria-label="anchor" href="#surreal-development-version"></a></h2>
 <div class="section level3">
 <h3 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>The Shiny app has a demo that runs in a web browser, with nothing to install: <a href="https://r-pkg.thecoatlessprofessor.com/surreal/demo/" class="uri">https://r-pkg.thecoatlessprofessor.com/surreal/demo/</a>. The documentation site builds it with Shinylive.</li>
+<ul><li><p><code><a href="../reference/surreal_decoys.html">surreal_decoys()</a></code> adds predictors of pure noise to a dataset, so the hidden image shows only for the model with the real predictors. <code><a href="../reference/surreal_path.html">surreal_path()</a></code> then runs forward selection and records every step: which predictor entered, the BIC or AIC, the coefficients and the residuals. Its <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method draws the coefficient paths, the criterion and the residual plot at a step.</p></li>
+<li><p><code><a href="../reference/surreal_trace.html">surreal_trace()</a></code> records the search that makes the data: the fitted values at every iteration, their distance from their targets and the size of each change. Its <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method draws the picture as it stood at an iteration. A <code>step</code> below 1 slows the search down to watch it.</p></li>
+<li><p><code><a href="../reference/surreal_app.html">surreal_app()</a></code> has two new tabs. Search plays back the search that makes the data, one iteration at a time, with a step size to slow it down. Selection adds decoy predictors and steps through forward selection, with the coefficient paths, the criterion and the residual plot at each step.</p></li>
+<li><p><code><a href="../reference/surreal_text_points.html">surreal_text_points()</a></code> and <code><a href="../reference/surreal_image_points.html">surreal_image_points()</a></code> return the points that draw a message or an image, as <code>x</code> and <code>y</code> coordinates. These are the points <code><a href="../reference/surreal_text.html">surreal_text()</a></code> and <code><a href="../reference/surreal_image.html">surreal_image()</a></code> hide, so you can look at them, change them or combine them before handing them to <code><a href="../reference/surreal.html">surreal()</a></code>.</p></li>
+<li><p>The Shiny app has a demo that runs in a web browser, with nothing to install: <a href="https://r-pkg.thecoatlessprofessor.com/surreal/demo/" class="uri">https://r-pkg.thecoatlessprofessor.com/surreal/demo/</a>. The documentation site builds it with Shinylive.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/surreal.html">surreal()</a></code>, <code><a href="../reference/surreal_text.html">surreal_text()</a></code> and <code><a href="../reference/surreal_image.html">surreal_image()</a></code> are much faster and use far less memory on large pictures. A picture of 5,000 points took about 20 seconds and over a gigabyte of memory, and now takes a fraction of a second. The data they return for a given seed is unchanged.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li><p><code><a href="../reference/surreal_app.html">surreal_app()</a></code>: the download buttons hand over their files when the app runs in a web browser through Shinylive.</p></li>
+<ul><li><p><code><a href="../reference/surreal_app.html">surreal_app()</a></code>: the Code dialog shows code that runs when the message has a quotation mark or a line break in it.</p></li>
+<li><p><code><a href="../reference/surreal_app.html">surreal_app()</a></code>: the download buttons hand over their files when the app runs in a web browser through Shinylive.</p></li>
 <li><p><code><a href="../reference/surreal_app.html">surreal_app()</a></code>: the Source pane, the Source download and Undo show the message that was generated. The pane kept the first message when a second one was generated.</p></li>
+<li><p><code><a href="../reference/surreal_image.html">surreal_image()</a></code>: a picture in two light tones, such as light gray on white, is found. The automatic threshold fell just under the darker tone, so no points were selected.</p></li>
+<li><p><code><a href="../reference/surreal_image.html">surreal_image()</a></code>: an image address with a query string, such as <code>picture.jpg?raw=1</code>, is read in its own format. It was saved and read as a PNG.</p></li>
+<li><p><code><a href="../reference/surreal_text.html">surreal_text()</a></code>: text with no visible characters gives an error that says so.</p></li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -1,8 +1,9 @@
 # Apply the surreal method to a text string
 
 This function applies the surreal method to a text string. It first
-creates a temporary plot with the text, processes the image, and then
-applies the surreal method to the data.
+finds the points that draw the text with
+[`surreal_text_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text_points.md),
+and then applies the surreal method to them.
 
 ## Usage
 
@@ -65,6 +66,8 @@ A data.frame containing the results of the surreal method application.
 
 [`surreal()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal.md)
 for details on the surreal method parameters.
+[`surreal_text_points()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_text_points.md)
+for the points of the text on their own.
 
 ## Examples
 
@@ -73,9 +76,9 @@ for details on the surreal method parameters.
 r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 
 #> Optimal alpha: 1.49389 
-#> Iteration 1 - Delta: 135189.8 
-#> Iteration 2 - Delta: 1.225437 
-#> Iteration 3 - Delta: 0.0001048469 
+#> Iteration 1 - Delta: 150329.4 
+#> Iteration 2 - Delta: 1.616536 
+#> Iteration 3 - Delta: 0.001207269 
 
 
 
@@ -84,9 +87,10 @@ r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 stat_rocks_result <- surreal_text("Statistics\nRocks", verbose = TRUE)
 
 #> Optimal alpha: 1.339718 
-#> Iteration 1 - Delta: 2482614 
-#> Iteration 2 - Delta: 20.20316 
-#> Iteration 3 - Delta: 0.00607195 
+#> Iteration 1 - Delta: 2561707 
+#> Iteration 2 - Delta: 100.7154 
+#> Iteration 3 - Delta: 0.03851556 
+#> Iteration 4 - Delta: 0.0001190154 
 
 
 ```
