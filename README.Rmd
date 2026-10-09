@@ -160,6 +160,8 @@ For a point-and-click experience, launch the interactive Shiny app:
 surreal_app()
 ```
 
+<img src="man/figures/app-surreal.png" alt="The surreal Shiny app. The message “Check your residuals!” is entered as custom text, and the Compare tab shows it beside the residual plot that spells it out." width="100%" />
+
 The app lets you:
 
 - Try demo datasets (Jack-o-Lantern, R Logo)
