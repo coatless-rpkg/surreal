@@ -346,6 +346,35 @@ test_that("the Selection tab says which color is which", {
   expect_match(tab, "path-key-best", fixed = TRUE)
 })
 
+test_that("the step on screen and the best step each have a color of their own", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  for (palette in list(app$plot_palette(FALSE), app$plot_palette(TRUE))) {
+    marks <- unlist(palette[c("step", "best", "real", "decoy", "out", "fg")])
+
+    expect_length(marks, 6)
+    expect_equal(anyDuplicated(marks), 0)
+  }
+})
+
+test_that("the criterion is chosen with a two-way switch, BIC first", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, 'id="criterion"[^>]*class="[^"]*shiny-input-radiogroup')
+  expect_match(
+    tab,
+    'type="radio"[^>]*name="criterion"[^>]*value="BIC"[^>]*checked'
+  )
+  expect_match(tab, 'type="radio"[^>]*name="criterion"[^>]*value="AIC"')
+  expect_no_match(tab, "<select", fixed = TRUE)
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

@@ -13,6 +13,7 @@ plot_palette <- function(is_dark) {
       real = "#3987e5",
       decoy = "#d95926",
       out = "#718096",
+      step = "#d6bcfa",
       best = "#199e70"
     )
   } else {
@@ -24,6 +25,7 @@ plot_palette <- function(is_dark) {
       real = "#2a78d6",
       decoy = "#eb6834",
       out = "#a0aec0",
+      step = "#4a3aa7",
       best = "#1baf7a"
     )
   }
@@ -145,8 +147,8 @@ axis_labels <- function(at) {
 }
 
 # The plotting area for a quantity that runs along the steps, with the step on
-# screen marked by a solid line and the best step, when there is one, by green
-# dashes over it. The labels on the y axis read across, so long numbers stay
+# screen marked by a solid violet line and the best step, when there is one,
+# by green dashes over it. The labels on the y axis read across, so long numbers stay
 # legible.
 draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   par(
@@ -164,7 +166,7 @@ draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   axis(2, at = ticks, labels = axis_labels(ticks), las = 1, cex.axis = 0.8)
   title(ylab = ylab, line = 4.4)
   box()
-  abline(v = at, col = palette$fg, lwd = 2)
+  abline(v = at, col = palette$step, lwd = 2)
   if (!is.null(best)) {
     abline(v = best, lty = 2, lwd = 2, col = palette$best)
   }

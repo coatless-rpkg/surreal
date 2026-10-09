@@ -172,8 +172,8 @@ print.surreal_path <- function(x, ...) {
 #' `x`, invisibly. Called for the plot it draws.
 #'
 #' @details
-#' A solid line marks the step that is drawn, and a dashed green line the best
-#' step.
+#' A solid violet line marks the step that is drawn, and a dashed green line
+#' the best step.
 #' A path is blue once its predictor is in the model at the step, and gray
 #' until then. A decoy in the model is orange, when the path knows its decoys.
 #'
@@ -198,13 +198,14 @@ plot.surreal_path <- function(x, step = x$best, ...) {
   oldpar <- graphics::par(mfrow = c(1, 3))
   on.exit(graphics::par(oldpar))
 
-  # The step that is drawn, then the best step over it in green dashes, so
-  # that both show when they are the same step
+  # The step that is drawn in violet, then the best step over it in green
+  # dashes, so that both show when they are the same step
+  step_color <- "#4a3aa7"
   best_color <- "#1baf7a"
   background <- graphics::par("bg")
   if (background == "transparent") background <- "white"
   mark <- function() {
-    graphics::abline(v = step)
+    graphics::abline(v = step, lwd = 2, col = step_color)
     graphics::abline(v = x$best, lty = 2, lwd = 2, col = best_color)
   }
 
@@ -243,8 +244,8 @@ plot.surreal_path <- function(x, step = x$best, ...) {
   mark()
   graphics::legend(
     "topright", legend = c("this step", paste("lowest", x$criterion)),
-    col = c(graphics::par("fg"), best_color),
-    lty = c(1, 2), lwd = c(1, 2), cex = 0.8, box.col = NA, bg = background
+    col = c(step_color, best_color),
+    lty = c(1, 2), lwd = 2, cex = 0.8, box.col = NA, bg = background
   )
 
   # The residual plot at the step. With no predictors in the model every

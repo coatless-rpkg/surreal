@@ -96,7 +96,8 @@ ui <- page_navbar(
       [data-bs-theme='dark'] .path-key-real { background: #3987e5; }
       [data-bs-theme='dark'] .path-key-decoy { background: #d95926; }
       [data-bs-theme='dark'] .path-key-out { background: #718096; }
-      .path-key-step { background: var(--bs-body-color); }
+      .path-key-step { background: #4a3aa7; }
+      [data-bs-theme='dark'] .path-key-step { background: #d6bcfa; }
       .path-key-best {
         height: 0;
         border-top: 3px dashed #1baf7a;

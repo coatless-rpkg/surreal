@@ -161,6 +161,38 @@ step_key <- function() {
   )
 }
 
+# A two-way switch between the criteria, in place of a menu that would hide
+# one of them. Shiny reads any group of radio buttons under this class.
+criterion_switch <- function() {
+  choice <- function(value, checked = FALSE) {
+    id <- paste0("criterion_", tolower(value))
+    tagList(
+      tags$input(
+        type = "radio",
+        class = "btn-check",
+        name = "criterion",
+        id = id,
+        value = value,
+        autocomplete = "off",
+        checked = if (checked) NA
+      ),
+      tags$label(
+        class = "btn btn-outline-secondary btn-sm py-0 px-2",
+        `for` = id,
+        value
+      )
+    )
+  }
+  div(
+    id = "criterion",
+    class = "shiny-input-radiogroup btn-group",
+    role = "group",
+    `aria-label` = "Criterion",
+    choice("BIC", checked = TRUE),
+    choice("AIC")
+  )
+}
+
 selection_tab <- function() {
   nav_panel(
     title = "Selection",
@@ -183,13 +215,13 @@ selection_tab <- function() {
           ),
           plot_card(
             div(
-              class = "d-flex flex-wrap justify-content-between",
+              class = "d-flex flex-wrap justify-content-between align-items-center",
               span("Criterion along the path"),
+              criterion_switch(),
               step_key()
             ),
             "selection_criterion",
-            "170px",
-            selectInput("criterion", "Criterion", c("BIC", "AIC"))
+            "170px"
           )
         ),
         plot_card(
