@@ -128,6 +128,71 @@ search_tab <- function() {
   )
 }
 
+# One entry of a key: a sample of the line or color, then its name
+key_entry <- function(part, label) {
+  span(
+    class = "me-2 text-nowrap",
+    span(class = paste0("path-key path-key-", part)),
+    label
+  )
+}
+
+# The key to the colors of the predictors, for a card's header. The entry
+# for the criterion's charge shows only with the plot that draws it.
+path_key <- function() {
+  div(
+    class = "d-flex flex-wrap text-body-secondary",
+    key_entry("real", "real"),
+    key_entry("decoy", "decoy"),
+    key_entry("out", "not in the model"),
+    conditionalPanel(
+      condition = "input.path_view != 'coefficients'",
+      key_entry("charge", "the criterion's charge")
+    )
+  )
+}
+
+# The key to the two lines that mark steps on the plots along the path
+step_key <- function() {
+  div(
+    class = "d-flex flex-wrap text-body-secondary",
+    key_entry("step", "this step"),
+    key_entry("best", "lowest")
+  )
+}
+
+# A two-way switch for an input, in place of a menu that would hide one of
+# the choices. `choices` is named by label, and the first one starts chosen.
+# Shiny reads any group of radio buttons under this class.
+two_way_switch <- function(id, choices, label) {
+  choice <- function(i) {
+    button <- paste0(id, "_", tolower(choices[[i]]))
+    tagList(
+      tags$input(
+        type = "radio",
+        class = "btn-check",
+        name = id,
+        id = button,
+        value = choices[[i]],
+        autocomplete = "off",
+        checked = if (i == 1) NA
+      ),
+      tags$label(
+        class = "btn btn-outline-secondary btn-sm py-0 px-2",
+        `for` = button,
+        names(choices)[[i]]
+      )
+    )
+  }
+  div(
+    id = id,
+    class = "shiny-input-radiogroup btn-group",
+    role = "group",
+    `aria-label` = label,
+    lapply(seq_along(choices), choice)
+  )
+}
+
 selection_tab <- function() {
   nav_panel(
     title = "Selection",
@@ -140,15 +205,32 @@ selection_tab <- function() {
         col_widths = c(5, 7),
         div(
           plot_card(
-            "Coefficients along the path",
+            div(
+              class = "d-flex flex-wrap justify-content-between align-items-center gap-1",
+              span("Each step along the path"),
+              two_way_switch(
+                "path_view",
+                c(Explained = "explained", Coefficients = "coefficients"),
+                "View of each step"
+              ),
+              path_key()
+            ),
             "selection_paths",
-            "170px"
+            "190px"
           ),
           plot_card(
-            "Criterion along the path",
+            div(
+              class = "d-flex flex-wrap justify-content-between align-items-center gap-1",
+              span("Criterion along the path"),
+              two_way_switch(
+                "criterion",
+                c(BIC = "BIC", AIC = "AIC"),
+                "Criterion"
+              ),
+              step_key()
+            ),
             "selection_criterion",
-            "170px",
-            selectInput("criterion", "Criterion", c("BIC", "AIC"))
+            "190px"
           )
         ),
         plot_card(

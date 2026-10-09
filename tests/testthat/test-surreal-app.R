@@ -317,6 +317,109 @@ test_that("each stepping slider has its play button beside its label", {
   expect_no_match(tabs, "slider-animate-container", fixed = TRUE)
 })
 
+test_that("the app colors a path by the part its predictor plays at the step", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  path <- surreal_path(decoyed_logo())
+  real <- names(hidden_logo())[-1]
+
+  at_best <- app$path_states(path, 5)
+  at_last <- app$path_states(path, 25)
+
+  expect_setequal(at_best[real], "real")
+  expect_setequal(at_best[path$decoys], "out")
+  expect_setequal(at_last[path$decoys], "decoy")
+})
+
+test_that("the Selection tab says which color is which", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, "path-key-real", fixed = TRUE)
+  expect_match(tab, "path-key-decoy", fixed = TRUE)
+  expect_match(tab, "path-key-out", fixed = TRUE)
+  expect_match(tab, "path-key-step", fixed = TRUE)
+  expect_match(tab, "path-key-best", fixed = TRUE)
+})
+
+test_that("the step on screen and the best step each have a color of their own", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  for (palette in list(app$plot_palette(FALSE), app$plot_palette(TRUE))) {
+    marks <- unlist(palette[c("step", "best", "real", "decoy", "out", "fg")])
+
+    expect_length(marks, 6)
+    expect_equal(anyDuplicated(marks), 0)
+  }
+})
+
+test_that("the criterion is chosen with a two-way switch, BIC first", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, 'id="criterion"[^>]*class="[^"]*shiny-input-radiogroup')
+  expect_match(
+    tab,
+    'type="radio"[^>]*name="criterion"[^>]*value="BIC"[^>]*checked'
+  )
+  expect_match(tab, 'type="radio"[^>]*name="criterion"[^>]*value="AIC"')
+  expect_no_match(tab, "<select", fixed = TRUE)
+})
+
+test_that("the app sets a criterion's charge where the criterion turns", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  path <- surreal_path(decoyed_logo())
+
+  gains <- app$path_gains(path)
+
+  expect_length(gains$gain, 25)
+  expect_equal(gains$gain > gains$charge, diff(path$steps$criterion) < 0)
+})
+
+test_that("the first plot of the Selection tab switches between two views, explained first", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, 'id="path_view"[^>]*class="[^"]*shiny-input-radiogroup')
+  expect_match(tab, 'name="path_view"[^>]*value="explained"[^>]*checked')
+  expect_match(tab, 'name="path_view"[^>]*value="coefficients"')
+})
+
+test_that("the first plot of the Selection tab is drawn in either view", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(
+      session$setInputs,
+      app_inputs(input_mode = "demo_rlogo", path_view = "explained")
+    )
+    session$setInputs(generate = 1)
+    explained <- output$selection_paths$src
+
+    session$setInputs(path_view = "coefficients")
+    coefficients <- output$selection_paths$src
+
+    expect_match(explained, "^data:image/png")
+    expect_length(unique(c(explained, coefficients)), 2)
+  })
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

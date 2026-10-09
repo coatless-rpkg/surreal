@@ -10,7 +10,11 @@ plot_palette <- function(is_dark) {
       fg = "#f7fafc",
       point = "#63b3ed",
       rule = "#4a5568",
-      mark = "#ed8936"
+      real = "#3987e5",
+      decoy = "#d95926",
+      out = "#718096",
+      step = "#d6bcfa",
+      best = "#199e70"
     )
   } else {
     list(
@@ -18,7 +22,11 @@ plot_palette <- function(is_dark) {
       fg = "#2d3748",
       point = "#1a365d",
       rule = "#cbd5e0",
-      mark = "#ed8936"
+      real = "#2a78d6",
+      decoy = "#eb6834",
+      out = "#a0aec0",
+      step = "#4a3aa7",
+      best = "#1baf7a"
     )
   }
 }
@@ -139,8 +147,9 @@ axis_labels <- function(at) {
 }
 
 # The plotting area for a quantity that runs along the steps, with the step on
-# screen marked in color and the best step, when there is one, dashed. The
-# labels on the y axis read across, so long numbers stay legible.
+# screen marked by a solid violet line and the best step, when there is one,
+# by green dashes over it. The labels on the y axis read across, so long numbers stay
+# legible.
 draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   par(
     mar = c(3.5, 5.6, 1, 1),
@@ -157,10 +166,10 @@ draw_along <- function(x, y, at, palette, xlab, ylab, best = NULL, ...) {
   axis(2, at = ticks, labels = axis_labels(ticks), las = 1, cex.axis = 0.8)
   title(ylab = ylab, line = 4.4)
   box()
+  abline(v = at, col = palette$step, lwd = 2)
   if (!is.null(best)) {
-    abline(v = best, lty = 2, col = palette$fg)
+    abline(v = best, lty = 2, lwd = 2, col = palette$best)
   }
-  abline(v = at, col = palette$mark, lwd = 2)
 }
 
 # How far the fitted values were from their targets at each iteration
@@ -180,7 +189,91 @@ draw_search_path <- function(trace, iteration, palette) {
   )
 }
 
-# The coefficient of every predictor along a selection, decoys in gray
+# The part each predictor plays at a step of a selection: "real" for one in
+# the model, "decoy" for a known decoy in the model, "out" for one yet to enter
+path_states <- function(path, step) {
+  predictors <- colnames(path$coefficients)[-1]
+  entered <- path$steps$entered[seq_len(step) + 1]
+
+  states <- ifelse(predictors %in% path$decoys, "decoy", "real")
+  states[!predictors %in% entered] <- "out"
+
+  setNames(states, predictors)
+}
+
+# The share of the variation left before each step that the step explained,
+# and the criterion's charge for a predictor: the least a step has to explain
+# for the criterion to fall
+path_gains <- function(path) {
+  n <- nrow(path$residuals)
+  rss <- colSums(path$residuals^2)
+  penalty <- if (path$criterion == "BIC") log(n) else 2
+
+  list(
+    gain = unname(1 - rss[-1] / rss[-length(rss)]),
+    charge = 1 - exp(-penalty / n)
+  )
+}
+
+# A bar for each step, on a log scale, for the share it explained, with the
+# criterion's charge as a dotted line. A bar takes the color of the predictor
+# that entered at its step.
+draw_gains <- function(path, step, palette) {
+  found <- path_gains(path)
+  gain <- pmax(found$gain, .Machine$double.eps)
+  last <- length(gain)
+  entered <- path_states(path, step)[path$steps$entered[-1]]
+  low <- min(gain, found$charge) / 2
+  high <- min(1, max(gain, found$charge) * 2)
+
+  par(
+    mar = c(3.5, 5.6, 1, 1),
+    mgp = c(2.2, 0.7, 0),
+    bg = palette$bg,
+    fg = palette$fg,
+    col.axis = palette$fg,
+    col.lab = palette$fg
+  )
+  plot(
+    NA,
+    xlim = c(0.4, last + 0.6),
+    ylim = c(low, high),
+    log = "y",
+    axes = FALSE,
+    xlab = "Step",
+    ylab = ""
+  )
+  axis(1, at = unique(round(axTicks(1))), cex.axis = 0.8)
+  # A label for each power of ten, or for every other one when there are many
+  ticks <- 10^seq(ceiling(log10(low)), floor(log10(high)))
+  if (length(ticks) > 4) {
+    ticks <- rev(rev(ticks)[c(TRUE, FALSE)])
+  }
+  axis(
+    2,
+    at = ticks,
+    labels = paste0(axis_labels(100 * ticks), "%"),
+    las = 1,
+    cex.axis = 0.8
+  )
+  title(ylab = "Share explained", line = 4.4)
+  rect(
+    seq_len(last) - 0.35,
+    low / 10,
+    seq_len(last) + 0.35,
+    gain,
+    col = unlist(palette[entered]),
+    border = NA
+  )
+  abline(h = found$charge, lty = 3, lwd = 2, col = palette$fg)
+  # The lines fall between the bars of the steps they divide
+  abline(v = step + 0.5, col = palette$step, lwd = 2)
+  abline(v = path$best + 0.5, lty = 2, lwd = 2, col = palette$best)
+  box()
+}
+
+# The coefficient of every predictor along a selection, colored by the part
+# the predictor plays at the step
 draw_coefficient_paths <- function(path, step, palette) {
   slopes <- path$coefficients[, -1, drop = FALSE]
   draw_along(
@@ -193,7 +286,7 @@ draw_coefficient_paths <- function(path, step, palette) {
     best = path$best,
     type = "s",
     lty = 1,
-    col = ifelse(colnames(slopes) %in% path$decoys, palette$rule, palette$point)
+    col = unlist(palette[path_states(path, step)])
   )
 }
 

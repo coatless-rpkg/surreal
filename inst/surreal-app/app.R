@@ -81,6 +81,35 @@ ui <- page_navbar(
     useBusyIndicators(),
     tags$style(HTML(
       "
+      /* The key to the colors of the coefficient paths */
+      .path-key {
+        display: inline-block;
+        width: 14px;
+        height: 3px;
+        margin-right: 4px;
+        vertical-align: middle;
+        border-radius: 2px;
+      }
+      .path-key-real { background: #2a78d6; }
+      .path-key-decoy { background: #eb6834; }
+      .path-key-out { background: #a0aec0; }
+      [data-bs-theme='dark'] .path-key-real { background: #3987e5; }
+      [data-bs-theme='dark'] .path-key-decoy { background: #d95926; }
+      [data-bs-theme='dark'] .path-key-out { background: #718096; }
+      .path-key-step { background: #4a3aa7; }
+      [data-bs-theme='dark'] .path-key-step { background: #d6bcfa; }
+      .path-key-best {
+        height: 0;
+        border-top: 3px dashed #1baf7a;
+        border-radius: 0;
+      }
+      [data-bs-theme='dark'] .path-key-best { border-top-color: #199e70; }
+      .path-key-charge {
+        height: 0;
+        border-top: 3px dotted var(--bs-body-color);
+        border-radius: 0;
+      }
+
       /* Dark mode outline button fix */
       [data-bs-theme='dark'] .btn-outline-secondary {
         --bs-btn-color: #adb5bd;
@@ -828,7 +857,11 @@ server <- function(input, output, session) {
   output$selection_paths <- renderPlot(
     {
       step <- min(input$selection_step, nrow(path()$steps) - 1)
-      draw_coefficient_paths(path(), step, colors())
+      if (identical(input$path_view, "coefficients")) {
+        draw_coefficient_paths(path(), step, colors())
+      } else {
+        draw_gains(path(), step, colors())
+      }
     },
     bg = "transparent",
     res = 96
