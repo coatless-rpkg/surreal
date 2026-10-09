@@ -128,68 +128,68 @@ search_tab <- function() {
   )
 }
 
-# The key to the colors of the coefficient paths, for a card's header
-path_key <- function() {
-  entry <- function(part, label) {
-    span(
-      class = "ms-2 text-nowrap",
-      span(class = paste0("path-key path-key-", part)),
-      label
-    )
-  }
+# One entry of a key: a sample of the line or color, then its name
+key_entry <- function(part, label) {
   span(
-    class = "text-body-secondary",
-    entry("real", "real"),
-    entry("decoy", "decoy"),
-    entry("out", "not in the model")
+    class = "me-2 text-nowrap",
+    span(class = paste0("path-key path-key-", part)),
+    label
+  )
+}
+
+# The key to the colors of the predictors, for a card's header. The entry
+# for the criterion's charge shows only with the plot that draws it.
+path_key <- function() {
+  div(
+    class = "d-flex flex-wrap text-body-secondary",
+    key_entry("real", "real"),
+    key_entry("decoy", "decoy"),
+    key_entry("out", "not in the model"),
+    conditionalPanel(
+      condition = "input.path_view != 'coefficients'",
+      key_entry("charge", "the criterion's charge")
+    )
   )
 }
 
 # The key to the two lines that mark steps on the plots along the path
 step_key <- function() {
-  entry <- function(part, label) {
-    span(
-      class = "ms-2 text-nowrap",
-      span(class = paste0("path-key path-key-", part)),
-      label
-    )
-  }
-  span(
-    class = "text-body-secondary",
-    entry("step", "this step"),
-    entry("best", "lowest")
+  div(
+    class = "d-flex flex-wrap text-body-secondary",
+    key_entry("step", "this step"),
+    key_entry("best", "lowest")
   )
 }
 
-# A two-way switch between the criteria, in place of a menu that would hide
-# one of them. Shiny reads any group of radio buttons under this class.
-criterion_switch <- function() {
-  choice <- function(value, checked = FALSE) {
-    id <- paste0("criterion_", tolower(value))
+# A two-way switch for an input, in place of a menu that would hide one of
+# the choices. `choices` is named by label, and the first one starts chosen.
+# Shiny reads any group of radio buttons under this class.
+two_way_switch <- function(id, choices, label) {
+  choice <- function(i) {
+    button <- paste0(id, "_", tolower(choices[[i]]))
     tagList(
       tags$input(
         type = "radio",
         class = "btn-check",
-        name = "criterion",
-        id = id,
-        value = value,
+        name = id,
+        id = button,
+        value = choices[[i]],
         autocomplete = "off",
-        checked = if (checked) NA
+        checked = if (i == 1) NA
       ),
       tags$label(
         class = "btn btn-outline-secondary btn-sm py-0 px-2",
-        `for` = id,
-        value
+        `for` = button,
+        names(choices)[[i]]
       )
     )
   }
   div(
-    id = "criterion",
+    id = id,
     class = "shiny-input-radiogroup btn-group",
     role = "group",
-    `aria-label` = "Criterion",
-    choice("BIC", checked = TRUE),
-    choice("AIC")
+    `aria-label` = label,
+    lapply(seq_along(choices), choice)
   )
 }
 
@@ -206,22 +206,31 @@ selection_tab <- function() {
         div(
           plot_card(
             div(
-              class = "d-flex flex-wrap justify-content-between",
-              span("Coefficients along the path"),
+              class = "d-flex flex-wrap justify-content-between align-items-center gap-1",
+              span("Each step along the path"),
+              two_way_switch(
+                "path_view",
+                c(Explained = "explained", Coefficients = "coefficients"),
+                "View of each step"
+              ),
               path_key()
             ),
             "selection_paths",
-            "170px"
+            "190px"
           ),
           plot_card(
             div(
-              class = "d-flex flex-wrap justify-content-between align-items-center",
+              class = "d-flex flex-wrap justify-content-between align-items-center gap-1",
               span("Criterion along the path"),
-              criterion_switch(),
+              two_way_switch(
+                "criterion",
+                c(BIC = "BIC", AIC = "AIC"),
+                "Criterion"
+              ),
               step_key()
             ),
             "selection_criterion",
-            "170px"
+            "190px"
           )
         ),
         plot_card(

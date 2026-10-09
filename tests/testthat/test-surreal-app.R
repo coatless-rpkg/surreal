@@ -375,6 +375,51 @@ test_that("the criterion is chosen with a two-way switch, BIC first", {
   expect_no_match(tab, "<select", fixed = TRUE)
 })
 
+test_that("the app sets a criterion's charge where the criterion turns", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+  path <- surreal_path(decoyed_logo())
+
+  gains <- app$path_gains(path)
+
+  expect_length(gains$gain, 25)
+  expect_equal(gains$gain > gains$charge, diff(path$steps$criterion) < 0)
+})
+
+test_that("the first plot of the Selection tab switches between two views, explained first", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+  app <- load_app()
+
+  tab <- as.character(app$selection_tab())
+
+  expect_match(tab, 'id="path_view"[^>]*class="[^"]*shiny-input-radiogroup')
+  expect_match(tab, 'name="path_view"[^>]*value="explained"[^>]*checked')
+  expect_match(tab, 'name="path_view"[^>]*value="coefficients"')
+})
+
+test_that("the first plot of the Selection tab is drawn in either view", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("bslib")
+
+  shiny::testServer(app_dir(), {
+    do.call(
+      session$setInputs,
+      app_inputs(input_mode = "demo_rlogo", path_view = "explained")
+    )
+    session$setInputs(generate = 1)
+    explained <- output$selection_paths$src
+
+    session$setInputs(path_view = "coefficients")
+    coefficients <- output$selection_paths$src
+
+    expect_match(explained, "^data:image/png")
+    expect_length(unique(c(explained, coefficients)), 2)
+  })
+})
+
 test_that("the search that is shown ends on the data that was generated", {
   skip_on_cran()
   skip_if_not_installed("shiny")

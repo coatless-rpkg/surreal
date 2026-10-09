@@ -4,13 +4,17 @@
 \alias{plot.surreal_path}
 \title{Plot a Recorded Selection}
 \usage{
-\method{plot}{surreal_path}(x, step = x$best, ...)
+\method{plot}{surreal_path}(x, step = x$best, panels = c("explained", "criterion", "residuals"), ...)
 }
 \arguments{
 \item{x}{A \code{surreal_path} object.}
 
 \item{step}{Integer. The step to draw, from 0 to the number of predictors.
 Default is the best step.}
+
+\item{panels}{Character. The panels to draw, in order, from \code{"explained"},
+\code{"coefficients"}, \code{"criterion"} and \code{"residuals"}. Default is all but
+\code{"coefficients"}. Four panels are drawn two to a row.}
 
 \item{...}{Further arguments passed to \code{\link[graphics:plot]{plot()}} for the
 residual plot.}
@@ -19,15 +23,27 @@ residual plot.}
 \code{x}, invisibly. Called for the plot it draws.
 }
 \description{
-Draws three panels for one step of a selection recorded by
-\code{\link[=surreal_path]{surreal_path()}}: the coefficient of every predictor along the path, the
-criterion along the path, and the residual plot of the model at the step.
+Draws one step of a selection recorded by \code{\link[=surreal_path]{surreal_path()}}, as a row of
+panels: the share each step explained, the criterion along the path, and
+the residual plot of the model at the step.
 }
 \details{
+The panels are:
+\itemize{
+\item \code{"explained"}: a bar for each step, on a log scale, for the share of the
+variation left before the step that its predictor explained. A dotted
+line marks the criterion's charge for a predictor: the least a step has
+to explain for the criterion to fall. The bars above it are the steps
+that improved the model.
+\item \code{"coefficients"}: the coefficient of every predictor along the path.
+\item \code{"criterion"}: the criterion along the path.
+\item \code{"residuals"}: the residual plot of the model at the step.
+}
+
 A solid violet line marks the step that is drawn, and a dashed green line
-the best step.
-A path is blue once its predictor is in the model at the step, and gray
-until then. A decoy in the model is orange, when the path knows its decoys.
+the best step. A predictor is blue once it is in the model at the step, and
+gray until then. A decoy in the model is orange, when the path knows its
+decoys.
 }
 \examples{
 set.seed(114)
@@ -36,5 +52,8 @@ path <- surreal_path(surreal_decoys(hidden, n = 20))
 
 plot(path)
 plot(path, step = 25)
+
+# The coefficient paths, with the criterion beside them
+plot(path, panels = c("coefficients", "criterion"))
 
 }

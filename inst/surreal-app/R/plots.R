@@ -201,6 +201,77 @@ path_states <- function(path, step) {
   setNames(states, predictors)
 }
 
+# The share of the variation left before each step that the step explained,
+# and the criterion's charge for a predictor: the least a step has to explain
+# for the criterion to fall
+path_gains <- function(path) {
+  n <- nrow(path$residuals)
+  rss <- colSums(path$residuals^2)
+  penalty <- if (path$criterion == "BIC") log(n) else 2
+
+  list(
+    gain = unname(1 - rss[-1] / rss[-length(rss)]),
+    charge = 1 - exp(-penalty / n)
+  )
+}
+
+# A bar for each step, on a log scale, for the share it explained, with the
+# criterion's charge as a dotted line. A bar takes the color of the predictor
+# that entered at its step.
+draw_gains <- function(path, step, palette) {
+  found <- path_gains(path)
+  gain <- pmax(found$gain, .Machine$double.eps)
+  last <- length(gain)
+  entered <- path_states(path, step)[path$steps$entered[-1]]
+  low <- min(gain, found$charge) / 2
+  high <- min(1, max(gain, found$charge) * 2)
+
+  par(
+    mar = c(3.5, 5.6, 1, 1),
+    mgp = c(2.2, 0.7, 0),
+    bg = palette$bg,
+    fg = palette$fg,
+    col.axis = palette$fg,
+    col.lab = palette$fg
+  )
+  plot(
+    NA,
+    xlim = c(0.4, last + 0.6),
+    ylim = c(low, high),
+    log = "y",
+    axes = FALSE,
+    xlab = "Step",
+    ylab = ""
+  )
+  axis(1, at = unique(round(axTicks(1))), cex.axis = 0.8)
+  # A label for each power of ten, or for every other one when there are many
+  ticks <- 10^seq(ceiling(log10(low)), floor(log10(high)))
+  if (length(ticks) > 4) {
+    ticks <- rev(rev(ticks)[c(TRUE, FALSE)])
+  }
+  axis(
+    2,
+    at = ticks,
+    labels = paste0(axis_labels(100 * ticks), "%"),
+    las = 1,
+    cex.axis = 0.8
+  )
+  title(ylab = "Share explained", line = 4.4)
+  rect(
+    seq_len(last) - 0.35,
+    low / 10,
+    seq_len(last) + 0.35,
+    gain,
+    col = unlist(palette[entered]),
+    border = NA
+  )
+  abline(h = found$charge, lty = 3, lwd = 2, col = palette$fg)
+  # The lines fall between the bars of the steps they divide
+  abline(v = step + 0.5, col = palette$step, lwd = 2)
+  abline(v = path$best + 0.5, lty = 2, lwd = 2, col = palette$best)
+  box()
+}
+
 # The coefficient of every predictor along a selection, colored by the part
 # the predictor plays at the step
 draw_coefficient_paths <- function(path, step, palette) {

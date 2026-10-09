@@ -104,6 +104,11 @@ ui <- page_navbar(
         border-radius: 0;
       }
       [data-bs-theme='dark'] .path-key-best { border-top-color: #199e70; }
+      .path-key-charge {
+        height: 0;
+        border-top: 3px dotted var(--bs-body-color);
+        border-radius: 0;
+      }
 
       /* Dark mode outline button fix */
       [data-bs-theme='dark'] .btn-outline-secondary {
@@ -852,7 +857,11 @@ server <- function(input, output, session) {
   output$selection_paths <- renderPlot(
     {
       step <- min(input$selection_step, nrow(path()$steps) - 1)
-      draw_coefficient_paths(path(), step, colors())
+      if (identical(input$path_view, "coefficients")) {
+        draw_coefficient_paths(path(), step, colors())
+      } else {
+        draw_gains(path(), step, colors())
+      }
     },
     bg = "transparent",
     res = 96

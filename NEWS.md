@@ -6,8 +6,9 @@
   image shows only for the model with the real predictors. `surreal_path()`
   then runs forward selection and records every step: which predictor
   entered, the BIC or AIC, the coefficients and the residuals. Its `plot()`
-  method draws the coefficient paths, the criterion and the residual plot at
-  a step.
+  method draws the share each step explained against the criterion's charge
+  for a predictor, the criterion along the path and the residual plot at a
+  step, with the coefficient paths as a further panel.
 
 - `surreal_trace()` records the search that makes the data: the fitted values
   at every iteration, their distance from their targets and the size of each
@@ -16,8 +17,9 @@
 
 - `surreal_app()` has two new tabs. Search plays back the search that makes the
   data, one iteration at a time, with a step size to slow it down. Selection
-  adds decoy predictors and steps through forward selection, with the
-  coefficient paths, the criterion and the residual plot at each step.
+  adds decoy predictors and steps through forward selection, with the share
+  each step explained or the coefficient paths, the criterion under BIC or
+  AIC, and the residual plot at each step.
 
 - `surreal_text_points()` and `surreal_image_points()` return the points that
   draw a message or an image, as `x` and `y` coordinates. These are the points

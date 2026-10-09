@@ -112,6 +112,45 @@ test_that("path_states() takes every predictor in the model for real when no dec
   expect_equal(sum(path_states(path, 2) == "real"), 2)
 })
 
+test_that("path_gains() gives the share of the remaining variation that each step explained", {
+  decoyed <- decoyed_logo()
+  path <- surreal_path(decoyed)
+  before <- lm(reformulate(path$steps$entered[2:3], "y"), data = decoyed)
+  after <- lm(reformulate(path$steps$entered[2:4], "y"), data = decoyed)
+
+  gains <- path_gains(path)
+
+  expect_length(gains$gain, 25)
+  expect_equal(gains$gain[3], 1 - deviance(after) / deviance(before))
+})
+
+test_that("path_gains() sets the charge where the criterion turns", {
+  by_bic <- surreal_path(decoyed_logo())
+  by_aic <- surreal_path(decoyed_logo(), criterion = "AIC")
+
+  bic <- path_gains(by_bic)
+  aic <- path_gains(by_aic)
+
+  expect_equal(bic$gain > bic$charge, diff(by_bic$steps$criterion) < 0)
+  expect_equal(aic$gain > aic$charge, diff(by_aic$steps$criterion) < 0)
+  expect_lt(aic$charge, bic$charge)
+})
+
+test_that("plot() draws the panels that are asked for", {
+  withr::local_pdf(NULL)
+  path <- surreal_path(decoyed_logo())
+
+  expect_no_error(plot(path, panels = "explained"))
+  expect_no_error(plot(path, panels = c("coefficients", "residuals")))
+  expect_no_error(
+    plot(
+      path,
+      panels = c("explained", "coefficients", "criterion", "residuals")
+    )
+  )
+  expect_error(plot(path, panels = "everything"), "should be")
+})
+
 test_that("surreal_path() rejects data it cannot use", {
   hidden <- hidden_logo()
 
