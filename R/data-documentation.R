@@ -44,7 +44,7 @@
 #' plot(model$fitted, model$resid, type = "n", main = "Residual plot from transformed data")
 #' points(model$fitted, model$resid, pch = 16)
 #' @references
-#' Stefansk, L.A. (2013). Hidden Images in the Helen Barton Lecture Series. Retrieved from
+#' Stefanski, L.A. (2013). Hidden Images in the Helen Barton Lecture Series. Retrieved from
 #' <https://www4.stat.ncsu.edu/~stefansk/NSF_Supported/Hidden_Images/UNCG_Helen_Barton_Lecture_Nov_2013/pumpkin_1_data_yx1x6.txt>
 "jackolantern_surreal_data"
 
