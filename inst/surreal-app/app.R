@@ -38,6 +38,20 @@ download_button <- function(
   button
 }
 
+# The settings each preset button applies
+presets <- list(
+  fast = list(r_squared = 0.3, p = 3, point_size = 0.4, max_points = 1500),
+  balanced = list(r_squared = 0.3, p = 5, point_size = 0.6, max_points = 3000),
+  detail = list(r_squared = 0.2, p = 8, point_size = 0.8, max_points = 6000)
+)
+
+# Move sliders to the values given for them by name
+set_sliders <- function(session, values) {
+  for (id in names(values)) {
+    updateSliderInput(session, id, value = values[[id]])
+  }
+}
+
 # UI
 ui <- page_navbar(
   title = span("Surreal", class = "fw-bold"),
@@ -405,25 +419,10 @@ server <- function(input, output, session) {
   )
 
   # Preset handlers
-  observeEvent(input$preset_fast, {
-    updateSliderInput(session, "r_squared", value = 0.3)
-    updateSliderInput(session, "p", value = 3)
-    updateSliderInput(session, "point_size", value = 0.4)
-    updateSliderInput(session, "max_points", value = 1500)
-  })
-
-  observeEvent(input$preset_balanced, {
-    updateSliderInput(session, "r_squared", value = 0.3)
-    updateSliderInput(session, "p", value = 5)
-    updateSliderInput(session, "point_size", value = 0.6)
-    updateSliderInput(session, "max_points", value = 3000)
-  })
-
-  observeEvent(input$preset_detail, {
-    updateSliderInput(session, "r_squared", value = 0.2)
-    updateSliderInput(session, "p", value = 8)
-    updateSliderInput(session, "point_size", value = 0.8)
-    updateSliderInput(session, "max_points", value = 6000)
+  lapply(names(presets), function(name) {
+    observeEvent(input[[paste0("preset_", name)]], {
+      set_sliders(session, presets[[name]])
+    })
   })
 
   # Update undo button state
@@ -456,31 +455,12 @@ server <- function(input, output, session) {
 
     # Restore settings if available
     if (!is.null(last_state$settings)) {
-      updateSliderInput(
-        session,
-        "r_squared",
-        value = last_state$settings$r_squared
-      )
-      updateSliderInput(session, "p", value = last_state$settings$p)
-      updateSliderInput(
-        session,
-        "point_size",
-        value = last_state$settings$point_size
-      )
-      updateSliderInput(
-        session,
-        "max_points",
-        value = last_state$settings$max_points
-      )
+      sliders <- c("r_squared", "p", "point_size", "max_points", "threshold")
+      set_sliders(session, last_state$settings[sliders])
       updateSelectInput(
         session,
         "image_mode",
         selected = last_state$settings$image_mode
-      )
-      updateSliderInput(
-        session,
-        "threshold",
-        value = last_state$settings$threshold
       )
     }
 
@@ -619,27 +599,19 @@ server <- function(input, output, session) {
     lm(y ~ ., data = rv$data)
   })
 
-  # Helper function for residual plot
-  plot_residuals <- function(m, point_size, is_dark) {
-    bg <- if (is_dark) "#1a202c" else "#ffffff"
-    fg <- if (is_dark) "#f7fafc" else "#2d3748"
-    pt <- if (is_dark) "#63b3ed" else "#1a365d"
+  # What the plots are drawn with and from
+  colors <- reactive(plot_palette(isTRUE(input$dark_mode == "dark")))
+  current_source <- reactive(list(
+    type = rv$source_type,
+    coords = rv$source_coords,
+    text = rv$source_text
+  ))
 
-    par(mar = c(4, 4, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
-    plot(
-      m$fitted.values,
-      m$residuals,
-      pch = 20,
-      cex = point_size,
-      col = pt,
-      xlab = "Fitted",
-      ylab = "Residuals",
-      axes = FALSE
-    )
-    axis(1)
-    axis(2)
-    box()
-    abline(h = 0, lty = 2, col = if (is_dark) "#4a5568" else "#cbd5e0")
+  # Write a plot to a PNG file at download size
+  save_png <- function(file, draw) {
+    png(file, width = 1200, height = 800, res = 150, bg = colors()$bg)
+    on.exit(dev.off())
+    draw()
   }
 
   # Download residual plot as PNG
@@ -647,12 +619,14 @@ server <- function(input, output, session) {
     filename = function() paste0("surreal_residual_", Sys.Date(), ".png"),
     content = function(file) {
       req(model())
-      is_dark <- isTRUE(input$dark_mode == "dark")
-      bg <- if (is_dark) "#1a202c" else "#ffffff"
-
-      png(file, width = 1200, height = 800, res = 150, bg = bg)
-      plot_residuals(model(), isolate(input$point_size), is_dark)
-      dev.off()
+      save_png(file, function() {
+        draw_residuals(
+          model(),
+          colors(),
+          isolate(input$point_size),
+          full = TRUE
+        )
+      })
     }
   )
 
@@ -660,42 +634,14 @@ server <- function(input, output, session) {
   output$download_source <- downloadHandler(
     filename = function() paste0("surreal_source_", Sys.Date(), ".png"),
     content = function(file) {
-      is_dark <- isTRUE(input$dark_mode == "dark")
-      bg <- if (is_dark) "#1a202c" else "#ffffff"
-      fg <- if (is_dark) "#f7fafc" else "#2d3748"
-      pt <- if (is_dark) "#63b3ed" else "#1a365d"
-      point_size <- isolate(input$point_size)
-
-      png(file, width = 1200, height = 800, res = 150, bg = bg)
-
-      if (rv$source_type == "image" && !is.null(rv$source_coords)) {
-        img <- surreal:::load_image_file(rv$source_coords)
-        par(mar = c(0, 0, 0, 0), bg = bg)
-        plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "", asp = 1)
-        graphics::rasterImage(img, 0, 0, 1, 1)
-      } else if (rv$source_type == "text") {
-        par(mar = c(0, 0, 0, 0), bg = bg, fg = fg)
-        plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
-        text(0.5, 0.5, rv$source_text, cex = 4, col = pt, font = 2)
-      } else if (!is.null(rv$source_coords)) {
-        par(mar = c(4, 4, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
-        plot(
-          rv$source_coords$x,
-          rv$source_coords$y,
-          pch = 20,
-          cex = point_size,
-          col = pt,
-          xlab = "X",
-          ylab = "Y",
-          axes = FALSE,
-          asp = 1
+      save_png(file, function() {
+        draw_source(
+          current_source(),
+          colors(),
+          isolate(input$point_size),
+          full = TRUE
         )
-        axis(1)
-        axis(2)
-        box()
-      }
-
-      dev.off()
+      })
     }
   )
 
@@ -703,14 +649,7 @@ server <- function(input, output, session) {
   output$pairs_plot <- renderPlot(
     {
       req(rv$data)
-
-      is_dark <- isTRUE(input$dark_mode == "dark")
-      bg <- if (is_dark) "#1a202c" else "#ffffff"
-      fg <- if (is_dark) "#f7fafc" else "#2d3748"
-      pt <- if (is_dark) "#63b3ed60" else "#1a365d60"
-
-      par(bg = bg, fg = fg, col.axis = fg, col.lab = fg)
-      pairs(rv$data, pch = 20, cex = 0.3, col = pt)
+      draw_pairs(rv$data, colors())
     },
     bg = "transparent",
     res = 96
@@ -718,44 +657,7 @@ server <- function(input, output, session) {
 
   # Compare view - Source plot
   output$compare_source <- renderPlot(
-    {
-      is_dark <- isTRUE(input$dark_mode == "dark")
-      bg <- if (is_dark) "#1a202c" else "#ffffff"
-      fg <- if (is_dark) "#f7fafc" else "#2d3748"
-      pt <- if (is_dark) "#63b3ed" else "#1a365d"
-      point_size <- isolate(input$point_size)
-
-      # Empty state - no data yet
-      if (is.null(rv$source_type)) {
-        par(mar = c(0, 0, 0, 0), bg = bg)
-        plot.new()
-      } else if (rv$source_type == "image") {
-        img <- surreal:::load_image_file(rv$source_coords)
-        par(mar = c(0, 0, 0, 0), bg = bg)
-        plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "", asp = 1)
-        graphics::rasterImage(img, 0, 0, 1, 1)
-      } else if (rv$source_type == "text") {
-        par(mar = c(0, 0, 0, 0), bg = bg, fg = fg)
-        plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
-        text(0.5, 0.5, rv$source_text, cex = 3, col = pt, font = 2)
-      } else {
-        par(mar = c(3, 3, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
-        plot(
-          rv$source_coords$x,
-          rv$source_coords$y,
-          pch = 20,
-          cex = point_size * 0.8,
-          col = pt,
-          xlab = "",
-          ylab = "",
-          axes = FALSE,
-          asp = 1
-        )
-        axis(1, cex.axis = 0.8)
-        axis(2, cex.axis = 0.8)
-        box()
-      }
-    },
+    draw_source(current_source(), colors(), isolate(input$point_size)),
     bg = "transparent",
     res = 96
   )
@@ -764,28 +666,7 @@ server <- function(input, output, session) {
   output$compare_residual <- renderPlot(
     {
       req(model())
-      is_dark <- isTRUE(input$dark_mode == "dark")
-      point_size <- isolate(input$point_size)
-      bg <- if (is_dark) "#1a202c" else "#ffffff"
-      fg <- if (is_dark) "#f7fafc" else "#2d3748"
-      pt <- if (is_dark) "#63b3ed" else "#1a365d"
-      m <- model()
-
-      par(mar = c(3, 3, 1, 1), bg = bg, fg = fg, col.axis = fg, col.lab = fg)
-      plot(
-        m$fitted.values,
-        m$residuals,
-        pch = 20,
-        cex = point_size * 0.8,
-        col = pt,
-        xlab = "",
-        ylab = "",
-        axes = FALSE
-      )
-      axis(1, cex.axis = 0.8)
-      axis(2, cex.axis = 0.8)
-      box()
-      abline(h = 0, lty = 2, col = if (is_dark) "#4a5568" else "#cbd5e0")
+      draw_residuals(model(), colors(), isolate(input$point_size))
     },
     bg = "transparent",
     res = 96
@@ -853,59 +734,7 @@ server <- function(input, output, session) {
 
   # Generate R code
   generate_code <- reactive({
-    code <- switch(
-      input$input_mode,
-      "demo_jack" = 'library(surreal)
-data("jackolantern_surreal_data")
-result <- jackolantern_surreal_data
-model <- lm(y ~ ., data = result)
-plot(model$fitted.values, model$residuals, pch = 20)',
-
-      "demo_rlogo" = sprintf(
-        'library(surreal)
-data("r_logo_image_data")
-result <- surreal(r_logo_image_data, R_squared = %.2f, p = %d)
-model <- lm(y ~ ., data = result)
-plot(model$fitted.values, model$residuals, pch = 20)',
-        input$r_squared,
-        input$p
-      ),
-
-      "text" = sprintf(
-        'library(surreal)
-result <- surreal_text("%s", R_squared = %.2f, p = %d)
-model <- lm(y ~ ., data = result)
-plot(model$fitted.values, model$residuals, pch = 20)',
-        input$text,
-        input$r_squared,
-        input$p
-      ),
-
-      "image" = sprintf(
-        'library(surreal)
-result <- surreal_image(
-  "path/to/your/image.png",
-  mode = "%s",
-  threshold = %s,
-  max_points = %d,
-
-  R_squared = %.2f,
-  p = %d
-)
-model <- lm(y ~ ., data = result)
-plot(model$fitted.values, model$residuals, pch = 20)',
-        input$image_mode,
-        if (input$image_mode == "auto") {
-          "NULL"
-        } else {
-          sprintf("%.2f", input$threshold)
-        },
-        input$max_points,
-        input$r_squared,
-        input$p
-      )
-    )
-    code
+    example_code(input$input_mode, reactiveValuesToList(input))
   })
 
   # Show code modal

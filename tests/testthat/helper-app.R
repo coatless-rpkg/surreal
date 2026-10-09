@@ -2,10 +2,13 @@ app_dir <- function() {
   system.file("surreal-app", package = "surreal")
 }
 
-# The app's own objects, as `app.R` defines them.
+# The app's own objects, as its `R/` files and `app.R` define them.
 load_app <- function() {
   app <- new.env(parent = globalenv())
-  sys.source(file.path(app_dir(), "app.R"), envir = app)
+  support <- list.files(file.path(app_dir(), "R"), "\\.R$", full.names = TRUE)
+  for (file in c(support, file.path(app_dir(), "app.R"))) {
+    sys.source(file, envir = app)
+  }
   app
 }
 
