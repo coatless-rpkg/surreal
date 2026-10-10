@@ -4,6 +4,8 @@
 
 ## surreal 0.0.3
 
+CRAN release: 2026-10-09
+
 ### New features
 
 - [`surreal_app()`](https://r-pkg.thecoatlessprofessor.com/surreal/reference/surreal_app.md)
