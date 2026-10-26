@@ -4,8 +4,11 @@ template:
 
 navbar:
   structure:
-    left: [intro, reference, articles, tutorials, news, demo]
+    left: [intro, reference, articles, tutorials, news, demo, blog]
   components:
+    blog:
+      text: Blog posts
+      href: https://blog.thecoatlessprofessor.com/projects/surreal/
     demo:
       text: Demo
       href: demo/
