@@ -75,10 +75,11 @@ for the points of the text on their own.
 # Create a surreal plot of the text "R is fun" appearing on one line
 r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 
-#> Optimal alpha: 1.49389 
-#> Iteration 1 - Delta: 150329.4 
-#> Iteration 2 - Delta: 1.616536 
-#> Iteration 3 - Delta: 0.001207269 
+#> Optimal alpha: 1.50203 
+#> Iteration 1 - Delta: 153005.7 
+#> Iteration 2 - Delta: 16.81356 
+#> Iteration 3 - Delta: 0.1482808 
+#> Iteration 4 - Delta: 5.613601e-05 
 
 
 
@@ -86,11 +87,11 @@ r_is_fun_result <- surreal_text("R is fun", verbose = TRUE)
 # character to create a second line between "Statistics" and "Rocks"
 stat_rocks_result <- surreal_text("Statistics\nRocks", verbose = TRUE)
 
-#> Optimal alpha: 1.339718 
-#> Iteration 1 - Delta: 2561707 
-#> Iteration 2 - Delta: 100.7154 
-#> Iteration 3 - Delta: 0.03851556 
-#> Iteration 4 - Delta: 0.0001190154 
+#> Optimal alpha: 1.401143 
+#> Iteration 1 - Delta: 2708001 
+#> Iteration 2 - Delta: 103.7573 
+#> Iteration 3 - Delta: 0.3249737 
+#> Iteration 4 - Delta: 1.591157e-06 
 
 
 ```
